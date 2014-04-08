@@ -21,7 +21,7 @@ public class SearchEngineTest {
 	public static void main(String[] args) {
 
 		// Get a new search engine
-		SearchEngine se1 = new SearchEngineX();
+		SearchEngine se1 = new SearchEngineY();
 		evaluate(se1);
 		// SearchEngine se2 = new SearchEngineY();
 		// evaluate(se2);
