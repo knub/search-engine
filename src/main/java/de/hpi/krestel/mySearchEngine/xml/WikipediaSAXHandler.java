@@ -7,6 +7,8 @@ import org.xml.sax.SAXException;
 public class WikipediaSAXHandler extends DefaultHandler {
     boolean isInRevision = false;
     boolean isInId = false;
+    boolean isInTitle = false;
+
 
     @Override
     public void startElement(String uri, String localName, String qName,
@@ -18,6 +20,8 @@ public class WikipediaSAXHandler extends DefaultHandler {
             if (!isInRevision) {
                 isInId = true;
             }
+        } else if (qName.equals("title")) {
+            isInTitle = true;
         }
     }
 
@@ -32,6 +36,10 @@ public class WikipediaSAXHandler extends DefaultHandler {
 
     @Override
     public void characters(char ch[], int start, int length) throws SAXException {
+        if (isInTitle) {
+            System.out.print(new String(ch, start, length)+ " ");
+            isInTitle = false;
+        }
         if (isInId) {
             System.out.println(new String(ch, start, length));
             isInId = false;
