@@ -7,13 +7,15 @@ import java.io.*;
 
 public class WikipediaReader {
 
-	public static void readXMLWithSAX() {
+	public void readXMLWithSAX() {
 		System.out.println("SAX");
+        SAXReader wikiReader = new SAXReader();
+        wikiReader.printPageIds("data/dewiki-20140216-pages-articles-multistream-first-five.xml");
 	}
 
-	static XMLInputFactory factory = XMLInputFactory.newInstance();
+	XMLInputFactory factory = XMLInputFactory.newInstance();
 
-	public static void readXMLWithStAX() {
+	public void readXMLWithStAX() {
 		try {
 			XMLInputFactory factory = XMLInputFactory.newInstance();
 			Reader reader = new BufferedReader(new FileReader("data/dewiki-20140216-pages-articles-multistream-first-five.xml"));

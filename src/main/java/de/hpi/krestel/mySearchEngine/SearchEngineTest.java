@@ -24,7 +24,9 @@ public class SearchEngineTest {
 	}
 
 	private static void readWikipediaFile() {
-		WikipediaReader.readXMLWithStAX();
+        WikipediaReader wikipediaReader = new WikipediaReader();
+		wikipediaReader.readXMLWithStAX();
+        wikipediaReader.readXMLWithSAX();
 	}
 
 	private static void evaluateSearchEngine() {
