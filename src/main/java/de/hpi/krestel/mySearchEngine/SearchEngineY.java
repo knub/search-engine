@@ -2,25 +2,22 @@ package de.hpi.krestel.mySearchEngine;
 
 import java.util.ArrayList;
 
-/* This is your file! implement your search engine here!
- * 
+/* This is your file! Implement your search engine here!
+ *
  * Describe your search engine briefly:
  *  - multi-threaded?
  *  - stemming?
  *  - stopword removal?
  *  - index algorithm?
- *  - etc.  
- * 
+ *  - etc.
  */
 
 // Replace 'Y' with your search engine name
 public class SearchEngineY extends SearchEngine {
 
-	
-	// Replace 'Y' with your search engine name
 	public SearchEngineY() {
 		// This should stay as is! Don't add anything here!
-		super();	
+		super();
 	}
 
 	@Override
@@ -39,10 +36,9 @@ public class SearchEngineY extends SearchEngine {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	Double computeNdcg(String query, ArrayList<String> ranking, int ndcgAt) {
-	
 		// TODO Auto-generated method stub
 		return null;
 	}
