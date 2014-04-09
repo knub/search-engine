@@ -8,6 +8,8 @@ package de.hpi.krestel.mySearchEngine;
 // indexing and/or searching
 // The final evaluation will be done with 2GB RAM (java -Xmx2g)!
 
+import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
+
 public class SearchEngineTest {
 	// Some test queries for development. The real test queries will be more difficult ;)
 	static String[] queries = {"artikel", "deutsch"};
@@ -22,7 +24,7 @@ public class SearchEngineTest {
 	}
 
 	private static void readWikipediaFile() {
-		// do stuff
+		WikipediaReader.readXMLWithStAX();
 	}
 
 	private static void evaluateSearchEngine() {
