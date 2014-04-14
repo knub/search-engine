@@ -14,6 +14,15 @@
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.rholder:snowball-stemmer:1.3.0.581.1" level="project" />
     <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: snowball.tartarus.org:libstemmer:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/src/main/resources/libstemmer_java.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

@@ -2,6 +2,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
+import org.tartarus.snowball.ext.germanStemmer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +28,12 @@ public class Indexer implements TextCompletedListener {
 //			System.out.println(matcher.group());
 		text = matcher.replaceAll(" ");
 
-		System.out.println(text);
+		// nice example, of how intelligent the stemmer is with respect to German
+
+
+
+
+
+//		System.out.println(text);
 	}
 }
