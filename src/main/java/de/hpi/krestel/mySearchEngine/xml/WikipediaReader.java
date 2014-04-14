@@ -35,7 +35,6 @@ public class WikipediaReader {
 						isInText = false;
 						onTextCompleted(text.toString());
 						text  = new StringBuilder();
-						System.exit(0);
 					}
 				} else if (streamReader.getEventType() == XMLStreamReader.CHARACTERS) {
 					if (isInText) {
