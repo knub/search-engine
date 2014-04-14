@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -17,9 +18,12 @@ public abstract class SearchEngine {
 	public SearchEngine() {
 
 		// Directory to store index and result logs
-		this.directory = "/home/krestel/data/wikipedia-de/" +this.getClass().getSimpleName().toString();
+		if (new File("/home/krestel/data/wikipedia-de").exists())
+			this.directory = "/home/krestel/data/wikipedia-de/" + this.getClass().getSimpleName().toString();
+		else
+			this.directory = "/tmp/" + this.getClass().getSimpleName().toString();
 		new File(directory).mkdirs();
-		this.logFile = this.directory +"/" +System.currentTimeMillis() +".log";
+		this.logFile = this.directory + "/" +System.currentTimeMillis() + ".log";
 
 	}
 
