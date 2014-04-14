@@ -31,7 +31,7 @@ public class SearchEngineTest {
 
 	private static void evaluateSearchEngine() {
 		// Get a new search engine
-		SearchEngine se1 = new SearchEngineY();
+		SearchEngine se1 = new SearchEngineLynette();
 		evaluate(se1);
 	}
 

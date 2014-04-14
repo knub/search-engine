@@ -1,0 +1,3 @@
+Strict stopword list
+Do stemming at indexing time
+Use the porter stemmer, only use this

@@ -12,10 +12,9 @@ import java.util.ArrayList;
  *  - etc.
  */
 
-// Replace 'Y' with your search engine name
-public class SearchEngineY extends SearchEngine {
+public class SearchEngineLynette extends SearchEngine {
 
-	public SearchEngineY() {
+	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!
 		super();
 	}
