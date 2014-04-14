@@ -19,14 +19,13 @@ public class SearchEngineTest {
 	static int prf = 5;
 
 	public static void main(String[] args) {
-		readWikipediaFile();
-//		evaluateSearchEngine();
+//		readWikipediaFile();
+		evaluateSearchEngine();
 	}
 
 	private static void readWikipediaFile() {
         WikipediaReader wikipediaReader = new WikipediaReader();
-		wikipediaReader.readXMLWithStAX();
-        wikipediaReader.readXMLWithSAX();
+		wikipediaReader.readWikiFile();
 	}
 
 	private static void evaluateSearchEngine() {

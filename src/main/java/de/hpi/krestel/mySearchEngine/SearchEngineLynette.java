@@ -1,5 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
+import de.hpi.krestel.mySearchEngine.indexing.Indexer;
+
 import java.util.ArrayList;
 
 /* This is your file! Implement your search engine here!
@@ -20,13 +22,13 @@ public class SearchEngineLynette extends SearchEngine {
 	}
 
 	@Override
-	void index(String dir) {
-		// TODO Auto-generated method stub
+	void index(String directory) {
+		Indexer indexer = new Indexer(directory);
+		indexer.run();
 	}
 
 	@Override
 	boolean loadIndex(String directory) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
