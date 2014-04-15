@@ -4,6 +4,7 @@ import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.processing.normalization.LowerCaseProcessor;
+import de.hpi.krestel.mySearchEngine.processing.normalization.PunctuationProcessor;
 import de.hpi.krestel.mySearchEngine.processing.tokenization.StanfordTokenizeProcessor;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
@@ -40,6 +41,7 @@ public class Indexer implements TextCompletedListener {
 		Pipeline pipeline = new Pipeline();
 		pipeline.add(new LowerCaseProcessor());
 		pipeline.add(new StanfordTokenizeProcessor());
+        pipeline.add(new PunctuationProcessor());
 
 		pipeline.process(text);
 
