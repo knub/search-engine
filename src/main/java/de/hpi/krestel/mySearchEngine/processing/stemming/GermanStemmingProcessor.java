@@ -14,7 +14,7 @@ public class GermanStemmingProcessor extends AbstractEachElementProcessor {
     public String handleItem(String item) {
         stemmer.setCurrent(item);
         if ( ! stemmer.stem()) {
-            throw new RuntimeException("Stemming not successful for " + word);
+            throw new RuntimeException("Stemming not successful for " + item);
         }
 
         return stemmer.getCurrent();
