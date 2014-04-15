@@ -4,21 +4,15 @@ import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.processing.normalization.LowerCaseProcessor;
-<<<<<<< HEAD
-import de.hpi.krestel.mySearchEngine.processing.normalization.PunctuationProcessor;
-=======
 import de.hpi.krestel.mySearchEngine.processing.normalization.StoppingProcessor;
->>>>>>> Added StoppingProcessor.
 import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor;
 import de.hpi.krestel.mySearchEngine.processing.tokenization.StanfordTokenizeProcessor;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
-import org.tartarus.snowball.ext.germanStemmer;
 import edu.stanford.nlp.process.PTBTokenizer;
 
-import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
