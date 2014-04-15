@@ -13,6 +13,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +45,10 @@ public class Indexer implements TextCompletedListener {
 //		pipeline.add(new PunctuationProcessor());
         pipeline.add(new GermanStemmingProcessor());
 
-		pipeline.process(text);
+        List<String> results = pipeline.process(text);
+        for (String result : results) {
+            System.out.println(result);
+        }
 
 //		try {
 //			AbstractWordSplitter splitter = new GermanWordSplitter();
