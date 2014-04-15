@@ -8,7 +8,10 @@ abstract public class AbstractEachElementProcessor extends AbstractProcessor {
     public List<String> process(List<String> input) {
         List<String> output = new ArrayList<String>();
         for (String item : input) {
-            output.add(handleItem(item));
+            String intermediate = handleItem(item);
+            if (null != intermediate) {
+                output.add(handleItem(item));
+            }
         }
         return output;
     }
