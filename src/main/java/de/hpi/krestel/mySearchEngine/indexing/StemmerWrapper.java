@@ -7,7 +7,8 @@ public class StemmerWrapper {
 	public static String stem(String word) {
 		germanStemmer stemmer = new germanStemmer();
 		stemmer.setCurrent(word.toLowerCase());
-		stemmer.stem();
+		if (!stemmer.stem())
+			throw new RuntimeException("Stemming not successful for " + word);
 		return stemmer.getCurrent();
 	}
 }
