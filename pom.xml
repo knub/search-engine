@@ -39,6 +39,11 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/src/main/resources/libstemmer_java.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.3.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

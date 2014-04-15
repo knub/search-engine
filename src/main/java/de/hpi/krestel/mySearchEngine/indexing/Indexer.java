@@ -4,15 +4,18 @@ import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import org.tartarus.snowball.ext.germanStemmer;
+import edu.stanford.nlp.process.PTBTokenizer;
 
+import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Indexer implements TextCompletedListener {
 
 	public Indexer(String directory) {
-
 	}
 
 	public void run() {
@@ -26,18 +29,26 @@ public class Indexer implements TextCompletedListener {
 		text = text.replace("[[", "").replace("]]", "").replace("[", " ").replace("]", " ");
 		text = text.replace("|", " ").replace("#", " ").replace("<!--", "").replace("-->", "").replace("&nbsp;", " ");
 		Matcher matcher = Pattern.compile("<.*?>").matcher(text);
-//		while (matcher.find())
-//			System.out.println(matcher.group());
+		while (matcher.find())
+			System.out.println(matcher.group());
 		text = matcher.replaceAll(" ");
 
-		try {
-			AbstractWordSplitter splitter = new GermanWordSplitter();
-			splitter.setStrictMode(true);
-			System.out.println(splitter.splitWord("Donaudampfschifffahrtskapitänsmützenständer"));
-			System.out.println(splitter.splitWord("Hasenhaus"));
-			System.out.println(splitter.splitWord("Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz"));
-		} catch (Exception e) {}
 
-//		System.out.println(text);
+		String tokenizerOptions = "normalizeParentheses=false,tokenizeNLs=false,normalizeAmpersandEntity=true," +
+				"normalizeFractions=true,normalizeOtherBrackets=false,asciiQuotes=true,untokenizable=allKeep";
+		PTBTokenizer tokenizer = new PTBTokenizer(new StringReader(text), new CoreLabelTokenFactory(), tokenizerOptions);
+
+		for (CoreLabel label; tokenizer.hasNext(); ) {
+			label = (CoreLabel) tokenizer.next();
+			System.out.println(label);
+		}
+//		try {
+//			AbstractWordSplitter splitter = new GermanWordSplitter();
+//			splitter.setStrictMode(true);
+////			System.out.println(splitter.splitWord("Donaudampfschifffahrtskapitänsmützenständer"));
+////			System.out.println(splitter.splitWord("Hasenhaus"));
+////			System.out.println(splitter.splitWord("Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz"));
+//		} catch (Exception e) {}
+		System.exit(1);
 	}
 }
