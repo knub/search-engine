@@ -9,6 +9,7 @@ import de.hpi.krestel.mySearchEngine.processing.normalization.PunctuationProcess
 =======
 import de.hpi.krestel.mySearchEngine.processing.normalization.StoppingProcessor;
 >>>>>>> Added StoppingProcessor.
+import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor;
 import de.hpi.krestel.mySearchEngine.processing.tokenization.StanfordTokenizeProcessor;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
@@ -47,6 +48,7 @@ public class Indexer implements TextCompletedListener {
 		pipeline.add(new StanfordTokenizeProcessor());
 		pipeline.add(new StoppingProcessor());
 //		pipeline.add(new PunctuationProcessor());
+        pipeline.add(new GermanStemmingProcessor());
 
 		pipeline.process(text);
 
