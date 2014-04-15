@@ -4,6 +4,7 @@ import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.processing.PrintProcessor;
+import de.hpi.krestel.mySearchEngine.processing.normalization.CompoundWordSplitProcessor;
 import de.hpi.krestel.mySearchEngine.processing.normalization.LowerCaseProcessor;
 import de.hpi.krestel.mySearchEngine.processing.normalization.StoppingProcessor;
 import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor;
@@ -49,6 +50,8 @@ public class Indexer implements TextCompletedListener {
 		pipeline.add(new StoppingProcessor());
         pipeline.add(new PrintProcessor("Stopping"));
 //		pipeline.add(new PunctuationProcessor());
+        pipeline.add(new CompoundWordSplitProcessor());
+        pipeline.add(new PrintProcessor("CompoundWord"));
         pipeline.add(new GermanStemmingProcessor());
         pipeline.add(new PrintProcessor("Stemming"));
 
