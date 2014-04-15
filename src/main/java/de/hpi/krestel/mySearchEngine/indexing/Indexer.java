@@ -50,13 +50,9 @@ public class Indexer implements TextCompletedListener {
             System.out.println(result);
         }
 
-//		try {
-//			AbstractWordSplitter splitter = new GermanWordSplitter();
-//			splitter.setStrictMode(true);
 ////			System.out.println(splitter.splitWord("Donaudampfschifffahrtskapitänsmützenständer"));
 ////			System.out.println(splitter.splitWord("Hasenhaus"));
 ////			System.out.println(splitter.splitWord("Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz"));
-//		} catch (Exception e) {}
 		System.exit(0);
 	}
 }
