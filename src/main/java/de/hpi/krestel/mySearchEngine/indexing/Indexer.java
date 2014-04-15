@@ -3,6 +3,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
+import de.hpi.krestel.mySearchEngine.processing.PrintProcessor;
 import de.hpi.krestel.mySearchEngine.processing.normalization.LowerCaseProcessor;
 import de.hpi.krestel.mySearchEngine.processing.normalization.StoppingProcessor;
 import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor;
@@ -38,17 +39,20 @@ public class Indexer implements TextCompletedListener {
 		text = matcher.replaceAll(" ");
 
 
+        System.out.println("HELLOOO?");
 		Pipeline pipeline = new Pipeline();
+        pipeline.add(new PrintProcessor("Start"));
 		pipeline.add(new LowerCaseProcessor());
+        pipeline.add(new PrintProcessor("LowerCase"));
 		pipeline.add(new StanfordTokenizeProcessor());
+        pipeline.add(new PrintProcessor("Tokenize"));
 		pipeline.add(new StoppingProcessor());
+        pipeline.add(new PrintProcessor("Stopping"));
 //		pipeline.add(new PunctuationProcessor());
         pipeline.add(new GermanStemmingProcessor());
+        pipeline.add(new PrintProcessor("Stemming"));
 
-        List<String> results = pipeline.process(text);
-        for (String result : results) {
-            System.out.println(result);
-        }
+        pipeline.process(text);
 
 ////			System.out.println(splitter.splitWord("Donaudampfschifffahrtskapitänsmützenständer"));
 ////			System.out.println(splitter.splitWord("Hasenhaus"));
