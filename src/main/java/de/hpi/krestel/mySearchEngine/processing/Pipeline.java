@@ -1,11 +1,12 @@
 package de.hpi.krestel.mySearchEngine.processing;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Pipeline extends Vector<ProcessorInterface> {
-    public ArrayList<String> process(String input) {
-        ArrayList<String> list = new ArrayList<String>();
+    public List<String> process(String input) {
+        List<String> list = new ArrayList<String>();
         list.add(input);
 
         for (ProcessorInterface processor : this) {
