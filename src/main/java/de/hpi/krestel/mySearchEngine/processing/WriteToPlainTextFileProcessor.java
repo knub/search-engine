@@ -3,7 +3,7 @@ package de.hpi.krestel.mySearchEngine.processing;
 import java.io.*;
 import java.util.List;
 
-public class WriteToPlainTextFileProcessor extends AbstractProcessor {
+public class WriteToPlainTextFileProcessor implements ProcessorInterface {
 
 	PrintWriter writer;
 	public WriteToPlainTextFileProcessor() {

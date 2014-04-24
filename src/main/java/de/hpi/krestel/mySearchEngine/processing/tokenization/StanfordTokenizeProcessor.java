@@ -1,6 +1,6 @@
 package de.hpi.krestel.mySearchEngine.processing.tokenization;
 
-import de.hpi.krestel.mySearchEngine.processing.AbstractProcessor;
+import de.hpi.krestel.mySearchEngine.processing.ProcessorInterface;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
@@ -9,7 +9,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StanfordTokenizeProcessor extends AbstractProcessor {
+public class StanfordTokenizeProcessor implements ProcessorInterface {
 
 	@Override
 	public List<String> process(List<String> input) {

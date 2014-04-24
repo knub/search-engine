@@ -3,7 +3,7 @@ package de.hpi.krestel.mySearchEngine.processing;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class AbstractEachElementProcessor extends AbstractProcessor {
+abstract public class AbstractEachElementProcessor implements ProcessorInterface {
     @Override
     public List<String> process(List<String> input) {
         List<String> output = new ArrayList<String>();

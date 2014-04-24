@@ -2,7 +2,7 @@ package de.hpi.krestel.mySearchEngine.processing;
 
 import java.util.List;
 
-public class PrintProcessor extends AbstractProcessor {
+public class PrintProcessor implements ProcessorInterface {
     private String heading;
 
     public PrintProcessor(String heading) {
