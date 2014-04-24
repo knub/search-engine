@@ -8,13 +8,13 @@ import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Indexer implements TextCompletedListener {
 
 	private final Pipeline preprocessingPipeline = new Pipeline();
-    private final Map<String, OccurrenceMap> partIndex = new HashMap<String, OccurrenceMap>();
+    private final Map<String, OccurrenceMap> partIndex = new TreeMap<String, OccurrenceMap>();
     private int documentId = 0;
 
     public Indexer(String directory) {
@@ -32,6 +32,9 @@ public class Indexer implements TextCompletedListener {
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		indexText(labels);
         documentId++;
+        if (Runtime.getRuntime().freeMemory() / 1024 / 1024 < 100) {
+            exchangePartIndex();
+        }
 	}
 
 	public void indexText(List<CoreLabel> labels) {
@@ -58,4 +61,9 @@ public class Indexer implements TextCompletedListener {
             }
         }
 	}
+
+    public void exchangePartIndex() {
+        // write old one into a file
+        partIndex.clear();
+    }
 }
