@@ -1,7 +1,5 @@
 package de.hpi.krestel.mySearchEngine.indexing;
 
-import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
-import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.processing.PrintProcessor;
 import de.hpi.krestel.mySearchEngine.processing.WriteToPlainTextFileProcessor;
@@ -12,20 +10,20 @@ import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor
 import de.hpi.krestel.mySearchEngine.processing.tokenization.StanfordTokenizeProcessor;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.process.CoreLabelTokenFactory;
-import edu.stanford.nlp.process.PTBTokenizer;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Indexer implements TextCompletedListener {
 
-	private WriteToPlainTextFileProcessor plainTextWriter;
+	private final WriteToPlainTextFileProcessor plainTextWriter = new WriteToPlainTextFileProcessor();
+	private final LowerCaseProcessor lowerCaseProcessor = new LowerCaseProcessor();
+	private final StanfordTokenizeProcessor tokenizerProcessor = new StanfordTokenizeProcessor();
+	private final StoppingProcessor stopwordProcessor = new StoppingProcessor();
+	private final CompoundWordSplitProcessor compoundWordSplitProcessor = new CompoundWordSplitProcessor();
+	private final GermanStemmingProcessor stemmingProcessor = new GermanStemmingProcessor();
 
 	public Indexer(String directory) {
-		plainTextWriter = new WriteToPlainTextFileProcessor();
 	}
 
 	public void run() {
@@ -47,15 +45,15 @@ public class Indexer implements TextCompletedListener {
 		Pipeline pipeline = new Pipeline();
 		pipeline.add(plainTextWriter);
 //        pipeline.add(new PrintProcessor("Start"));
-		pipeline.add(new LowerCaseProcessor());
+		pipeline.add(lowerCaseProcessor);
 //        pipeline.add(new PrintProcessor("LowerCase"));
-		pipeline.add(new StanfordTokenizeProcessor());
+		pipeline.add(tokenizerProcessor);
 //        pipeline.add(new PrintProcessor("Tokenize"));
-		pipeline.add(new StoppingProcessor());
+		pipeline.add(stopwordProcessor);
 //        pipeline.add(new PrintProcessor("Stopping"));
-        pipeline.add(new CompoundWordSplitProcessor());
+        pipeline.add(compoundWordSplitProcessor);
 //        pipeline.add(new PrintProcessor("CompoundWord"));
-        pipeline.add(new GermanStemmingProcessor());
+        pipeline.add(stemmingProcessor);
         pipeline.add(new PrintProcessor("Stemming"));
 
         pipeline.process(text);
