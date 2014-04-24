@@ -35,7 +35,7 @@ public class StoppingProcessor extends AbstractEachElementProcessor {
 				"während", "war", "waren", "warst", "was", "weg", "weil", "weiter", "welche", "welchem",
 				"welchen", "welcher", "welches", "wenn", "werde", "werden", "wie", "wieder", "will", "wir",
 				"wird", "wirst", "wo", "wollen", "wollte", "würde", "würden", "zu", "zum", "zur",
-				"zwar", "zwischen", "=", ".", ",", ":", "*", "\"", "'", "''", "{", "}"));
+				"zwar", "zwischen", "=", ".", ",", ":", "*", "\"", "'", "''", "{", "}", "(", ")"));
 	}
 
 	@Override
