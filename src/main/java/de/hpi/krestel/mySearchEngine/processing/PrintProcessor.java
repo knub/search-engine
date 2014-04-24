@@ -21,6 +21,8 @@ public class PrintProcessor implements ProcessorInterface {
         }
         System.out.print("\n");
 
+	    System.out.println("This article contained " + input.size() + " stemmed words.");
+
         return input;
     }
 }
