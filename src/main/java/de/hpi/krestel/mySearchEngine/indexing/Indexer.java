@@ -8,17 +8,16 @@ import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Indexer implements TextCompletedListener {
 
 	private final Pipeline preprocessingPipeline = new Pipeline();
-    private final Map<String, OccurrenceMap> partIndex = new HashMap<String, OccurrenceMap>();
+    private final Map<String, OccurrenceMap> partIndex = new TreeMap<String, OccurrenceMap>();
     private int documentId = 0;
 
-    public Indexer(String directory) {
-	}
+    public Indexer(String directory) { }
 
 	public void run() {
 		WikipediaReader reader = new WikipediaReader();
@@ -37,10 +36,7 @@ public class Indexer implements TextCompletedListener {
 			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 			long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
 			if (freeMemory / 1024 / 1024 < 400) {
-				System.out.print("Start clearing ...");
-				partIndex.clear();
-				System.gc();
-				System.out.println(" Finshed.");
+				exchangePartIndex();
 			}
 			System.out.println("Free: " + freeMemory / 1024 / 1024);
 			if (startTime != 0)
@@ -73,4 +69,12 @@ public class Indexer implements TextCompletedListener {
             }
         }
 	}
+
+    public void exchangePartIndex() {
+        // write old one into a file
+	    System.out.print("Start clearing ...");
+        partIndex.clear();
+	    System.gc();
+	    System.out.println(" Finshed.");
+    }
 }
