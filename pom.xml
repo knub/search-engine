@@ -75,6 +75,9 @@
 					<arguments>
 						<argument>-Xms1g</argument>
 						<argument>-Xmx2g</argument>
+						<argument>-verbose:gc</argument>
+						<argument>-XX:+PrintGCTimeStamps</argument>
+						<argument>-XX:+PrintGCDetails</argument>
 						<argument>-classpath</argument>
 						<classpath />
 						<argument>de.hpi.krestel.mySearchEngine.SearchEngineTest</argument>
