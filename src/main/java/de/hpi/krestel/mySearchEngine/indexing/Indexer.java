@@ -1,25 +1,21 @@
 package de.hpi.krestel.mySearchEngine.indexing;
 
+import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
-import de.hpi.krestel.mySearchEngine.processing.PrintProcessor;
-import de.hpi.krestel.mySearchEngine.processing.WriteToPlainTextFileProcessor;
-import de.hpi.krestel.mySearchEngine.processing.normalization.CompoundWordSplitProcessor;
-import de.hpi.krestel.mySearchEngine.processing.normalization.LowerCaseProcessor;
-import de.hpi.krestel.mySearchEngine.processing.normalization.StoppingProcessor;
-import de.hpi.krestel.mySearchEngine.processing.stemming.GermanStemmingProcessor;
-import de.hpi.krestel.mySearchEngine.processing.tokenization.StanfordTokenizeProcessor;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Indexer implements TextCompletedListener {
 
-	Pipeline preprocessingPipeline = new Pipeline();
-	public Indexer(String directory) {
+	private final Pipeline preprocessingPipeline = new Pipeline();
+    private final Map<String, OccurrenceMap> partIndex = new HashMap<String, OccurrenceMap>();
+
+    public Indexer(String directory) {
 	}
 
 	public void run() {
