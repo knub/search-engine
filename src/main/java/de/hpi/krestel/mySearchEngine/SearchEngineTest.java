@@ -21,11 +21,6 @@ public class SearchEngineTest {
 	public static void main(String[] args) {
 //		readWikipediaFile();
 		evaluateSearchEngine();
-
-		// how to determine free memory
-//		System.out.println(Runtime.getRuntime().totalMemory() / 1024 / 1024);
-//		System.out.println(Runtime.getRuntime().freeMemory() / 1024 / 1024);
-//		System.out.println(Runtime.getRuntime().maxMemory() / 1024 / 1024);
 	}
 
 	private static void readWikipediaFile() {

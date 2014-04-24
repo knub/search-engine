@@ -22,6 +22,16 @@ public class Pipeline extends Vector<ProcessorInterface> {
 	private final CompoundWordSplitProcessor compoundWordSplitProcessor = new CompoundWordSplitProcessor();
 	private final GermanStemmingProcessor stemmingProcessor = new GermanStemmingProcessor();
 
+	public Pipeline() {
+		this.add(plainTextWriter);
+		this.add(lowerCaseProcessor);
+		this.add(tokenizerProcessor);
+		this.add(stopwordProcessor);
+		this.add(compoundWordSplitProcessor);
+		this.add(stemmingProcessor);
+//		this.add(new PrintProcessor("Stemming"));
+	}
+
 	public List<CoreLabel> start(String text) {
 		text = text.replace("[[", "").replace("]]", "").replace("[", " ").replace("]", " ");
 		text = text.replace("|", " ").replace("#", " ").replace("<!--", "").replace("-->", "").replace("&nbsp;", " ");
@@ -29,17 +39,7 @@ public class Pipeline extends Vector<ProcessorInterface> {
 //		while (matcher.find())
 //			System.out.println(matcher.group());
 		text = matcher.replaceAll(" ");
-
-		Pipeline pipeline = new Pipeline();
-		pipeline.add(plainTextWriter);
-		pipeline.add(lowerCaseProcessor);
-		pipeline.add(tokenizerProcessor);
-		pipeline.add(stopwordProcessor);
-		pipeline.add(compoundWordSplitProcessor);
-		pipeline.add(stemmingProcessor);
-		pipeline.add(new PrintProcessor("Stemming"));
-
-		return pipeline.process(text);
+		return this.process(text);
 	}
 
 	public void finished() {

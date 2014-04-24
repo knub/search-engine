@@ -20,5 +20,4 @@ public class StanfordTokenizeProcessor implements ProcessorInterface {
 		PTBTokenizer tokenizer = new PTBTokenizer(new StringReader(input.get(0).value()), new CoreLabelTokenFactory(), tokenizerOptions);
 		return IteratorUtils.toList(tokenizer);
 	}
-
 }

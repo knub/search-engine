@@ -28,7 +28,7 @@ public class CompoundWordSplitProcessor implements ProcessorInterface {
 		try {
 			List<CoreLabel> elements = new ArrayList<CoreLabel>();
 			for (final CoreLabel el : input) {
-				final Collection<String> splitWordResult = splitter.splitWord(el.toString());
+				final Collection<String> splitWordResult = splitter.splitWord(el.value());
 				for (final String splitWord : splitWordResult)
 					elements.add(new CoreLabel() {{
 						setValue(splitWord);
