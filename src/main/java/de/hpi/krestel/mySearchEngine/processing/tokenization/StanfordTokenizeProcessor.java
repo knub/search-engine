@@ -20,6 +20,8 @@ public class StanfordTokenizeProcessor extends AbstractProcessor {
 
 		for (CoreLabel label; tokenizer.hasNext(); ) {
 			label = (CoreLabel) tokenizer.next();
+//			System.out.println(label.toString());
+//			System.out.println(input.get(0).substring(label.beginPosition(), label.endPosition()));
 			tokens.add(label.toString());
 		}
 		return tokens;

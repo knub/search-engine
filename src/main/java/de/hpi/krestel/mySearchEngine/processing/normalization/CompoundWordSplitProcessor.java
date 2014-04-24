@@ -18,7 +18,9 @@ public class CompoundWordSplitProcessor extends AbstractProcessor {
 			List<String> elements = new ArrayList<String>();
 			for (String el : input) {
 				Collection<String> splitWordResult = splitter.splitWord(el);
-				System.out.println(el + "-->" + splitWordResult);
+				// print split words
+//				if (splitWordResult.size() > 1)
+//					System.out.println(el + "-->" + splitWordResult);
 				elements.addAll(splitWordResult);
 			}
 			return elements;
