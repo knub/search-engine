@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine.processing.stemming;
 
 import de.hpi.krestel.mySearchEngine.processing.AbstractEachElementProcessor;
+import edu.stanford.nlp.ling.CoreLabel;
 import org.tartarus.snowball.ext.germanStemmer;
 
 public class GermanStemmingProcessor extends AbstractEachElementProcessor {
@@ -11,12 +12,16 @@ public class GermanStemmingProcessor extends AbstractEachElementProcessor {
     }
 
     @Override
-    public String handleItem(String item) {
-        stemmer.setCurrent(item);
-        if ( ! stemmer.stem()) {
+    public CoreLabel handleItem(final CoreLabel item) {
+        stemmer.setCurrent(item.value());
+        if (!stemmer.stem()) {
             throw new RuntimeException("Stemming not successful for " + item);
         }
 
-        return stemmer.getCurrent();
+	    return new CoreLabel() {{
+		    setValue(stemmer.getCurrent());
+		    setBeginPosition(item.beginPosition());
+		    setEndPosition(item.endPosition());
+	    }};
     }
 }

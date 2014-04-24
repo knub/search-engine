@@ -56,7 +56,7 @@ public class Indexer implements TextCompletedListener {
         pipeline.add(new CompoundWordSplitProcessor());
 //        pipeline.add(new PrintProcessor("CompoundWord"));
         pipeline.add(new GermanStemmingProcessor());
-//        pipeline.add(new PrintProcessor("Stemming"));
+        pipeline.add(new PrintProcessor("Stemming"));
 
         pipeline.process(text);
 	}

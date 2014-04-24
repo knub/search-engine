@@ -3,25 +3,38 @@ package de.hpi.krestel.mySearchEngine.processing.normalization;
 import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
 import de.hpi.krestel.mySearchEngine.processing.ProcessorInterface;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.Label;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class CompoundWordSplitProcessor implements ProcessorInterface {
 
-	@Override
-	public List<String> process(List<String> input) {
+	private final GermanWordSplitter splitter;
+
+	public CompoundWordSplitProcessor() {
 		try {
-			AbstractWordSplitter splitter = new GermanWordSplitter();
-			splitter.setStrictMode(true);
-			List<String> elements = new ArrayList<String>();
-			for (String el : input) {
-				Collection<String> splitWordResult = splitter.splitWord(el);
-				// print split words
-//				if (splitWordResult.size() > 1)
-//					System.out.println(el + "-->" + splitWordResult);
-				elements.addAll(splitWordResult);
+			splitter = new GermanWordSplitter();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		splitter.setStrictMode(true);
+	}
+	@Override
+	public List<CoreLabel> process(List<CoreLabel> input) {
+		try {
+			List<CoreLabel> elements = new ArrayList<CoreLabel>();
+			for (final CoreLabel el : input) {
+				final Collection<String> splitWordResult = splitter.splitWord(el.toString());
+				for (final String splitWord : splitWordResult)
+					elements.add(new CoreLabel() {{
+						setValue(splitWord);
+						setBeginPosition(el.beginPosition());
+						setEndPosition(el.endPosition());
+					}});
 			}
 			return elements;
 		} catch (Exception e) {

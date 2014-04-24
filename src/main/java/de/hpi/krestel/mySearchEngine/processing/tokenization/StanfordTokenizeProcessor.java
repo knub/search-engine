@@ -4,6 +4,7 @@ import de.hpi.krestel.mySearchEngine.processing.ProcessorInterface;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
+import org.apache.commons.collections.IteratorUtils;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -12,19 +13,13 @@ import java.util.List;
 public class StanfordTokenizeProcessor implements ProcessorInterface {
 
 	@Override
-	public List<String> process(List<String> input) {
-		List<String> tokens = new ArrayList<String>();
+	public List<CoreLabel> process(List<CoreLabel> input) {
+		List<CoreLabel> tokens = new ArrayList<CoreLabel>();
 		String tokenizerOptions = "normalizeParentheses=false,tokenizeNLs=false,normalizeAmpersandEntity=true," +
 				"normalizeFractions=true,normalizeOtherBrackets=false,asciiQuotes=true,untokenizable=allKeep";
-		PTBTokenizer tokenizer = new PTBTokenizer(new StringReader(input.get(0)), new CoreLabelTokenFactory(), tokenizerOptions);
+		PTBTokenizer tokenizer = new PTBTokenizer(new StringReader(input.get(0).value()), new CoreLabelTokenFactory(), tokenizerOptions);
 
-		for (CoreLabel label; tokenizer.hasNext(); ) {
-			label = (CoreLabel) tokenizer.next();
-//			System.out.println(label.toString());
-//			System.out.println(input.get(0).substring(label.beginPosition(), label.endPosition()));
-			tokens.add(label.toString());
-		}
-		return tokens;
+		return IteratorUtils.toList(tokenizer);
 	}
 
 }

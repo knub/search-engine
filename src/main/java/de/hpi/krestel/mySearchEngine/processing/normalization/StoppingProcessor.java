@@ -1,9 +1,8 @@
 package de.hpi.krestel.mySearchEngine.processing.normalization;
 
 import de.hpi.krestel.mySearchEngine.processing.AbstractEachElementProcessor;
-import edu.stanford.nlp.util.Sets;
+import edu.stanford.nlp.ling.CoreLabel;
 
-import java.awt.datatransfer.StringSelection;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,8 +39,8 @@ public class StoppingProcessor extends AbstractEachElementProcessor {
 	}
 
 	@Override
-	public String handleItem(String item) {
-		if (stopwords.contains(item))
+	public CoreLabel handleItem(CoreLabel item) {
+		if (stopwords.contains(item.value()))
 			return null;
 		else
 			return item;

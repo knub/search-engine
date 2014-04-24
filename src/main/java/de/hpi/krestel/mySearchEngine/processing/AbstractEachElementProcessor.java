@@ -1,14 +1,16 @@
 package de.hpi.krestel.mySearchEngine.processing;
 
+import edu.stanford.nlp.ling.CoreLabel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 abstract public class AbstractEachElementProcessor implements ProcessorInterface {
     @Override
-    public List<String> process(List<String> input) {
-        List<String> output = new ArrayList<String>();
-        for (String item : input) {
-            String intermediate = handleItem(item);
+    public List<CoreLabel> process(List<CoreLabel> input) {
+        List<CoreLabel> output = new ArrayList<CoreLabel>();
+        for (CoreLabel item : input) {
+            CoreLabel intermediate = handleItem(item);
             if (null != intermediate) {
                 output.add(handleItem(item));
             }
@@ -16,5 +18,5 @@ abstract public class AbstractEachElementProcessor implements ProcessorInterface
         return output;
     }
 
-    public abstract String handleItem(String item);
+    public abstract CoreLabel handleItem(CoreLabel item);
 }
