@@ -27,11 +27,26 @@ public class Indexer implements TextCompletedListener {
 		preprocessingPipeline.finished();
 	}
 
+	long startTime;
 	@Override
 	public void onTextCompleted(String text) {
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		indexText(labels);
-        documentId++;
+		documentId++;
+		if (documentId % 100 == 0) {
+			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+			long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
+			if (freeMemory / 1024 / 1024 < 400) {
+				System.out.print("Start clearing ...");
+				partIndex.clear();
+				System.gc();
+				System.out.println(" Finshed.");
+			}
+			System.out.println("Free: " + freeMemory / 1024 / 1024);
+			if (startTime != 0)
+				System.out.println((System.currentTimeMillis() - startTime) + " ms");
+			startTime = System.currentTimeMillis();
+		}
 	}
 
 	public void indexText(List<CoreLabel> labels) {
