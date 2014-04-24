@@ -13,7 +13,7 @@ import java.util.List;
 public class StanfordTokenizeProcessor implements ProcessorInterface {
 
 	final String tokenizerOptions = "normalizeParentheses=false,tokenizeNLs=false,normalizeAmpersandEntity=true," +
-			"normalizeFractions=true,normalizeOtherBrackets=false,asciiQuotes=true,untokenizable=allKeep";
+			"normalizeFractions=true,normalizeOtherBrackets=false,asciiQuotes=true,untokenizable=noneDelete";
 
 	@Override
 	public List<CoreLabel> process(List<CoreLabel> input) {
