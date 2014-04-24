@@ -4,7 +4,13 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
 public class DocumentEntry {
-    public TIntList position = new TIntArrayList();
-    public TIntList offset = new TIntArrayList();
-    public TIntList length = new TIntArrayList();
+    public TIntList positions = new TIntArrayList();
+    public TIntList offsets = new TIntArrayList();
+    public TIntList lengths = new TIntArrayList();
+
+    public DocumentEntry(int position, int offset, int length) {
+        positions.add(position);
+        offsets.add(offset);
+        lengths.add(length);
+    }
 }
