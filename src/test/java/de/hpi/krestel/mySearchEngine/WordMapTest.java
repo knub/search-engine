@@ -60,4 +60,43 @@ public class WordMapTest extends TestCase {
         assertTrue(occur2.isEmpty());
     }
 
+    public void testMergingDifferentKeysThrowsException() {
+        try {
+            WordMap map1 = new WordMap();
+            WordMap map2 = new WordMap();
+
+            map1.put("word1", new OccurrenceMap());
+            map2.put("word2", new OccurrenceMap());
+
+            map1.merge(map2);
+
+            this.fail("Did not catch expected exception.");
+        } catch (Exception e) {}
+    }
+
+    public void testMergingOccurrenceMapsWithNonDistinctDocumentKeysThrowsException() {
+        try {
+            WordMap map1 = new WordMap();
+            WordMap map2 = new WordMap();
+
+            OccurrenceMap occur1 = new OccurrenceMap();
+            OccurrenceMap occur2 = new OccurrenceMap();
+
+            occur1.put(1, new DocumentEntry());
+            occur1.put(2, new DocumentEntry());
+            occur1.put(3, new DocumentEntry());
+
+            occur2.put(1, new DocumentEntry());
+            occur2.put(2, new DocumentEntry());
+            occur2.put(3, new DocumentEntry());
+
+            map1.put("word", occur1);
+            map2.put("word", occur2);
+
+            map1.merge(map2);
+
+            this.fail("Did not catch expected exception.");
+        } catch (Exception e) {}
+    }
+
 }

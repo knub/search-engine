@@ -18,11 +18,15 @@ public class WordMap extends TreeMap<String, OccurrenceMap> {
 	}
 
     public void merge(WordMap otherMap) throws Exception {
+        if ( ! this.firstEntry().getKey().equals(otherMap.firstEntry().getKey())) {
+            throw new Exception("Merging word maps: first entries must have the same keys.");
+        }
+
         OccurrenceMap map1 = this.firstEntry().getValue();
         OccurrenceMap map2 = otherMap.firstEntry().getValue();
 
         if (map1.keySet().removeAll(map2.keySet())) {
-            throw new Exception("Can only merge occurrence maps with distinct key sets");
+            throw new Exception("Can only merge occurrence maps with distinct key sets.");
         }
 
         map1.putAll(map2);
