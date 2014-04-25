@@ -3,6 +3,8 @@ package de.hpi.krestel.mySearchEngine.domain;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 
 public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 	@Override
@@ -16,5 +18,13 @@ public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 		}
 		return sb.toString();
 	}
+
+    public void merge(OccurrenceMap otherMap) throws Exception {
+        if (new HashSet(Arrays.asList(this.keys())).removeAll(Arrays.asList(otherMap.keys()))) {
+            throw new Exception("Can only merge occurrence maps with distinct key sets");
+        }
+
+        // TODO: Do actual merge here!
+    }
 
 }
