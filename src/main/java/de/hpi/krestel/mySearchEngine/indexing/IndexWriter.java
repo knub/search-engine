@@ -33,6 +33,9 @@ public class IndexWriter {
 		this.indexString = indexString;
 	}
 	public IndexWriter() {
+	}
+
+	public void write(WordMap partIndex) {
 		try {
 			String fileName  = nextFileName();
 			bos              = new BitOutputStream(new FileOutputStream(fileName));
@@ -40,13 +43,6 @@ public class IndexWriter {
 			eliasGammaWriter = new EliasGammaWriter(bos);
 			eliasDeltaWriter = new EliasDeltaWriter(bos);
 			ps               = new PrintStream(bos);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void write(WordMap partIndex) {
-		try {
 			int i = 0;
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());

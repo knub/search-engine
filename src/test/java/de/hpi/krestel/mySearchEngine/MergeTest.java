@@ -5,6 +5,7 @@ import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.indexing.IndexReader;
 import de.hpi.krestel.mySearchEngine.indexing.IndexWriter;
+import de.hpi.krestel.mySearchEngine.indexing.Merger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -26,7 +27,7 @@ public class MergeTest extends TestCase {
 		return new TestSuite(MergeTest.class);
 	}
 
-	public void testBasicMerge() {
+	public void testBasicMerge() throws Exception {
 		WordMap wm1 = new WordMap();
 		wm1.put("aaa", new OccurrenceMap() {{
 			int i = 1;
@@ -99,7 +100,22 @@ public class MergeTest extends TestCase {
 		writer.write(wm2);
 		writer.write(wm3);
 
-		WordMap finalWordMap = null;
+		Merger merger = new Merger(Arrays.asList(
+			new IndexReader("data/testindex0001"),
+				new IndexReader("data/testindex0001"),
+				new IndexReader("data/testindex0002"),
+				new IndexReader("data/testindex0003")
+		), new IndexWriter("data/testoutput"));
+
+		merger.merge();
+
+		WordMap finalWordMap = new WordMap();
+		IndexReader indexReader = new IndexReader("data/testoutput");
+		WordMap tmpWordMap = indexReader.read();
+		while (tmpWordMap != null) {
+			finalWordMap.merge(tmpWordMap);
+		}
+
 		assertEquals(12, finalWordMap.get("aaa").size());
 		assertEquals( 8, finalWordMap.get("bbb").size());
 		assertEquals( 4, finalWordMap.get("ccc").size());
