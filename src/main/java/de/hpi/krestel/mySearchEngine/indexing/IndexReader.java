@@ -63,6 +63,7 @@ public class IndexReader {
 		int occurCount = eliasGammaReader.read();
 		DocumentEntry docEntry = new DocumentEntry();
 		int lastPos = 0;
+		int lastOffset = 0;
 		for (int i = 0; i < occurCount; i++) {
 			int currentPos = eliasDeltaReader.read();
 			if (i == 0)
@@ -70,6 +71,13 @@ public class IndexReader {
 			else
 				lastPos = lastPos + currentPos;
 			docEntry.positions.add(lastPos);
+
+			int currentOffset = eliasDeltaReader.read();
+			if (i == 0)
+				lastOffset = currentOffset;
+			else
+				lastOffset = lastOffset + currentOffset;
+			docEntry.offsets.add(lastOffset);
 		}
 		return docEntry;
 	}

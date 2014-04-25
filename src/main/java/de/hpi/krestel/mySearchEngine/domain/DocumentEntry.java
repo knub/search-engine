@@ -27,7 +27,7 @@ public class DocumentEntry {
 		sb.append(positions.size() + ",");
 		for (int i = 0; i < positions.size(); i++) {
 //			sb.append("[" + positions.get(i) + "," + offsets.get(i) + "," + lengths.get(i) + "]");
-			sb.append("[" + positions.get(i) + "]");
+			sb.append("[" + positions.get(i) + "," + offsets.get(i) + "]");
 		}
 		return sb.toString();
 	}

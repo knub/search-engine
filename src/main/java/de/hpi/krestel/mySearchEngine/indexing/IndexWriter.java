@@ -46,8 +46,7 @@ public class IndexWriter {
 				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
-				if (i == 0) break;
-				i++;
+				if (++i == 2) break;
 			}
 			bos.close();
 		} catch (IOException e) {
@@ -77,7 +76,10 @@ public class IndexWriter {
 	private void writeDocumentEntry(DocumentEntry documentEntry) throws IOException {
 		eliasGammaWriter.write(documentEntry.size());
 		int lastPos = 0;
+		int lastOffset = 0;
 		for (int i = 0; i < documentEntry.size(); i++) {
+			// yes, this could be refactored, e.g. to a subclass of elias-delta, which
+			// automatically uses delta encoding
 			int currentPosition = documentEntry.positions.get(i);
 			if (i == 0)
 				eliasDeltaWriter.write(currentPosition);
@@ -85,7 +87,12 @@ public class IndexWriter {
 				eliasDeltaWriter.write(currentPosition - lastPos);
 			lastPos = currentPosition;
 
-
+			int currentOffset = documentEntry.offsets.get(i);
+			if (i == 0)
+				eliasDeltaWriter.write(currentOffset);
+			else
+				eliasDeltaWriter.write(currentOffset - lastOffset);
+			lastOffset = currentOffset;
 		}
 	}
 

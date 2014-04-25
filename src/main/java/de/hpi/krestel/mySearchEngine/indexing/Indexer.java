@@ -78,7 +78,7 @@ public class Indexer implements TextCompletedListener {
 
 	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
 	    System.out.println(indexReader.read().toString());
-//	    System.out.println(indexReader.read().toString());
+	    System.out.println(indexReader.read().toString());
 	    System.exit(0);
     }
 }
