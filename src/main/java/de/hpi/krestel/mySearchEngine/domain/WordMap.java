@@ -17,16 +17,17 @@ public class WordMap extends TreeMap<String, OccurrenceMap> {
 		return sb.toString();
 	}
 
-    public void merge(WordMap otherMap, String word) throws Exception {
-        if (this.keySet().removeAll(otherMap.keySet())) {
+    public void merge(WordMap otherMap) throws Exception {
+        OccurrenceMap map1 = this.firstEntry().getValue();
+        OccurrenceMap map2 = otherMap.firstEntry().getValue();
+
+        if (map1.keySet().removeAll(map2.keySet())) {
             throw new Exception("Can only merge occurrence maps with distinct key sets");
         }
 
-        OccurrenceMap map1 = this.get(word);
-        OccurrenceMap map2 = otherMap.get(word);
-
         map1.putAll(map2);
         map2.clear();
+        otherMap.clear();
     }
 
 }
