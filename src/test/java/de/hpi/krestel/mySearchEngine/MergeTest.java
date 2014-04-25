@@ -102,7 +102,6 @@ public class MergeTest extends TestCase {
 		writer.close();
 
 		Merger merger = new Merger(Arrays.asList(
-			new IndexReader("data/testindex0001"),
 				new IndexReader("data/testindex0001"),
 				new IndexReader("data/testindex0002"),
 				new IndexReader("data/testindex0003")
