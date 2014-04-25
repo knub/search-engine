@@ -2,20 +2,20 @@ package de.hpi.krestel.mySearchEngine.indexing;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
+import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class Indexer implements TextCompletedListener {
 
 	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
-    private final Map<String, OccurrenceMap> partIndex = new TreeMap<String, OccurrenceMap>();
+    private final WordMap partIndex = new WordMap();
     private int documentId = 0;
+	long startTime;
 
     public Indexer(String directory) { }
 
@@ -26,7 +26,6 @@ public class Indexer implements TextCompletedListener {
 		preprocessingPipeline.finished();
 	}
 
-	long startTime;
 	@Override
 	public void onTextCompleted(String text) {
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
@@ -35,9 +34,9 @@ public class Indexer implements TextCompletedListener {
 		if (documentId % 100 == 0) {
 			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 			long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
-			if (freeMemory / 1024 / 1024 < 1400) {
+//			if (freeMemory / 1024 / 1024 < 1400) {
 				exchangePartIndex();
-			}
+//			}
 			System.out.println("Free: " + freeMemory / 1024 / 1024);
 			if (startTime != 0)
 				System.out.println((System.currentTimeMillis() - startTime) + " ms");
@@ -72,15 +71,14 @@ public class Indexer implements TextCompletedListener {
 
     public void exchangePartIndex() {
 	    IndexWriter indexWriter = new IndexWriter();
-	    String fileName = indexWriter.write(partIndex);
+	    indexWriter.write(partIndex);
 	    partIndex.clear();
 	    System.gc();
-	    System.out.println("Wrote to index file.");
-
 	    System.out.println("================================================================================");
 
-	    IndexReader indexReader = new IndexReader();
-	    indexReader.read(fileName);
+	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
+	    System.out.println(indexReader.read().toString());
+//	    System.out.println(indexReader.read().toString());
 	    System.exit(0);
     }
 }

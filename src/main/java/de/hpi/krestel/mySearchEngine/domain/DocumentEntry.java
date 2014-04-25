@@ -8,11 +8,18 @@ public class DocumentEntry {
     public TIntList offsets = new TIntArrayList();
     public TIntList lengths = new TIntArrayList();
 
+	public DocumentEntry() {}
     public DocumentEntry(int position, int offset, int length) {
         positions.add(position);
         offsets.add(offset);
         lengths.add(length);
     }
+
+	public DocumentEntry(int[] position, int offset[], int length[]) {
+		positions.add(position);
+		offsets.add(offset);
+		lengths.add(length);
+	}
 
 	@Override
 	public String toString() {
