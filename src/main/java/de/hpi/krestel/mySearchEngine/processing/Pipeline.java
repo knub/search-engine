@@ -28,6 +28,17 @@ public class Pipeline extends Vector<Processor> {
         return pipeline;
     }
 
+    static public Pipeline createSearchPipeline() {
+        Pipeline pipeline = new Pipeline();
+        pipeline.add(new LowerCaseProcessor());
+        pipeline.add(new StanfordTokenizeProcessor());
+        pipeline.add(new StoppingProcessor());
+        pipeline.add(new CompoundWordSplitProcessor());
+        pipeline.add(new GermanStemmingProcessor());
+
+        return pipeline;
+    }
+
 	public List<CoreLabel> start(String text) {
 		text = text.replace("[[", "").replace("]]", "").replace("[", " ").replace("]", " ");
 		text = text.replace("|", " ").replace("#", " ").replace("<!--", "").replace("-->", "").replace("&nbsp;", " ");

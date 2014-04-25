@@ -8,8 +8,6 @@ package de.hpi.krestel.mySearchEngine;
 // indexing and/or searching
 // The final evaluation will be done with 2GB RAM (java -Xmx2g)!
 
-import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
-
 public class SearchEngineTest {
 	// Some test queries for development. The real test queries will be more difficult ;)
 	static String[] queries = {"artikel", "deutsch"};
@@ -19,13 +17,7 @@ public class SearchEngineTest {
 	static int prf = 5;
 
 	public static void main(String[] args) {
-//		readWikipediaFile();
 		evaluateSearchEngine();
-	}
-
-	private static void readWikipediaFile() {
-        WikipediaReader wikipediaReader = new WikipediaReader();
-		wikipediaReader.readWikiFile();
 	}
 
 	private static void evaluateSearchEngine() {
@@ -38,9 +30,9 @@ public class SearchEngineTest {
 		// Load or generate the index
 		se.indexWrapper();
 
-//		for (int i = 0; i < SearchEngineTest.queries.length; i++) {
-//			// Search and store results
-//			se.searchWrapper(queries[i], topK, prf);
-//		}
+		for (int i = 0; i < SearchEngineTest.queries.length; i++) {
+			// Search and store results
+			se.searchWrapper(queries[i], topK, prf);
+		}
 	}
 }

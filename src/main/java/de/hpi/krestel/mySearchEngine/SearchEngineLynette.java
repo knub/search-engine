@@ -1,8 +1,11 @@
 package de.hpi.krestel.mySearchEngine;
 
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
+import de.hpi.krestel.mySearchEngine.processing.Pipeline;
+import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /* This is your file! Implement your search engine here!
  *
@@ -34,7 +37,12 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-		// TODO Auto-generated method stub
+		Pipeline pipeline = Pipeline.createSearchPipeline();
+        List<CoreLabel> searchTerms = pipeline.start (query);
+
+        // TODO: Search in index
+
+
 		return null;
 	}
 
