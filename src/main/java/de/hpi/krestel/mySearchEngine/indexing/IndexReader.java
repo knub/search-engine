@@ -14,7 +14,7 @@ public class IndexReader {
 			BitInputStream bis = new BitInputStream(fis);
 			InputStreamReader isr = new InputStreamReader(bis);
 			Bit23Reader bit23Reader = new Bit23Reader(bis);
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				TByteArrayList wordBytes = new TByteArrayList();
 				byte currentByte = (byte) bis.read();
 				while (currentByte != 0) {
