@@ -38,6 +38,9 @@ public class IndexReader {
 	public WordMap read() {
 		try {
 			String word = readWord();
+			// check for end of file
+			if (word == null)
+				return null;
 			OccurrenceMap occurrenceMap = readOccurenceMap();
 
 			WordMap wordMap = new WordMap();
@@ -87,6 +90,8 @@ public class IndexReader {
 	private String readWord() throws IOException {
 		TByteArrayList wordBytes = new TByteArrayList();
 		byte currentByte = (byte) bis.read();
+		if (currentByte == -1)
+			return null;
 		while (currentByte != 0) {
 			wordBytes.add(currentByte);
 			currentByte = (byte) bis.read();

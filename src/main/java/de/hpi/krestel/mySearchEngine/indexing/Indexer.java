@@ -77,8 +77,12 @@ public class Indexer implements TextCompletedListener {
 	    System.out.println("================================================================================");
 
 	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
-	    System.out.println(indexReader.read().toString());
-	    System.out.println(indexReader.read().toString());
+
+	    WordMap wordMap = indexReader.read();
+	    while  (wordMap != null) {
+		    System.out.println(wordMap);
+		    wordMap = indexReader.read();
+	    }
 	    System.exit(0);
     }
 }
