@@ -99,6 +99,7 @@ public class MergeTest extends TestCase {
 		writer.write(wm1);
 		writer.write(wm2);
 		writer.write(wm3);
+		writer.close();
 
 		Merger merger = new Merger(Arrays.asList(
 			new IndexReader("data/testindex0001"),
