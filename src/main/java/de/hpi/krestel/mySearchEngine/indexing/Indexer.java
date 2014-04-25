@@ -3,20 +3,17 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
-import de.hpi.krestel.mySearchEngine.util.stream.BitOutputStream;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class Indexer implements TextCompletedListener {
 
-	private final Pipeline preprocessingPipeline = new Pipeline();
+	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
     private final Map<String, OccurrenceMap> partIndex = new TreeMap<String, OccurrenceMap>();
     private int documentId = 0;
 

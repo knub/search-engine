@@ -4,7 +4,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.List;
 
-public class PrintProcessor implements ProcessorInterface {
+public class PrintProcessor extends Processor {
     private String heading;
 
     public PrintProcessor(String heading) {

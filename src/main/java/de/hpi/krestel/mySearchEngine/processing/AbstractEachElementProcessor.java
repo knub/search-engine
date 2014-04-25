@@ -5,7 +5,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class AbstractEachElementProcessor implements ProcessorInterface {
+abstract public class AbstractEachElementProcessor extends Processor {
     @Override
     public List<CoreLabel> process(List<CoreLabel> input) {
         List<CoreLabel> output = new ArrayList<CoreLabel>();

@@ -1,17 +1,15 @@
 package de.hpi.krestel.mySearchEngine.processing.normalization;
 
-import de.abelssoft.wordtools.jwordsplitter.AbstractWordSplitter;
 import de.abelssoft.wordtools.jwordsplitter.impl.GermanWordSplitter;
-import de.hpi.krestel.mySearchEngine.processing.ProcessorInterface;
+import de.hpi.krestel.mySearchEngine.processing.Processor;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.Label;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CompoundWordSplitProcessor implements ProcessorInterface {
+public class CompoundWordSplitProcessor extends Processor {
 
 	private final GermanWordSplitter splitter;
 

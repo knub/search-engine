@@ -1,12 +1,11 @@
 package de.hpi.krestel.mySearchEngine.processing;
 
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.Label;
 
 import java.io.*;
 import java.util.List;
 
-public class WriteToPlainTextFileProcessor implements ProcessorInterface {
+public class WriteToPlainTextFileProcessor extends Processor {
 
 	PrintWriter writer;
 	public WriteToPlainTextFileProcessor() {
@@ -22,7 +21,7 @@ public class WriteToPlainTextFileProcessor implements ProcessorInterface {
 		return input;
 	}
 
-	public void flush() {
+	public void finished() {
 		writer.close();
 	}
 }

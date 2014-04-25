@@ -13,24 +13,20 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Pipeline extends Vector<ProcessorInterface> {
+public class Pipeline extends Vector<Processor> {
 
-	private final WriteToPlainTextFileProcessor plainTextWriter = new WriteToPlainTextFileProcessor();
-	private final LowerCaseProcessor lowerCaseProcessor = new LowerCaseProcessor();
-	private final StanfordTokenizeProcessor tokenizerProcessor = new StanfordTokenizeProcessor();
-	private final StoppingProcessor stopwordProcessor = new StoppingProcessor();
-	private final CompoundWordSplitProcessor compoundWordSplitProcessor = new CompoundWordSplitProcessor();
-	private final GermanStemmingProcessor stemmingProcessor = new GermanStemmingProcessor();
+    static public Pipeline createPreprocessingPipeline() {
+        Pipeline pipeline = new Pipeline();
+        pipeline.add(new WriteToPlainTextFileProcessor());
+        pipeline.add(new LowerCaseProcessor());
+        pipeline.add(new StanfordTokenizeProcessor());
+        pipeline.add(new StoppingProcessor());
+        pipeline.add(new CompoundWordSplitProcessor());
+        pipeline.add(new GermanStemmingProcessor());
+//		pipeline.add(new PrintProcessor("Stemming"));
 
-	public Pipeline() {
-		this.add(plainTextWriter);
-		this.add(lowerCaseProcessor);
-		this.add(tokenizerProcessor);
-		this.add(stopwordProcessor);
-		this.add(compoundWordSplitProcessor);
-		this.add(stemmingProcessor);
-//		this.add(new PrintProcessor("Stemming"));
-	}
+        return pipeline;
+    }
 
 	public List<CoreLabel> start(String text) {
 		text = text.replace("[[", "").replace("]]", "").replace("[", " ").replace("]", " ");
@@ -43,7 +39,9 @@ public class Pipeline extends Vector<ProcessorInterface> {
 	}
 
 	public void finished() {
-		plainTextWriter.flush();
+        for (Processor processor : this) {
+            processor.finished();
+        }
 	}
 
 
@@ -54,7 +52,7 @@ public class Pipeline extends Vector<ProcessorInterface> {
         }};
         List<CoreLabel> list = Arrays.asList(label);
 
-        for (ProcessorInterface processor : this) {
+        for (Processor processor : this) {
             list = processor.process(list);
         }
 

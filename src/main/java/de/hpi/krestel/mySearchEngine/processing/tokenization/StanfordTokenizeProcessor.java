@@ -1,16 +1,15 @@
 package de.hpi.krestel.mySearchEngine.processing.tokenization;
 
-import de.hpi.krestel.mySearchEngine.processing.ProcessorInterface;
+import de.hpi.krestel.mySearchEngine.processing.Processor;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
 import org.apache.commons.collections.IteratorUtils;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
-public class StanfordTokenizeProcessor implements ProcessorInterface {
+public class StanfordTokenizeProcessor extends Processor {
 
 	final String tokenizerOptions = "normalizeParentheses=false,tokenizeNLs=false,normalizeAmpersandEntity=true," +
 			"normalizeFractions=true,normalizeOtherBrackets=false,asciiQuotes=true,untokenizable=noneDelete";
