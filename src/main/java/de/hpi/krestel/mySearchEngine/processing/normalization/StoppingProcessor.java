@@ -36,6 +36,12 @@ public class StoppingProcessor extends AbstractEachElementProcessor {
 				"welchen", "welcher", "welches", "wenn", "werde", "werden", "wie", "wieder", "will", "wir",
 				"wird", "wirst", "wo", "wollen", "wollte", "würde", "würden", "zu", "zum", "zur",
 				"zwar", "zwischen", "=", ".", ",", ":", "*", "\"", "'", "''", "{", "}", "(", ")"));
+
+		for (int i = 0; i < 255; i++) {
+			String character = new String(Character.toChars(i));
+			System.out.println(character);
+			stopwords.add(character);
+		}
 	}
 
 	@Override
