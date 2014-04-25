@@ -3,12 +3,14 @@ package de.hpi.krestel.mySearchEngine.util.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class EliasGammaWriter extends OutputStream {
+public class EliasDeltaWriter extends OutputStream {
 
     private BitOutputStream output;
+    private EliasGammaWriter gamma;
 
-    public EliasGammaWriter(BitOutputStream stream) {
+    public EliasDeltaWriter(BitOutputStream stream) {
         this.output = stream;
+        this.gamma = new EliasGammaWriter(stream);
     }
 
     /**
@@ -28,12 +30,18 @@ public class EliasGammaWriter extends OutputStream {
      */
     @Override
     public void write(int b) throws IOException {
-        if (b == 1) {
-            this.output.writeBit(0);
-        } else {
-            this.output.writeBit(1);
-            this.write(b / 2);
-            this.output.writeBit(b % 2);
+        int length = (int) Math.floor(Math.log(b) / Math.log(2));
+        this.writeGamma(length + 1);
+
+        int value = (~(1 << length)) & b;
+
+        this.writeValue(value, length);
+    }
+
+    private void writeValue(int value, int length) throws IOException {
+        if (length > 0) {
+            this.writeValue(value / 2, length - 1);
+            this.output.writeBit(value % 2);
         }
     }
 
@@ -74,6 +82,10 @@ public class EliasGammaWriter extends OutputStream {
     public void close() throws IOException {
         this.output.close();
         super.close();
+    }
+
+    private void writeGamma(int b) throws IOException {
+        this.gamma.write(b);
     }
 
 }

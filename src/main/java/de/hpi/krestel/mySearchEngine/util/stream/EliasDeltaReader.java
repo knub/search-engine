@@ -3,12 +3,14 @@ package de.hpi.krestel.mySearchEngine.util.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class EliasGammaReader extends InputStream {
+public class EliasDeltaReader extends InputStream {
 
     private BitInputStream input;
+    private EliasGammaReader gamma;
 
-    public EliasGammaReader(BitInputStream stream) {
+    public EliasDeltaReader(BitInputStream stream) {
         this.input = stream;
+        this.gamma = new EliasGammaReader(stream);
     }
 
     /**
@@ -27,17 +29,18 @@ public class EliasGammaReader extends InputStream {
      */
     @Override
     public int read() throws IOException {
-        int numBits = 0;
-        while (this.input.readBit() == 1) {
-            numBits++;
-        }
+        int numBits = this.readGamma();
 
         int value = 1;
-        for (int curBit = 0; curBit < numBits; curBit++) {
+        for (int curBit = 0; curBit < numBits - 1; curBit++) {
             value = (value << 1) + this.input.readBit();
         }
 
         return value;
+    }
+
+    private int readGamma() throws IOException {
+        return this.gamma.read();
     }
 
 }
