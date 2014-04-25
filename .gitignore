@@ -3,4 +3,4 @@ data/
 .idea/
 mySearchEngine.iml
 garbage-collect.log
-elias-gamma-test.result
+*test.result
