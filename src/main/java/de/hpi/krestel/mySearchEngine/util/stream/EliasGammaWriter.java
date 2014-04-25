@@ -72,8 +72,8 @@ public class EliasGammaWriter extends OutputStream {
      */
     @Override
     public void close() throws IOException {
-        this.flush();
         this.output.close();
         super.close();
     }
+
 }

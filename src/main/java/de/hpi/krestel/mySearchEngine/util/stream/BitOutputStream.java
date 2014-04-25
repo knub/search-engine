@@ -41,4 +41,9 @@ public class BitOutputStream {
         }
     }
 
+    public void close() throws IOException {
+        this.flush();
+        this.output.close();
+    }
+
 }
