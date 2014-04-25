@@ -5,18 +5,20 @@ import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.util.stream.Bit23Reader;
 import de.hpi.krestel.mySearchEngine.util.stream.BitInputStream;
+import de.hpi.krestel.mySearchEngine.util.stream.EliasDeltaReader;
 import de.hpi.krestel.mySearchEngine.util.stream.EliasGammaReader;
 import gnu.trove.list.array.TByteArrayList;
 
-import javax.swing.text.Document;
-import java.io.*;
-import java.util.Map;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class IndexReader {
 
 	private BitInputStream bis;
 	private Bit23Reader bit23Reader;
 	private EliasGammaReader eliasGammaReader;
+	private EliasDeltaReader eliasDeltaReader;
 
 	public IndexReader(String fileName) {
 		try {
@@ -30,6 +32,7 @@ public class IndexReader {
 		bis = new BitInputStream(new FileInputStream(fileName));
 		bit23Reader = new Bit23Reader(bis);
 		eliasGammaReader = new EliasGammaReader(bis);
+		eliasDeltaReader = new EliasDeltaReader(bis);
 	}
 
 	public WordMap read() {
@@ -50,12 +53,25 @@ public class IndexReader {
 		int documentCount = eliasGammaReader.read();
 		for (int i = 1; i <= documentCount; i++) {
 			int documentId    = bit23Reader.read();
-			System.out.println("docid" + documentId);
-			DocumentEntry docEntry = new DocumentEntry();
+			DocumentEntry docEntry = readDocumentEntry();
 			occurrenceMap.put(documentId, docEntry);
-			int occurCount = eliasGammaReader.read();
 		}
 		return occurrenceMap;
+	}
+
+	private DocumentEntry readDocumentEntry() throws IOException {
+		int occurCount = eliasGammaReader.read();
+		DocumentEntry docEntry = new DocumentEntry();
+		int lastPos = 0;
+		for (int i = 0; i < occurCount; i++) {
+			int currentPos = eliasDeltaReader.read();
+			if (i == 0)
+				lastPos = currentPos;
+			else
+				lastPos = lastPos + currentPos;
+			docEntry.positions.add(lastPos);
+		}
+		return docEntry;
 	}
 
 	private String readWord() throws IOException {

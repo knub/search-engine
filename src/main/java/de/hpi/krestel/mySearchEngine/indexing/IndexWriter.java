@@ -3,9 +3,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
-import de.hpi.krestel.mySearchEngine.util.stream.Bit23Writer;
-import de.hpi.krestel.mySearchEngine.util.stream.BitOutputStream;
-import de.hpi.krestel.mySearchEngine.util.stream.EliasGammaWriter;
+import de.hpi.krestel.mySearchEngine.util.stream.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -18,6 +16,8 @@ public class IndexWriter {
 
 	// for elias gamma ints
 	private EliasGammaWriter eliasGammaWriter = null;
+	// for elias delta ints
+	private EliasDeltaWriter eliasDeltaWriter = null;
 	// for strings
 	private PrintStream ps = null;
 	// for 23-bits
@@ -32,6 +32,7 @@ public class IndexWriter {
 			bos              = new BitOutputStream(new FileOutputStream(fileName));
 			bit23writer      = new Bit23Writer(bos);
 			eliasGammaWriter = new EliasGammaWriter(bos);
+			eliasDeltaWriter = new EliasDeltaWriter(bos);
 			ps               = new PrintStream(bos);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -57,25 +58,35 @@ public class IndexWriter {
 	private void writeIndexWord(String indexWord) throws IOException {
 		ps.print(indexWord);
 		bos.write(new byte[]{0});
-		System.out.println("word: " + indexWord);
+//		System.out.println("word: " + indexWord);
 	}
 
 	private void writeOccurrenceMap(OccurrenceMap occurrenceMap) throws IOException {
 		int[] documentIds = occurrenceMap.keys();
 		Arrays.sort(documentIds);
 
-		System.out.println("length: " + documentIds.length);
+//		System.out.println("length: " + documentIds.length);
 		eliasGammaWriter.write(documentIds.length);
 		for (int documentId : documentIds) {
-			System.out.println("id:" + documentId);
+//			System.out.println("id:" + documentId);
 			bit23writer.write(documentId);
 			writeDocumentEntry(occurrenceMap.get(documentId));
 		}
 	}
 
 	private void writeDocumentEntry(DocumentEntry documentEntry) throws IOException {
-		System.out.println("size: " + documentEntry.size());
 		eliasGammaWriter.write(documentEntry.size());
+		int lastPos = 0;
+		for (int i = 0; i < documentEntry.size(); i++) {
+			int currentPosition = documentEntry.positions.get(i);
+			if (i == 0)
+				eliasDeltaWriter.write(currentPosition);
+			else
+				eliasDeltaWriter.write(currentPosition - lastPos);
+			lastPos = currentPosition;
+
+
+		}
 	}
 
 	private String nextFileName() {
