@@ -60,4 +60,20 @@ public class EliasGammaWriter extends OutputStream {
         this.output.flush();
     }
 
+    /**
+     * Closes this output stream and releases any system resources
+     * associated with this stream. The general contract of <code>close</code>
+     * is that it closes the output stream. A closed stream cannot perform
+     * output operations and cannot be reopened.
+     * <p/>
+     * The <code>close</code> method of <code>OutputStream</code> does nothing.
+     *
+     * @throws java.io.IOException if an I/O error occurs.
+     */
+    @Override
+    public void close() throws IOException {
+        this.flush();
+        this.output.close();
+        super.close();
+    }
 }
