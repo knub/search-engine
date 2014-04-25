@@ -78,6 +78,8 @@ public class IndexReader {
 			else
 				lastOffset = lastOffset + currentOffset;
 			docEntry.offsets.add(lastOffset);
+
+			docEntry.lengths.add(eliasGammaReader.read());
 		}
 		return docEntry;
 	}

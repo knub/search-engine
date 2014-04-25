@@ -57,17 +57,14 @@ public class IndexWriter {
 	private void writeIndexWord(String indexWord) throws IOException {
 		ps.print(indexWord);
 		bos.write(new byte[]{0});
-//		System.out.println("word: " + indexWord);
 	}
 
 	private void writeOccurrenceMap(OccurrenceMap occurrenceMap) throws IOException {
 		int[] documentIds = occurrenceMap.keys();
 		Arrays.sort(documentIds);
 
-//		System.out.println("length: " + documentIds.length);
 		eliasGammaWriter.write(documentIds.length);
 		for (int documentId : documentIds) {
-//			System.out.println("id:" + documentId);
 			bit23writer.write(documentId);
 			writeDocumentEntry(occurrenceMap.get(documentId));
 		}
@@ -93,6 +90,8 @@ public class IndexWriter {
 			else
 				eliasDeltaWriter.write(currentOffset - lastOffset);
 			lastOffset = currentOffset;
+
+			eliasGammaWriter.write(documentEntry.lengths.get(i));
 		}
 	}
 
