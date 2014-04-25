@@ -3,10 +3,13 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
+import de.hpi.krestel.mySearchEngine.util.stream.BitOutputStream;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,7 +38,7 @@ public class Indexer implements TextCompletedListener {
 		if (documentId % 100 == 0) {
 			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 			long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
-			if (freeMemory / 1024 / 1024 < 400) {
+			if (freeMemory / 1024 / 1024 < 1400) {
 				exchangePartIndex();
 			}
 			System.out.println("Free: " + freeMemory / 1024 / 1024);
@@ -71,10 +74,16 @@ public class Indexer implements TextCompletedListener {
 	}
 
     public void exchangePartIndex() {
-        // write old one into a file
-	    System.out.print("Start clearing ...");
-        partIndex.clear();
+	    IndexWriter indexWriter = new IndexWriter();
+	    String fileName = indexWriter.write(partIndex);
+	    partIndex.clear();
 	    System.gc();
-	    System.out.println(" Finshed.");
+	    System.out.println("Wrote to index file.");
+
+	    System.out.println("================================================================================");
+
+	    IndexReader indexReader = new IndexReader();
+	    indexReader.read(fileName);
+	    System.exit(0);
     }
 }
