@@ -13,4 +13,18 @@ public class DocumentEntry {
         offsets.add(offset);
         lengths.add(length);
     }
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(positions.size() + ",");
+		for (int i = 0; i < positions.size(); i++) {
+			sb.append("[" + positions.get(i) + "," + offsets.get(i) + "," + lengths.get(i) + "]");
+		}
+		return sb.toString();
+	}
+
+	public int size() {
+		return positions.size();
+	}
 }
