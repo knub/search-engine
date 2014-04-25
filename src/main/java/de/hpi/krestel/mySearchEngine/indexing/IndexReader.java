@@ -97,7 +97,6 @@ public class IndexReader {
 			currentByte = (byte) bis.read();
 		}
 		String word = new String(wordBytes.toArray());
-		System.out.println("Word: " + word);
 		return  word;
 	}
 }

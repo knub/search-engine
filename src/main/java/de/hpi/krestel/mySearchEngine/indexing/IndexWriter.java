@@ -43,12 +43,12 @@ public class IndexWriter {
 			eliasGammaWriter = new EliasGammaWriter(bos);
 			eliasDeltaWriter = new EliasDeltaWriter(bos);
 			ps               = new PrintStream(bos);
-			int i = 0;
+//			int i = 0;
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
-				if (++i == 2) break;
+//				if (++i == 2) break;
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
