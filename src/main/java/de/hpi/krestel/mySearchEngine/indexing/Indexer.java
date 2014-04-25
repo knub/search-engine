@@ -72,6 +72,7 @@ public class Indexer implements TextCompletedListener {
     public void exchangePartIndex() {
 	    IndexWriter indexWriter = new IndexWriter();
 	    indexWriter.write(partIndex);
+	    indexWriter.close();
 	    partIndex.clear();
 	    System.gc();
 	    System.out.println("================================================================================");

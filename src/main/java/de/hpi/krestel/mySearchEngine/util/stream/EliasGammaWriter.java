@@ -28,6 +28,8 @@ public class EliasGammaWriter extends OutputStream {
      */
     @Override
     public void write(int b) throws IOException {
+	    if (b == 0)
+		    throw new RuntimeException("Do not try to encode a zero!");
         if (b == 1) {
             this.output.writeBit(0);
         } else {

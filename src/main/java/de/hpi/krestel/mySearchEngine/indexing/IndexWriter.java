@@ -26,6 +26,12 @@ public class IndexWriter {
 	// counter for naming the index files
 	private static int indexCounter = 0;
 
+	private String indexString = "index";
+
+	public IndexWriter(String indexString) {
+		this();
+		this.indexString = indexString;
+	}
 	public IndexWriter() {
 		try {
 			String fileName  = nextFileName();
@@ -48,7 +54,6 @@ public class IndexWriter {
 				writeOccurrenceMap(entry.getValue());
 				if (++i == 2) break;
 			}
-			bos.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -96,10 +101,18 @@ public class IndexWriter {
 	}
 
 	private String nextFileName() {
-		return String.format("data/index%04d", ++indexCounter);
+		return String.format("data/" + indexString + "%04d", ++indexCounter);
 	}
 
 	public String getFileName() {
-		return String.format("data/index%04d", indexCounter);
+		return String.format("data/" + indexString + "%04d", indexCounter);
+	}
+
+	public void close() {
+		try {
+			bos.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
