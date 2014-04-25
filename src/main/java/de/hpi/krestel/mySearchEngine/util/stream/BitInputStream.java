@@ -3,7 +3,7 @@ package de.hpi.krestel.mySearchEngine.util.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BitInputStream {
+public class BitInputStream extends InputStream {
 
     private InputStream input;
     private int pos;
@@ -27,4 +27,14 @@ public class BitInputStream {
         return bit;
     }
 
+	/**
+	 * Only called by non-bit-reader.
+	 * @return The read byte.
+	 * @throws IOException
+	 */
+	@Override
+	public int read() throws IOException {
+		this.pos = 0;
+		return input.read();
+	}
 }

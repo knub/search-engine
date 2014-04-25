@@ -3,7 +3,7 @@ package de.hpi.krestel.mySearchEngine.util.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class BitOutputStream {
+public class BitOutputStream extends OutputStream {
 
     private OutputStream output;
     private int curByte;
@@ -33,7 +33,25 @@ public class BitOutputStream {
         }
     }
 
-    public void flush() throws IOException {
+	public void writeBitBuffer() throws IOException {
+		if (pos > 0) {
+			this.output.write(this.curByte);
+			this.pos = 0;
+		}
+	}
+
+	/**
+	 * This method is only called by the writers which do use the bit writer. Therefore, we must pad
+	 * the remaining bits with zeros, and then write on normally.
+	 * @param i The byte to write.
+	 */
+	@Override
+	public void write(int i) throws IOException {
+		writeBitBuffer();
+		this.output.write(i);
+	}
+
+	public void flush() throws IOException {
         if (this.pos > 0) {
             this.output.write(this.curByte);
             this.curByte = 0;
