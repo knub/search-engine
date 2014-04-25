@@ -19,7 +19,7 @@ public class BitInputStream extends InputStream {
         if (this.pos == 0) {
             this.buffer = this.input.read();
 	        if (this.buffer == -1)
-		        throw new RuntimeException("Houston, we have a problem. This should never be the end of the file.");
+		        throw new RuntimeException("End of file reached. No bit to read.");
         }
 
         boolean isOne = ((this.buffer & (1 << (7 - this.pos))) != 0);
