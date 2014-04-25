@@ -14,6 +14,7 @@ public class EliasTest extends TestCase {
 
 	private final String ELIAS_GAMMA_FILE_NAME = "elias-gamma-test.result";
     private final String ELIAS_DELTA_FILE_NAME = "elias-delta-test.result";
+    private final String ELIAS_INTERLEAVED_FILE_NAME = "elias-interleaved-test.result";
 
 	/**
 	 * Creates the test case.
@@ -79,6 +80,39 @@ public class EliasTest extends TestCase {
         assertEquals(1023, edr.read());
         assertEquals(6, edr.read());
         edr.close();
+    }
+
+    /**
+     * Test encoding and decoding both gamma and delta to the same stream
+     */
+    public void testInterleavedEncoding() throws IOException {
+        BitOutputStream out = new BitOutputStream(new FileOutputStream(ELIAS_INTERLEAVED_FILE_NAME));
+        EliasGammaWriter gammaOut = new EliasGammaWriter(out);
+        EliasDeltaWriter deltaOut = new EliasDeltaWriter(out);
+
+        gammaOut.write(4);
+        deltaOut.write(24);
+        deltaOut.write(1580);
+        gammaOut.write(73);
+        deltaOut.write(22);
+
+        gammaOut.close();
+        deltaOut.close();
+
+        dumpFile(ELIAS_INTERLEAVED_FILE_NAME);
+
+        BitInputStream in = new BitInputStream(new FileInputStream(ELIAS_INTERLEAVED_FILE_NAME));
+        EliasGammaReader gammaIn = new EliasGammaReader(in);
+        EliasDeltaReader deltaIn = new EliasDeltaReader(in);
+
+        assertEquals(4, gammaIn.read());
+        assertEquals(24, deltaIn.read());
+        assertEquals(1580, deltaIn.read());
+        assertEquals(73, gammaIn.read());
+        assertEquals(22, deltaIn.read());
+
+        gammaIn.close();
+        deltaIn.close();
     }
 
     private void dumpFile(String filename) throws IOException {
