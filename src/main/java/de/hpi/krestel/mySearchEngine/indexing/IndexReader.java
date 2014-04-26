@@ -56,7 +56,6 @@ public class IndexReader {
 	private OccurrenceMap readOccurenceMap() throws IOException {
 		OccurrenceMap occurrenceMap = new OccurrenceMap();
 		int documentCount = eliasGammaReader.read();
-		System.out.println(documentCount);
 		for (int i = 1; i <= documentCount; i++) {
 			int documentId    = bit23Reader.read();
 			DocumentEntry docEntry = readDocumentEntry();
@@ -100,7 +99,6 @@ public class IndexReader {
 			currentByte = (byte) bis.read();
 		}
 		String word = new String(wordBytes.toArray());
-		System.out.println(word);
 		return  word;
 	}
 

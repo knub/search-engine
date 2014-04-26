@@ -29,6 +29,7 @@ public class Merger {
         while ( ! readers.isEmpty()) {
             this.mergeReaderWords();
         }
+	    writer.close();
     }
 
     private void writeWordsFromFirstReader() {

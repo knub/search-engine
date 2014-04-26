@@ -28,6 +28,8 @@ public class IndexWriter {
 
 	private String indexString = "index";
 
+	boolean closed = true;
+
 	public IndexWriter(String indexString) {
 		this();
 		this.indexString = indexString;
@@ -37,22 +39,27 @@ public class IndexWriter {
 
 	public void write(WordMap partIndex) {
 		try {
-			String fileName  = nextFileName();
-			bos              = new BitOutputStream(new FileOutputStream(fileName));
-			bit23writer      = new Bit23Writer(bos);
-			eliasGammaWriter = new EliasGammaWriter(bos);
-			eliasDeltaWriter = new EliasDeltaWriter(bos);
-			ps               = new PrintStream(bos);
-//			int i = 0;
+			if (closed)
+				intializeStreams();
+
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
-//				if (++i == 2) break;
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void intializeStreams() throws FileNotFoundException {
+		String fileName  = nextFileName();
+		bos              = new BitOutputStream(new FileOutputStream(fileName));
+		bit23writer      = new Bit23Writer(bos);
+		eliasGammaWriter = new EliasGammaWriter(bos);
+		eliasDeltaWriter = new EliasDeltaWriter(bos);
+		ps               = new PrintStream(bos);
+		closed = false;
 	}
 
 	private void writeIndexWord(String indexWord) throws IOException {
@@ -106,6 +113,7 @@ public class IndexWriter {
 
 	public void close() {
 		try {
+			closed = true;
 			bos.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
