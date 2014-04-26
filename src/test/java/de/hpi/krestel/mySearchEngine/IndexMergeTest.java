@@ -126,5 +126,10 @@ public class IndexMergeTest extends TestCase {
 		for (int key : finalWordMap.get("aaa").keys())
 			set2.add(key);
 		assertEquals(set1, set2);
+		Set<Integer> set3 = new HashSet<Integer>(Arrays.asList(43, 44, 45, 46));
+		Set <Integer> set4 = new HashSet<Integer>();
+		for (int key : finalWordMap.get("eee").keys())
+			set4.add(key);
+		assertEquals(set3, set4);
 	}
 }
