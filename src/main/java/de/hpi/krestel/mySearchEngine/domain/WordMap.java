@@ -3,7 +3,7 @@ package de.hpi.krestel.mySearchEngine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class WordMap extends TreeMap<String, OccurrenceMap> {
+public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparable<WordMap> {
 
 	@Override
 	public String toString() {
@@ -18,6 +18,10 @@ public class WordMap extends TreeMap<String, OccurrenceMap> {
 	}
 
     public void merge(WordMap otherMap) throws Exception {
+	    if (this.size() == 0) {
+		    this.putAll(otherMap);
+		    return;
+	    }
         if ( ! this.firstEntry().getKey().equals(otherMap.firstEntry().getKey())) {
             throw new Exception("Merging word maps: first entries must have the same keys.");
         }
@@ -34,4 +38,10 @@ public class WordMap extends TreeMap<String, OccurrenceMap> {
         otherMap.clear();
     }
 
+	@Override
+	public int compareTo(WordMap wordMap) {
+		if (this.size() != 1 || wordMap.size() != 1)
+			throw new RuntimeException("Cannot compare WordMaps with more than one element.");
+		return this.firstKey().compareTo(wordMap.firstKey());
+	}
 }

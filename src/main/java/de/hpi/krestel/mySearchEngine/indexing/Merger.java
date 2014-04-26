@@ -3,9 +3,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Merger {
 
@@ -46,26 +44,26 @@ public class Merger {
     }
 
     private void mergeReaderWords() throws Exception {
-        String mergeWord = null;
-        WordMap mergeMap = new WordMap();
 
-        while ( ! this.readers.isEmpty()) {
-            for (Map.Entry<IndexReader, WordMap> entry : this.readers.entrySet()) {
-                IndexReader reader = entry.getKey();
+	    // the map we use for merging during each iteration
+	    WordMap mergeMap = new WordMap();
+        while (!this.readers.isEmpty()) {
+	        // determine the minimal word
+	        String minWord = Collections.min(this.readers.values()).firstKey();
+
+	        // iterate through all readers and merge those with the same word
+	        for (Map.Entry<IndexReader, WordMap> entry : this.readers.entrySet()) {
                 WordMap curMap = entry.getValue();
+                String curWord = curMap.firstEntry().getKey();
 
-                Map.Entry<String, OccurrenceMap> wordEntry = curMap.firstEntry();
-                String curWord = wordEntry.getKey();
-
-                if (mergeWord == null) {
-                    mergeWord = curWord;
-                    this.fetchNextWord(reader);
-                }
-
-                if (mergeWord == curWord) {
-                    mergeMap.merge(curMap);
-                }
+		        if (minWord.equals(curWord)) {
+			        mergeMap.merge(curMap);
+			        this.fetchNextWord(entry.getKey());
+		        }
             }
+
+	        // clear the mergeMap to prepare for the next iteration
+	        mergeMap.clear();
         }
     }
 
