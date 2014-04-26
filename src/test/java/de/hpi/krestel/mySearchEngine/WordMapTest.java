@@ -44,7 +44,7 @@ public class WordMapTest extends TestCase {
         map1.put("word", occur1);
         map2.put("word", occur2);
 
-        map1.merge(map2);
+        map1.partIndexMerge(map2);
 
         assertEquals(6, occur1.size());
         TIntSet keys = occur1.keySet();
@@ -68,7 +68,7 @@ public class WordMapTest extends TestCase {
             map1.put("word1", new OccurrenceMap());
             map2.put("word2", new OccurrenceMap());
 
-            map1.merge(map2);
+            map1.partIndexMerge(map2);
 
             this.fail("Did not catch expected exception.");
         } catch (Exception e) {}
@@ -93,7 +93,7 @@ public class WordMapTest extends TestCase {
             map1.put("word", occur1);
             map2.put("word", occur2);
 
-            map1.merge(map2);
+            map1.partIndexMerge(map2);
 
             this.fail("Did not catch expected exception.");
         } catch (Exception e) {}

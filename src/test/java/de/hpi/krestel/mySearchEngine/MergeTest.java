@@ -107,15 +107,16 @@ public class MergeTest extends TestCase {
 				new IndexReader("data/testindex0001"),
 				new IndexReader("data/testindex0002"),
 				new IndexReader("data/testindex0003")
-		), new IndexWriter("data/testoutput"));
+		), new IndexWriter("testoutput"));
 
 		merger.merge();
 
 		WordMap finalWordMap = new WordMap();
-		IndexReader indexReader = new IndexReader("data/testoutput");
+		IndexReader indexReader = new IndexReader("data/testoutput0004");
 		WordMap tmpWordMap = indexReader.read();
 		while (tmpWordMap != null) {
-			finalWordMap.merge(tmpWordMap);
+			finalWordMap.putAll(tmpWordMap);
+			tmpWordMap = indexReader.read();
 		}
 
 		assertEquals(12, finalWordMap.get("aaa").size());

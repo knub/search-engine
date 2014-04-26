@@ -1,6 +1,5 @@
 package de.hpi.krestel.mySearchEngine.indexing;
 
-import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 
 import java.util.*;
@@ -32,18 +31,6 @@ public class Merger {
 	    writer.close();
     }
 
-    private void writeWordsFromFirstReader() {
-        for (Map.Entry<IndexReader, WordMap> entry : this.readers.entrySet()) {
-            IndexReader reader = entry.getKey();
-            WordMap curMap = entry.getValue();
-
-            if (curMap == null) {
-                curMap = reader.read();
-                this.readers.put(reader, curMap);
-            }
-        }
-    }
-
     private void mergeReaderWords() throws Exception {
 
 	    // the map we use for merging during each iteration
@@ -60,11 +47,12 @@ public class Merger {
                 String curWord = curMap.firstEntry().getKey();
 
 		        if (minWord.equals(curWord)) {
-			        mergeMap.merge(curMap);
+			        mergeMap.partIndexMerge(curMap);
 			        this.fetchNextWord(entry.getKey(), iterator);
 		        }
             }
 
+	        writer.write(mergeMap);
 	        // clear the mergeMap to prepare for the next iteration
 	        mergeMap.clear();
         }

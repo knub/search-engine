@@ -17,20 +17,29 @@ public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparab
 		return sb.toString();
 	}
 
-    public void merge(WordMap otherMap) throws Exception {
+	/**
+	 * This merges to WordMaps, which come from a part index:
+	 * Precondition:
+	 * Both maps must have exactly one entry. The key of these entries (the String)
+	 * must be the same.
+	 * The values (OccurrenceMaps) must have distinct key sets.
+	 * The result is stored in this WordMap.
+	 * @param otherMap The map to merge with.
+	 */
+    public void partIndexMerge(WordMap otherMap) {
 	    if (this.size() == 0) {
 		    this.putAll(otherMap);
 		    return;
 	    }
         if ( ! this.firstEntry().getKey().equals(otherMap.firstEntry().getKey())) {
-            throw new Exception("Merging word maps: first entries must have the same keys.");
+            throw new RuntimeException("Merging word maps: first entries must have the same keys.");
         }
 
         OccurrenceMap map1 = this.firstEntry().getValue();
         OccurrenceMap map2 = otherMap.firstEntry().getValue();
 
         if (map1.keySet().removeAll(map2.keySet())) {
-            throw new Exception("Can only merge occurrence maps with distinct key sets.");
+            throw new RuntimeException("Can only partIndexMerge occurrence maps with distinct key sets.");
         }
 
         map1.putAll(map2);
