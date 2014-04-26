@@ -23,6 +23,7 @@ public class Indexer implements TextCompletedListener {
 		WikipediaReader reader = new WikipediaReader();
 		reader.addTextCompletedListener(this);
 		reader.readWikiFile();
+		writePartIndex();
 		preprocessingPipeline.finished();
 	}
 
@@ -31,16 +32,15 @@ public class Indexer implements TextCompletedListener {
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		indexText(labels);
 		documentId++;
+		long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
 		if (documentId % 100 == 0) {
-			long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-			long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
-//			if (freeMemory / 1024 / 1024 < 1400) {
-				exchangePartIndex();
-//			}
-			System.out.println("Free: " + freeMemory / 1024 / 1024);
 			if (startTime != 0)
-				System.out.println((System.currentTimeMillis() - startTime) + " ms");
+			System.out.println("Dokument-ID: " + documentId + ". Last 100 took: " + (System.currentTimeMillis() - startTime) + " ms");
 			startTime = System.currentTimeMillis();
+		}
+		if (freeMemory / 1024 / 1024 < 400) {
+			writePartIndex();
 		}
 	}
 
@@ -69,21 +69,20 @@ public class Indexer implements TextCompletedListener {
         }
 	}
 
-    public void exchangePartIndex() {
+    public void writePartIndex() {
 	    IndexWriter indexWriter = new IndexWriter();
 	    indexWriter.write(partIndex);
 	    indexWriter.close();
 	    partIndex.clear();
 	    System.gc();
-	    System.out.println("================================================================================");
-
-	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
-
-	    WordMap wordMap = indexReader.read();
-	    while  (wordMap != null) {
-		    System.out.println(wordMap);
-		    wordMap = indexReader.read();
-	    }
-	    System.exit(0);
+//	    System.out.println("================================================================================");
+//
+//	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
+//
+//	    WordMap wordMap = indexReader.read();
+//	    while  (wordMap != null) {
+//		    System.out.println(wordMap);
+//		    wordMap = indexReader.read();
+//	    }
     }
 }

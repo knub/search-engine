@@ -39,7 +39,6 @@ public class StoppingProcessor extends AbstractEachElementProcessor {
 
 		for (int i = 0; i < 255; i++) {
 			String character = new String(Character.toChars(i));
-			System.out.println(character);
 			stopwords.add(character);
 		}
 	}

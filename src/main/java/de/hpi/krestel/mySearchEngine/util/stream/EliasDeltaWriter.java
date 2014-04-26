@@ -30,6 +30,8 @@ public class EliasDeltaWriter extends OutputStream {
      */
     @Override
     public void write(int b) throws IOException {
+	    if (b == 0)
+		    throw new RuntimeException("Do not try to encode a zero!");
         int length = (int) Math.floor(Math.log(b) / Math.log(2));
         this.writeGamma(length + 1);
 

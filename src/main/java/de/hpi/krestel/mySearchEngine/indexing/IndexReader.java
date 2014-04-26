@@ -75,14 +75,14 @@ public class IndexReader {
 				lastPos = currentPos;
 			else
 				lastPos = lastPos + currentPos;
-			docEntry.positions.add(lastPos);
+			docEntry.positions.add(lastPos - 1);
 
 			int currentOffset = eliasDeltaReader.read();
 			if (i == 0)
 				lastOffset = currentOffset;
 			else
 				lastOffset = lastOffset + currentOffset;
-			docEntry.offsets.add(lastOffset);
+			docEntry.offsets.add(lastOffset - 1);
 
 			docEntry.lengths.add(eliasGammaReader.read());
 		}

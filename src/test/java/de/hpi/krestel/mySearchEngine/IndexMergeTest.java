@@ -10,6 +10,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -131,5 +132,10 @@ public class IndexMergeTest extends TestCase {
 		for (int key : finalWordMap.get("eee").keys())
 			set4.add(key);
 		assertEquals(set3, set4);
+
+		new File("data/testindex0001").delete();
+		new File("data/testindex0002").delete();
+		new File("data/testindex0003").delete();
+		new File("data/testoutput0004").delete();
 	}
 }
