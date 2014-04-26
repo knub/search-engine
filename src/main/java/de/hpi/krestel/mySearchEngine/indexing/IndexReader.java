@@ -79,7 +79,6 @@ public class IndexReader {
 			docEntry.positions.add(lastPos);
 
 			int currentOffset = eliasDeltaReader.read();
-			System.out.println("currentOffset: " + currentOffset);
 			if (i == 0)
 				lastOffset = currentOffset;
 			else

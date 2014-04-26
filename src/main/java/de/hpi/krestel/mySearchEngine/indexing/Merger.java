@@ -52,13 +52,15 @@ public class Merger {
 	        String minWord = Collections.min(this.readers.values()).firstKey();
 
 	        // iterate through all readers and merge those with the same word
-	        for (Map.Entry<IndexReader, WordMap> entry : this.readers.entrySet()) {
+	        Iterator<Map.Entry<IndexReader, WordMap>> iterator = this.readers.entrySet().iterator();
+	        while (iterator.hasNext()) {
+		        Map.Entry<IndexReader, WordMap> entry = iterator.next();
                 WordMap curMap = entry.getValue();
                 String curWord = curMap.firstEntry().getKey();
 
 		        if (minWord.equals(curWord)) {
 			        mergeMap.merge(curMap);
-			        this.fetchNextWord(entry.getKey());
+			        this.fetchNextWord(entry.getKey(), iterator);
 		        }
             }
 
@@ -67,11 +69,11 @@ public class Merger {
         }
     }
 
-    private void fetchNextWord(IndexReader reader) {
+    private void fetchNextWord(IndexReader reader, Iterator<Map.Entry<IndexReader, WordMap>> iterator) {
         WordMap nextWord = reader.read();
 
         if (nextWord == null) {
-            this.readers.remove(reader);
+	        iterator.remove();
         } else {
             this.readers.put(reader, nextWord);
         }
