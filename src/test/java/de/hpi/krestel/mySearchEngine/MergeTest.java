@@ -97,7 +97,9 @@ public class MergeTest extends TestCase {
 
 		IndexWriter writer = new IndexWriter("testindex");
 		writer.write(wm1);
+		writer.close();
 		writer.write(wm2);
+		writer.close();
 		writer.write(wm3);
 		writer.close();
 

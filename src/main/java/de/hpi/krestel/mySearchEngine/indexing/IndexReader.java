@@ -19,6 +19,7 @@ public class IndexReader {
 	private Bit23Reader bit23Reader;
 	private EliasGammaReader eliasGammaReader;
 	private EliasDeltaReader eliasDeltaReader;
+	String fileName;
 
 	public IndexReader(String fileName) {
 		try {
@@ -33,6 +34,7 @@ public class IndexReader {
 		bit23Reader = new Bit23Reader(bis);
 		eliasGammaReader = new EliasGammaReader(bis);
 		eliasDeltaReader = new EliasDeltaReader(bis);
+		this.fileName = fileName;
 	}
 
 	public WordMap read() {
@@ -54,6 +56,7 @@ public class IndexReader {
 	private OccurrenceMap readOccurenceMap() throws IOException {
 		OccurrenceMap occurrenceMap = new OccurrenceMap();
 		int documentCount = eliasGammaReader.read();
+		System.out.println(documentCount);
 		for (int i = 1; i <= documentCount; i++) {
 			int documentId    = bit23Reader.read();
 			DocumentEntry docEntry = readDocumentEntry();
@@ -76,6 +79,7 @@ public class IndexReader {
 			docEntry.positions.add(lastPos);
 
 			int currentOffset = eliasDeltaReader.read();
+			System.out.println("currentOffset: " + currentOffset);
 			if (i == 0)
 				lastOffset = currentOffset;
 			else
@@ -97,6 +101,11 @@ public class IndexReader {
 			currentByte = (byte) bis.read();
 		}
 		String word = new String(wordBytes.toArray());
+		System.out.println(word);
 		return  word;
+	}
+
+	public String getFileName() {
+		return this.fileName;
 	}
 }
