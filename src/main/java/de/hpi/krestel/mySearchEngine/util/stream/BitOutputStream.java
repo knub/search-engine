@@ -22,11 +22,13 @@ public class BitOutputStream extends OutputStream {
 
 		if (bit == 1) {
 			// Do some bit magic
-			int mask = (int) Math.pow(2, 7 - pos);
+			int mask = (int) 1 << (7 - pos);
 			this.curByte |= mask;
 		}
 
-		this.pos = (this.pos + 1) % 8;
+		this.pos = this.pos + 1;
+		if (this.pos == 8)
+			this.pos = 0;
 
 		if (this.pos == 0) {
 			this.output.write(this.curByte);

@@ -54,7 +54,7 @@ public class IndexWriter {
 
 	private void intializeStreams() throws FileNotFoundException {
 		String fileName  = nextFileName();
-		bos              = new BitOutputStream(new FileOutputStream(fileName));
+		bos              = new BitOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
 		bit23writer      = new Bit23Writer(bos);
 		eliasGammaWriter = new EliasGammaWriter(bos);
 		eliasDeltaWriter = new EliasDeltaWriter(bos);
