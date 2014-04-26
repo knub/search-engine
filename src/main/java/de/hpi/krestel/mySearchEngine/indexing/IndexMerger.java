@@ -4,12 +4,12 @@ import de.hpi.krestel.mySearchEngine.domain.WordMap;
 
 import java.util.*;
 
-public class Merger {
+public class IndexMerger {
 
     private Map<IndexReader, WordMap> readers;
     private IndexWriter writer;
 
-    public Merger(List<IndexReader> input, IndexWriter output) {
+    public IndexMerger(List<IndexReader> input, IndexWriter output) {
         this.readers = this.createReaderMap(input);
         this.writer = output;
     }

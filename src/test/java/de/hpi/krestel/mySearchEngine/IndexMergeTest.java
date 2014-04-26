@@ -3,9 +3,9 @@ package de.hpi.krestel.mySearchEngine;
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
+import de.hpi.krestel.mySearchEngine.indexing.IndexMerger;
 import de.hpi.krestel.mySearchEngine.indexing.IndexReader;
 import de.hpi.krestel.mySearchEngine.indexing.IndexWriter;
-import de.hpi.krestel.mySearchEngine.indexing.Merger;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -14,17 +14,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MergeTest extends TestCase {
+public class IndexMergeTest extends TestCase {
 
-	public MergeTest(String testName) {
+	public IndexMergeTest(String testName) {
 		super(testName);
 	}
 
-	/**
-	 * @return the suite of tests being tested
-	 */
 	public static Test suite() {
-		return new TestSuite(MergeTest.class);
+		return new TestSuite(IndexMergeTest.class);
 	}
 
 	public void testBasicMerge() throws Exception {
@@ -103,13 +100,13 @@ public class MergeTest extends TestCase {
 		writer.write(wm3);
 		writer.close();
 
-		Merger merger = new Merger(Arrays.asList(
+		IndexMerger indexMerger = new IndexMerger(Arrays.asList(
 				new IndexReader("data/testindex0001"),
 				new IndexReader("data/testindex0002"),
 				new IndexReader("data/testindex0003")
 		), new IndexWriter("testoutput"));
 
-		merger.merge();
+		indexMerger.merge();
 
 		WordMap finalWordMap = new WordMap();
 		IndexReader indexReader = new IndexReader("data/testoutput0004");
