@@ -26,7 +26,7 @@ public class IndexWriter {
 	// counter for naming the index files
 	private static int indexCounter = 0;
 
-	private String indexString = "index";
+	private String indexString = "index_first_five";
 
 	boolean closed = true;
 
