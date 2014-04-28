@@ -3,6 +3,7 @@ package de.hpi.krestel.mySearchEngine;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
+import de.hpi.krestel.mySearchEngine.searching.Searcher;
 import edu.stanford.nlp.ling.CoreLabel;
 
 import java.util.ArrayList;
@@ -20,8 +21,7 @@ import java.util.List;
 
 public class SearchEngineLynette extends SearchEngine {
 
-    private String indexFilename;
-    private SeekList seekList;
+    private final Searcher searcher = new Searcher();
 
 	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!
@@ -32,9 +32,11 @@ public class SearchEngineLynette extends SearchEngine {
 	void index(String directory) {
 		Indexer indexer = new Indexer(directory);
 		indexer.run();
-        indexFilename = indexer.getIndexFilename();
-        seekList = indexer.getSeekList();
+        searcher.setIndexFilename(indexer.getIndexFilename());
+        searcher.setSeekList(indexer.getSeekList());
 	}
+
+
 
 	@Override
 	boolean loadIndex(String directory) {
@@ -43,14 +45,10 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-		Pipeline pipeline = Pipeline.createSearchPipeline();
-        List<CoreLabel> searchTerms = pipeline.start (query);
-
-        // TODO: Search in index
-
-
-		return null;
+        return searcher.search(query);
 	}
+
+
 
 	@Override
 	Double computeNdcg(String query, ArrayList<String> ranking, int ndcgAt) {

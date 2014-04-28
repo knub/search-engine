@@ -30,9 +30,9 @@ public class SearchEngineTest {
 		// Load or generate the index
 		se.indexWrapper();
 
-//		for (int i = 0; i < SearchEngineTest.queries.length; i++) {
-//			// Search and store results
-//			se.searchWrapper(queries[i], topK, prf);
-//		}
+		for (int i = 0; i < SearchEngineTest.queries.length; i++) {
+			// Search and store results
+			se.searchWrapper(queries[i], topK, prf);
+		}
 	}
 }
