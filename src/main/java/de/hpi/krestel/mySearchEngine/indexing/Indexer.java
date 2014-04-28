@@ -2,6 +2,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
+import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
@@ -18,6 +19,7 @@ public class Indexer implements TextCompletedListener {
     private final List<String> partIndexFileNames = new ArrayList<String>();
     private int documentId = 0;
     private String indexFilename;
+    private SeekList seekList;
 	long startTime;
 
     public Indexer(String directory) { }
@@ -97,7 +99,7 @@ public class Indexer implements TextCompletedListener {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
 
-        IndexWriter indexWriter = new IndexWriter("index");
+        IndexWriter indexWriter = new IndexWriter("index", true);
         IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
         try {
             indexMerger.merge();
@@ -107,9 +109,14 @@ public class Indexer implements TextCompletedListener {
             System.out.println(e.getLocalizedMessage());
         }
         indexFilename = indexWriter.getFileName();
+        seekList = indexWriter.getSeekList();
     }
 
     public String getIndexFilename() {
         return indexFilename;
+    }
+
+    public SeekList getSeekList() {
+        return seekList;
     }
 }

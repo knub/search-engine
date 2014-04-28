@@ -2,6 +2,7 @@ package de.hpi.krestel.mySearchEngine.indexing;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
+import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.util.stream.*;
 
@@ -26,6 +27,9 @@ public class IndexWriter {
 	// counter for naming the index files
 	private static int indexCounter = 0;
 
+    private SeekList seekList = new SeekList();
+    private boolean fillSeekList = false;
+
 	private String indexString = "index_first_five";
 
 	boolean closed = true;
@@ -34,6 +38,11 @@ public class IndexWriter {
 		this();
 		this.indexString = indexString;
 	}
+    public IndexWriter(String indexString, boolean fillSeekList) {
+        this();
+        this.indexString = indexString;
+        this.fillSeekList = fillSeekList;
+    }
 	public IndexWriter() {
 	}
 
@@ -46,6 +55,9 @@ public class IndexWriter {
 //				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
+                if (fillSeekList) {
+                    seekList.put(entry.getKey(), bos.getByteCount());
+                }
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -121,4 +133,8 @@ public class IndexWriter {
 			throw new RuntimeException(e);
 		}
 	}
+
+    public SeekList getSeekList() {
+        return seekList;
+    }
 }

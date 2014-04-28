@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine;
 
+import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -19,6 +20,9 @@ import java.util.List;
 
 public class SearchEngineLynette extends SearchEngine {
 
+    private String indexFilename;
+    private SeekList seekList;
+
 	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!
 		super();
@@ -28,6 +32,8 @@ public class SearchEngineLynette extends SearchEngine {
 	void index(String directory) {
 		Indexer indexer = new Indexer(directory);
 		indexer.run();
+        indexFilename = indexer.getIndexFilename();
+        seekList = indexer.getSeekList();
 	}
 
 	@Override

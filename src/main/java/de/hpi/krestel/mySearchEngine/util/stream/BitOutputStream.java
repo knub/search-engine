@@ -8,6 +8,7 @@ public class BitOutputStream extends OutputStream {
 	private OutputStream output;
 	private int curByte;
 	private int pos;
+    private long byteCount = 0;
 
 	public BitOutputStream(OutputStream stream) {
 		this.output = stream;
@@ -27,17 +28,16 @@ public class BitOutputStream extends OutputStream {
 		}
 
 		this.pos = this.pos + 1;
-		if (this.pos == 8)
-			this.pos = 0;
-
-		if (this.pos == 0) {
-			this.output.write(this.curByte);
-		}
+		if (this.pos == 8) {
+            this.pos = 0;
+            this.output.write(this.curByte);
+        }
 	}
 
 	public void writeBitBuffer() throws IOException {
 		if (pos > 0) {
 			this.output.write(this.curByte);
+            byteCount++;
 			this.pos = 0;
 		}
 	}
@@ -51,11 +51,13 @@ public class BitOutputStream extends OutputStream {
 	public void write(int i) throws IOException {
 		writeBitBuffer();
 		this.output.write(i);
+        byteCount++;
 	}
 
 	public void flush() throws IOException {
 		if (this.pos > 0) {
 			this.output.write(this.curByte);
+            byteCount++;
 			this.curByte = 0;
 			this.pos = 0;
 		}
@@ -67,4 +69,7 @@ public class BitOutputStream extends OutputStream {
 		this.output.close();
 	}
 
+    public long getByteCount() {
+        return byteCount;
+    }
 }
