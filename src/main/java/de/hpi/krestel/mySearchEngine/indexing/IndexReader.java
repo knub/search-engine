@@ -12,6 +12,7 @@ import gnu.trove.list.array.TByteArrayList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class IndexReader {
 
@@ -28,13 +29,24 @@ public class IndexReader {
 			throw new RuntimeException(e);
 		}
 	}
+    public IndexReader(InputStream stream) {
+        try {
+            initializeReader(stream);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private void initializeReader(String fileName) throws FileNotFoundException {
-		bis = new BitInputStream(new FileInputStream(fileName));
+        initializeReader(new FileInputStream(fileName));
+        this.fileName = fileName;
+    }
+
+    private void initializeReader(InputStream inputStream) throws FileNotFoundException {
+		bis = new BitInputStream(inputStream);
 		bit23Reader = new Bit23Reader(bis);
 		eliasGammaReader = new EliasGammaReader(bis);
 		eliasDeltaReader = new EliasDeltaReader(bis);
-		this.fileName = fileName;
 	}
 
 	public WordMap read() {
