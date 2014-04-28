@@ -8,13 +8,16 @@ import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Indexer implements TextCompletedListener {
 
 	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
     private final WordMap partIndex = new WordMap();
+    private final List<String> partIndexFileNames = new ArrayList<String>();
     private int documentId = 0;
+    private String indexFilename;
 	long startTime;
 
     public Indexer(String directory) { }
@@ -25,6 +28,7 @@ public class Indexer implements TextCompletedListener {
 		reader.readWikiFile();
 		writePartIndex();
 		preprocessingPipeline.finished();
+		triggerMergingProcess();
 	}
 
 	@Override
@@ -70,11 +74,12 @@ public class Indexer implements TextCompletedListener {
 	}
 
     public void writePartIndex() {
-	    IndexWriter indexWriter = new IndexWriter();
-	    indexWriter.write(partIndex);
-	    indexWriter.close();
-	    partIndex.clear();
-	    System.gc();
+        IndexWriter indexWriter = new IndexWriter();
+        indexWriter.write(partIndex);
+        indexWriter.close();
+        partIndexFileNames.add(indexWriter.getFileName());
+        partIndex.clear();
+        System.gc();
 //	    System.out.println("================================================================================");
 //
 //	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
@@ -84,5 +89,27 @@ public class Indexer implements TextCompletedListener {
 //		    System.out.println(wordMap);
 //		    wordMap = indexReader.read();
 //	    }
+    }
+
+    public void triggerMergingProcess() {
+        List<IndexReader> indexReaders = new ArrayList<IndexReader>(preprocessingPipeline.size());
+        for (String partIndexFileName : partIndexFileNames) {
+            indexReaders.add(new IndexReader(partIndexFileName));
+        }
+
+        IndexWriter indexWriter = new IndexWriter("index");
+        IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
+        try {
+            indexMerger.merge();
+        }
+        catch (Exception e) {
+            System.out.println("Something bad happened at merging time:");
+            System.out.println(e.getLocalizedMessage());
+        }
+        indexFilename = indexWriter.getFileName();
+    }
+
+    public String getIndexFilename() {
+        return indexFilename;
     }
 }
