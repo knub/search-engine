@@ -20,6 +20,8 @@ public class WikipediaReader {
 			XMLStreamReader streamReader = factory.createXMLStreamReader(reader);
 
 			boolean isInText = false;
+			boolean isInTitle = false;
+			String title = "";
 
 			StringBuilder text = null;
 			while (streamReader.hasNext()) {
@@ -29,16 +31,23 @@ public class WikipediaReader {
 					if (streamReader.getLocalName().equals("text")) {
 						isInText = true;
 						text  = new StringBuilder();
+					} else if (streamReader.getLocalName().equals("title")) {
+						isInTitle= true;
 					}
 				} else if (streamReader.getEventType() == XMLStreamReader.END_ELEMENT) {
 					if (streamReader.getLocalName().equals("text")) {
 						isInText = false;
-						onTextCompleted(text.toString());
+						onTextCompleted(text.toString(), title);
 						text  = new StringBuilder();
+					} else if (streamReader.getLocalName().equals("title")) {
+						isInTitle = false;
 					}
 				} else if (streamReader.getEventType() == XMLStreamReader.CHARACTERS) {
 					if (isInText) {
 						text.append(streamReader.getText());
+					}
+					if (isInTitle) {
+						title = streamReader.getText();
 					}
 				}
 			}
@@ -51,8 +60,8 @@ public class WikipediaReader {
 		this.listeners.add(listener);
 	}
 
-	public void onTextCompleted(String text) {
+	public void onTextCompleted(String text, String title) {
 		for (TextCompletedListener listener : listeners)
-			listener.onTextCompleted(text);
+			listener.onTextCompleted(text, title);
 	}
 }

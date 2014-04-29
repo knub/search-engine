@@ -34,8 +34,9 @@ public class Indexer implements TextCompletedListener {
 	}
 
 	@Override
-	public void onTextCompleted(String text) {
+	public void onTextCompleted(String text, String title) {
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
+		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
 		documentId++;
 		long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -82,15 +83,6 @@ public class Indexer implements TextCompletedListener {
         partIndexFileNames.add(indexWriter.getFileName());
         partIndex.clear();
         System.gc();
-//	    System.out.println("================================================================================");
-//
-//	    IndexReader indexReader = new IndexReader(indexWriter.getFileName());
-//
-//	    WordMap wordMap = indexReader.read();
-//	    while  (wordMap != null) {
-//		    System.out.println(wordMap);
-//		    wordMap = indexReader.read();
-//	    }
     }
 
     public void triggerMergingProcess() {
@@ -99,7 +91,7 @@ public class Indexer implements TextCompletedListener {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
 
-        IndexWriter indexWriter = new IndexWriter("index", true);
+        IndexWriter indexWriter = new IndexWriter("final_index", true);
         IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
         try {
             indexMerger.merge();
