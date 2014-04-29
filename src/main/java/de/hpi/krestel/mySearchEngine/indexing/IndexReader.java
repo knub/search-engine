@@ -82,19 +82,19 @@ public class IndexReader {
 		int lastPos = 0;
 		int lastOffset = 0;
 		for (int i = 0; i < occurCount; i++) {
-			int currentPos = eliasDeltaReader.read();
+			int currentPos = eliasDeltaReader.read() - 1;
 			if (i == 0)
 				lastPos = currentPos;
 			else
 				lastPos = lastPos + currentPos;
-			docEntry.positions.add(lastPos - 1);
+			docEntry.positions.add(lastPos);
 
-			int currentOffset = eliasDeltaReader.read();
+			int currentOffset = eliasDeltaReader.read() - 1;
 			if (i == 0)
 				lastOffset = currentOffset;
 			else
 				lastOffset = lastOffset + currentOffset;
-			docEntry.offsets.add(lastOffset - 1);
+			docEntry.offsets.add(lastOffset);
 
 			docEntry.lengths.add(eliasGammaReader.read());
 		}
