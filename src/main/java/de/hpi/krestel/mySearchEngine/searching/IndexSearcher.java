@@ -3,9 +3,7 @@ package de.hpi.krestel.mySearchEngine.searching;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.IndexReader;
-import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.util.stream.RandomAccessInputStream;
-import edu.stanford.nlp.ling.CoreLabel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
