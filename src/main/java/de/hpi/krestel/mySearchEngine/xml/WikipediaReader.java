@@ -1,9 +1,9 @@
 package de.hpi.krestel.mySearchEngine.xml;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class WikipediaReader {
 
 	public void readWikiFile() {
 		try {
-			Reader reader = new BufferedReader(new FileReader(WIKI_FILE_SHORT));
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(WIKI_FILE_SHORT), StandardCharsets.UTF_8));
 			XMLStreamReader streamReader = factory.createXMLStreamReader(reader);
 
 			boolean isInText = false;
