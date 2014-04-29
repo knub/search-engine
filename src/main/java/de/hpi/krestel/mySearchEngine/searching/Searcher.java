@@ -1,21 +1,14 @@
 package de.hpi.krestel.mySearchEngine.searching;
 
-import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.IndexReader;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.util.stream.RandomAccessInputStream;
 import edu.stanford.nlp.ling.CoreLabel;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.iterator.TIntObjectIterator;
-import gnu.trove.set.TIntSet;
-import gnu.trove.set.hash.TIntHashSet;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class Searcher {
@@ -24,7 +17,7 @@ public class Searcher {
     private IndexReader indexReader;
     private RandomAccessInputStream randomAccessInputStream;
 
-    public ArrayList<String> search(String query) {
+    public ResultSet search(String query) {
         Pipeline pipeline = Pipeline.createSearchPipeline();
         List<CoreLabel> searchTerms = pipeline.start (query);
         pipeline.finished();
@@ -34,15 +27,7 @@ public class Searcher {
             allIds.merge(searchToken(searchTerm.value()));
         }
 
-        ArrayList<String> results = new ArrayList<String>(allIds.size());
-
-        TIntIterator iterator = allIds.iterator();
-        for (int i = allIds.size(); i > 0; i--) {
-            // Todo: find titles here
-            results.add("" + iterator.next());
-        }
-
-        return results;
+        return allIds;
     }
 
     private ResultSet searchToken(String token){

@@ -1,13 +1,11 @@
 package de.hpi.krestel.mySearchEngine;
 
-import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
-import de.hpi.krestel.mySearchEngine.processing.Pipeline;
+import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 import de.hpi.krestel.mySearchEngine.searching.Searcher;
-import edu.stanford.nlp.ling.CoreLabel;
+import gnu.trove.iterator.TIntIterator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /* This is your file! Implement your search engine here!
  *
@@ -45,7 +43,17 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-        return searcher.search(query);
+        ResultSet result = searcher.search(query);
+
+        ArrayList<String> results = new ArrayList<String>(result.size());
+
+        TIntIterator iterator = result.iterator();
+        for (int i = result.size(); i > 0; i--) {
+            // Todo: find titles here
+            results.add("" + iterator.next());
+        }
+
+        return results;
 	}
 
 
