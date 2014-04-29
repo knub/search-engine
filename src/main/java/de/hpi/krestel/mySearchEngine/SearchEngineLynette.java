@@ -1,8 +1,11 @@
 package de.hpi.krestel.mySearchEngine;
 
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
-import de.hpi.krestel.mySearchEngine.searching.ResultSet;
+import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
+import de.hpi.krestel.mySearchEngine.searching.ResultSet;
+import de.hpi.krestel.mySearchEngine.searching.query.Operator;
+import de.hpi.krestel.mySearchEngine.searching.query.Parser;
 import gnu.trove.iterator.TIntIterator;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 public class SearchEngineLynette extends SearchEngine {
 
     private final IndexSearcher searcher = new IndexSearcher();
+    private final Parser queryParser = new Parser(Pipeline.createSearchPipeline());
 
 	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!
@@ -43,7 +47,9 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-        ResultSet result = searcher.search(query);
+        Operator op = null;
+        op = queryParser.parse(query);
+        ResultSet result = op.evaluate(searcher);
 
         ArrayList<String> results = new ArrayList<String>(result.size());
 
