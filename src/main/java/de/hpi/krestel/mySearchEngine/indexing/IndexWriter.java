@@ -69,7 +69,12 @@ public class IndexWriter {
 		bit23writer      = new Bit23Writer(bos);
 		eliasGammaWriter = new EliasGammaWriter(bos);
 		eliasDeltaWriter = new EliasDeltaWriter(bos);
-		ps               = new PrintStream(bos);
+        try {
+            ps               = new PrintStream(bos, false, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            System.out.println(e.getLocalizedMessage());
+            throw new RuntimeException("This machine does NOT support UTF-8. Ha.");
+        }
 		closed = false;
 	}
 
