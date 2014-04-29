@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class IndexReader {
 
@@ -110,7 +111,7 @@ public class IndexReader {
 			wordBytes.add(currentByte);
 			currentByte = (byte) bis.read();
 		}
-		String word = new String(wordBytes.toArray());
+		String word = new String(wordBytes.toArray(), StandardCharsets.UTF_8);
 		return  word;
 	}
 
