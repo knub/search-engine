@@ -29,8 +29,7 @@ public class BitOutputStream extends OutputStream {
 
 		this.pos = this.pos + 1;
 		if (this.pos == 8) {
-            this.pos = 0;
-            this.output.write(this.curByte);
+            writeBitBuffer();
         }
 	}
 

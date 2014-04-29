@@ -27,6 +27,7 @@ public class Searcher {
     public ArrayList<String> search(String query) {
         Pipeline pipeline = Pipeline.createSearchPipeline();
         List<CoreLabel> searchTerms = pipeline.start (query);
+        pipeline.finished();
         TIntSet allIds = new TIntHashSet();
 
         for (CoreLabel searchTerm : searchTerms) {

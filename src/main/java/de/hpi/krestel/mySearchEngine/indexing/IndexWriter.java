@@ -52,7 +52,6 @@ public class IndexWriter {
 				intializeStreams();
 
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
-//				System.out.println(entry.getKey() + "==>" + entry.getValue().toString());
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
                 if (fillSeekList) {
