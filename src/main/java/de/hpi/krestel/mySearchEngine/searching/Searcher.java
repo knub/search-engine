@@ -28,10 +28,10 @@ public class Searcher {
         Pipeline pipeline = Pipeline.createSearchPipeline();
         List<CoreLabel> searchTerms = pipeline.start (query);
         pipeline.finished();
-        TIntSet allIds = new TIntHashSet();
+        ResultSet allIds = new ResultSet();
 
         for (CoreLabel searchTerm : searchTerms) {
-            allIds.addAll(searchToken(searchTerm.value()));
+            allIds.merge(searchToken(searchTerm.value()));
         }
 
         ArrayList<String> results = new ArrayList<String>(allIds.size());
@@ -45,7 +45,7 @@ public class Searcher {
         return results;
     }
 
-    private TIntSet searchToken(String token){
+    private ResultSet searchToken(String token){
         if (seekList.containsKey(token)) {
             //System.out.println(token + " at Index pos: " + seekList.get(token));
             try {
@@ -58,9 +58,9 @@ public class Searcher {
             OccurrenceMap occurrenceMap = indexReader.read().firstEntry().getValue();
 
             //System.out.println(token + " ==> " + occurrenceMap);
-            return occurrenceMap.keySet();
+            return new ResultSet(occurrenceMap.keySet());
         } else {
-            return new TIntHashSet();
+            return new ResultSet();
         }
     }
 
