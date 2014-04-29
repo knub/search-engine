@@ -9,30 +9,15 @@ import edu.stanford.nlp.ling.CoreLabel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
-public class Searcher {
+public class IndexSearcher {
 
     private SeekList seekList;
     private IndexReader indexReader;
     private RandomAccessInputStream randomAccessInputStream;
 
-    public ResultSet search(String query) {
-        Pipeline pipeline = Pipeline.createSearchPipeline();
-        List<CoreLabel> searchTerms = pipeline.start (query);
-        pipeline.finished();
-        ResultSet allIds = new ResultSet();
-
-        for (CoreLabel searchTerm : searchTerms) {
-            allIds.merge(searchToken(searchTerm.value()));
-        }
-
-        return allIds;
-    }
-
-    private ResultSet searchToken(String token){
+    public ResultSet search(String token) {
         if (seekList.containsKey(token)) {
-            //System.out.println(token + " at Index pos: " + seekList.get(token));
             try {
                 randomAccessInputStream.seek(seekList.get(token));
             } catch (IOException e) {
@@ -42,7 +27,6 @@ public class Searcher {
             }
             OccurrenceMap occurrenceMap = indexReader.read().firstEntry().getValue();
 
-            //System.out.println(token + " ==> " + occurrenceMap);
             return new ResultSet(occurrenceMap.keySet());
         } else {
             return new ResultSet();

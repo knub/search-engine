@@ -2,7 +2,7 @@ package de.hpi.krestel.mySearchEngine;
 
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
-import de.hpi.krestel.mySearchEngine.searching.Searcher;
+import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import gnu.trove.iterator.TIntIterator;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class SearchEngineLynette extends SearchEngine {
 
-    private final Searcher searcher = new Searcher();
+    private final IndexSearcher searcher = new IndexSearcher();
 
 	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!
