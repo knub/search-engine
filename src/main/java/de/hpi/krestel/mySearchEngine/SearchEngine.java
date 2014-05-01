@@ -21,7 +21,7 @@ public abstract class SearchEngine {
 		if (new File("/home/krestel/data/wikipedia-de").exists())
 			this.directory = "/home/krestel/data/wikipedia-de/" + this.getClass().getSimpleName().toString();
 		else
-			this.directory = "/tmp/" + this.getClass().getSimpleName().toString();
+			this.directory = "./data/";
 		new File(directory).mkdirs();
 		this.logFile = this.directory + "/" +System.currentTimeMillis() + ".log";
 

@@ -17,9 +17,6 @@ public class IndexSearcher {
     private RandomAccessInputStream randomAccessInputStream;
 
     public ResultSet search(String token) {
-	    long[] keys = seekList.values();
-	    Arrays.sort(keys);
-
 	    if (seekList.containsKey(token)) {
             try {
                 randomAccessInputStream.seek(seekList.get(token));

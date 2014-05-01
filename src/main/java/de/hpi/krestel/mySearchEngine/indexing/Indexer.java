@@ -9,6 +9,7 @@ import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +29,24 @@ public class Indexer implements TextCompletedListener {
     }
 
 	public void run() {
+		System.out.println("INDEXING");
 		WikipediaReader reader = new WikipediaReader();
 		reader.addTextCompletedListener(this);
 		reader.readWikiFile();
 		writePartIndex();
 		preprocessingPipeline.finished();
 		triggerMergingProcess();
+		writeSeekList();
+	}
+
+	private void writeSeekList() {
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
+			oos.writeObject(seekList);
+			oos.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
