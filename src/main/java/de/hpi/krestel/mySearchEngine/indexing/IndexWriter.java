@@ -63,7 +63,7 @@ public class IndexWriter {
 				writeIndexWord(entry.getKey());
 				writeOccurrenceMap(entry.getValue());
                 if (fillSeekList) {
-                    seekList.put(entry.getKey(), byteCount);
+	                seekList.put(entry.getKey(), byteCount);
                 }
 			}
 		} catch (IOException e) {

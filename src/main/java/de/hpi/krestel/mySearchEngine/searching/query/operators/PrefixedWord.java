@@ -14,9 +14,12 @@ public class PrefixedWord implements Operator {
 
     @Override
     public ResultSet evaluate(IndexSearcher searcher) {
-        // searcher.retrieveOderSO(this.word
-
-        //return result;
-        return null;
+	    String currentKey = searcher.getSeekList().ceilingKey(word);
+	    ResultSet result = new ResultSet();
+	    while (currentKey.startsWith(word)) {
+		    result.merge(searcher.search(currentKey));
+		    currentKey = searcher.getSeekList().higherKey(currentKey);
+	    }
+	    return result;
     }
 }

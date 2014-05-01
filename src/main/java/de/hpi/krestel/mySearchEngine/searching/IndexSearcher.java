@@ -48,4 +48,8 @@ public class IndexSearcher {
     public void setSeekList(SeekList seekList) {
         this.seekList = seekList;
     }
+
+	public SeekList getSeekList() {
+		return this.seekList;
+	}
 }
