@@ -55,10 +55,6 @@ public class IndexWriter {
 				// save byte count to store in seek list later
 				long byteCount = bos.getByteCount();
 				writeIndexWord(entry.getKey());
-				if (entry.getKey().equals("artikel")) {
-					System.out.println("YEAH");
-					System.out.println(entry.getValue());
-				}
 				writeOccurrenceMap(entry.getValue());
                 if (fillSeekList) {
                     seekList.put(entry.getKey(), byteCount);
