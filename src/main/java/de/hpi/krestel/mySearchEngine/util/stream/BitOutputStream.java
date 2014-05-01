@@ -69,6 +69,9 @@ public class BitOutputStream extends OutputStream {
 	}
 
     public long getByteCount() {
-        return byteCount;
+	    if (this.pos == 0)
+		    return byteCount;
+	    else
+		    return byteCount + 1;
     }
 }

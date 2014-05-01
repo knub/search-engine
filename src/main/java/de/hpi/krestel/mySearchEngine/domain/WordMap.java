@@ -13,6 +13,7 @@ public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparab
 		for (Map.Entry<String, OccurrenceMap> entry : this.entrySet()) {
 			sb.append(" " + entry.getKey() + " ==> " + entry.getValue().toString());
 		}
+		sb.append(System.lineSeparator());
 		sb.append("}");
 		return sb.toString();
 	}
