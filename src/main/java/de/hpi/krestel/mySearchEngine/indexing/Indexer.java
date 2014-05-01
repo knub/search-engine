@@ -80,7 +80,7 @@ public class Indexer implements TextCompletedListener {
 	}
 
     public void writePartIndex() {
-        IndexWriter indexWriter = new IndexWriter();
+        IndexWriter indexWriter = new IndexWriter(directory);
         indexWriter.write(partIndex);
         indexWriter.close();
         partIndexFileNames.add(indexWriter.getFileName());
@@ -94,7 +94,7 @@ public class Indexer implements TextCompletedListener {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
 
-        IndexWriter indexWriter = new IndexWriter("final_index", directory, true);
+        IndexWriter indexWriter = new IndexWriter(directory, "final_index", true);
         IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
         try {
             indexMerger.merge();

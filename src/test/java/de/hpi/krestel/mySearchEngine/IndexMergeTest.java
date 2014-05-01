@@ -17,6 +17,7 @@ import java.util.Set;
 
 public class IndexMergeTest extends TestCase {
 
+	String DIRECTORY = "data";
 	public IndexMergeTest(String testName) {
 		super(testName);
 	}
@@ -93,7 +94,7 @@ public class IndexMergeTest extends TestCase {
 			put(46, new DocumentEntry(i++, i++, i++));
 		}});
 
-		IndexWriter writer = new IndexWriter("testindex");
+		IndexWriter writer = new IndexWriter(DIRECTORY, "testindex");
 		writer.write(wm1);
 		writer.close();
 		writer.write(wm2);
@@ -102,10 +103,10 @@ public class IndexMergeTest extends TestCase {
 		writer.close();
 
 		IndexMerger indexMerger = new IndexMerger(Arrays.asList(
-				new IndexReader("data/testindex0001"),
-				new IndexReader("data/testindex0002"),
-				new IndexReader("data/testindex0003")
-		), new IndexWriter("testoutput"));
+				new IndexReader(DIRECTORY +  "/testindex0001"),
+				new IndexReader(DIRECTORY + "/testindex0002"),
+				new IndexReader(DIRECTORY + "/testindex0003")
+		), new IndexWriter(DIRECTORY, "testoutput"));
 
 		indexMerger.merge();
 

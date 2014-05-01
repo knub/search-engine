@@ -36,17 +36,17 @@ public class IndexWriter {
 	boolean closed = true;
 
 	public IndexWriter() {
-		this("index_first_five");
+		this("data");
 	}
-	public IndexWriter(String indexString) {
-		this(indexString, "data");
+	public IndexWriter(String directory) {
+		this(directory, "index_first_five");
 	}
-    public IndexWriter(String indexString, String directory) {
-	    this(indexString, directory, false);
+    public IndexWriter(String directory, String indexString) {
+	    this(directory, indexString, false);
     }
-    public IndexWriter(String indexString, String directory, boolean fillSeekList) {
-	    this.indexString = indexString;
+    public IndexWriter(String directory, String indexString, boolean fillSeekList) {
 	    this.directory = directory;
+	    this.indexString = indexString;
         this.fillSeekList = fillSeekList;
     }
 
