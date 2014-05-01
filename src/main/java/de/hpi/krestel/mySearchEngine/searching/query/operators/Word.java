@@ -17,6 +17,6 @@ public class Word implements Operator {
         // searcher.retrieveOderSO(this.word
 
         //return result;
-        return null;
+	    return searcher.search(word);
     }
 }
