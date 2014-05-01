@@ -49,15 +49,14 @@ public class SearchEngineLynette extends SearchEngine {
 	boolean loadIndex(String directory) {
 		try {
 			File seekFile = new File(directory + "/" + "seek_list");
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
 			if (seekFile.exists()) {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
 				SeekList seekList = (SeekList) ois.readObject();
 				searcher.setSeekList(seekList);
 				// hard-coding index file for now
-				searcher.setIndexFilename(directory + "/final_index0002");
+				searcher.setIndexFilename(directory + "/final_index0001");
 				return true;
 			}
-			System.out.println("Seek list not found.");
 			return false;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

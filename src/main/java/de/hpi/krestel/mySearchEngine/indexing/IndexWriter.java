@@ -8,6 +8,7 @@ import de.hpi.krestel.mySearchEngine.util.stream.*;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public class IndexWriter {
@@ -25,7 +26,7 @@ public class IndexWriter {
 	private Bit23Writer bit23writer = null;
 
 	// counter for naming the index files
-	private static int indexCounter = 0;
+	private static Map<String, Integer> indexCounter = new HashMap<String, Integer>();
 
     private SeekList seekList = new SeekList();
     private boolean fillSeekList = false;
@@ -48,6 +49,7 @@ public class IndexWriter {
 	    this.directory = directory;
 	    this.indexString = indexString;
         this.fillSeekList = fillSeekList;
+	    this.indexCounter.put(indexString, 0);
     }
 
 	public void write(WordMap partIndex) {
@@ -128,12 +130,12 @@ public class IndexWriter {
 	}
 
 	private String nextFileName() {
-		indexCounter++;
+		this.indexCounter.put(indexString, this.indexCounter.get(indexString) + 1);
 		return getFileName();
 	}
 
 	public String getFileName() {
-		return String.format(directory + "/" + indexString + "%04d", indexCounter);
+		return String.format(directory + "/" + indexString + "%04d", this.indexCounter.get(indexString));
 	}
 
 	public void close() {

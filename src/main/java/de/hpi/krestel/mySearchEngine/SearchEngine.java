@@ -33,6 +33,8 @@ public abstract class SearchEngine {
 		if(!loadIndex(this.directory)){
 			index(this.directory);
 			loadIndex(this.directory);
+		} else {
+			System.out.println("NO INDEXING: Using old index files.");
 		}
 		long time = System.currentTimeMillis() - start;
 		log("Index Time: " +time +"ms");
