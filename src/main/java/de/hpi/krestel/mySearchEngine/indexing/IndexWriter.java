@@ -30,21 +30,25 @@ public class IndexWriter {
     private SeekList seekList = new SeekList();
     private boolean fillSeekList = false;
 
-	private String indexString = "index_first_five";
+	private String indexString;
+	private final String directory;
 
 	boolean closed = true;
 
-	public IndexWriter(String indexString) {
-		this();
-		this.indexString = indexString;
+	public IndexWriter() {
+		this("index_first_five");
 	}
-    public IndexWriter(String indexString, boolean fillSeekList) {
-        this();
-        this.indexString = indexString;
+	public IndexWriter(String indexString) {
+		this(indexString, "data");
+	}
+    public IndexWriter(String indexString, String directory) {
+	    this(indexString, directory, false);
+    }
+    public IndexWriter(String indexString, String directory, boolean fillSeekList) {
+	    this.indexString = indexString;
+	    this.directory = directory;
         this.fillSeekList = fillSeekList;
     }
-	public IndexWriter() {
-	}
 
 	public void write(WordMap partIndex) {
 		try {
@@ -124,11 +128,12 @@ public class IndexWriter {
 	}
 
 	private String nextFileName() {
-		return String.format("data/" + indexString + "%04d", ++indexCounter);
+		indexCounter++;
+		return getFileName();
 	}
 
 	public String getFileName() {
-		return String.format("data/" + indexString + "%04d", indexCounter);
+		return String.format(directory + "/" + indexString + "%04d", indexCounter);
 	}
 
 	public void close() {

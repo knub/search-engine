@@ -17,12 +17,15 @@ public class Indexer implements TextCompletedListener {
 	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
     private final WordMap partIndex = new WordMap();
     private final List<String> partIndexFileNames = new ArrayList<String>();
-    private int documentId = 0;
+	private final String directory;
+	private int documentId = 0;
     private String indexFilename;
     private SeekList seekList;
 	long startTime;
 
-    public Indexer(String directory) { }
+    public Indexer(String directory) {
+	    this.directory = directory;
+    }
 
 	public void run() {
 		WikipediaReader reader = new WikipediaReader();
@@ -35,7 +38,7 @@ public class Indexer implements TextCompletedListener {
 
 	@Override
 	public void onTextCompleted(String text, String title) {
-		List<CoreLabel> labels = preprocessingPipeline.start(text);
+		List<CoreLabel> labels = preprocessingPipeline.start(title + "\0" + text);
 		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
 		documentId++;
@@ -91,7 +94,7 @@ public class Indexer implements TextCompletedListener {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
 
-        IndexWriter indexWriter = new IndexWriter("final_index", true);
+        IndexWriter indexWriter = new IndexWriter("final_index", directory, true);
         IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
         try {
             indexMerger.merge();
