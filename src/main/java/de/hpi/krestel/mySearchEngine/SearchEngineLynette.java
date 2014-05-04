@@ -6,12 +6,11 @@ import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
-import de.hpi.krestel.mySearchEngine.searching.query.Parser;
+import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
 import gnu.trove.iterator.TIntIterator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ import java.util.ArrayList;
 public class SearchEngineLynette extends SearchEngine {
 
     private final IndexSearcher searcher = new IndexSearcher();
-    private final Parser queryParser = new Parser(Pipeline.createSearchPipeline());
+    private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
 
 	public SearchEngineLynette() {
 		// This should stay as is! Don't add anything here!

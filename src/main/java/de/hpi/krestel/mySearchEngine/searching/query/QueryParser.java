@@ -7,7 +7,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import java.io.*;
 import java.util.List;
 
-public class Parser {
+public class QueryParser {
 
     private Pipeline pipeline;
     private String state;
@@ -15,7 +15,7 @@ public class Parser {
     private Operator rightStash;
     private String binaryOp;
 
-    public Parser(Pipeline preprocessing) {
+    public QueryParser(Pipeline preprocessing) {
         this.pipeline = preprocessing;
     }
 
