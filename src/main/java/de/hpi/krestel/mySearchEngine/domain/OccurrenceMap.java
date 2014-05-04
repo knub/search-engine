@@ -32,6 +32,9 @@ public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 			thisEntry.lengths.addAll(otherEntry.lengths);
 			thisEntry.positions.addAll(otherEntry.positions);
 			thisEntry.offsets.addAll(otherEntry.offsets);
+			thisEntry.lengths.sort();
+			thisEntry.positions.sort();
+			thisEntry.offsets.sort();
 		}
 
 		// now add the ones, which only exist in the other result
