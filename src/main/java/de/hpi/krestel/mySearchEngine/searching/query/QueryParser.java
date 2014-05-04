@@ -27,7 +27,7 @@ public class QueryParser {
             while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
 
                 if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-                    this.handleWordToken(pipeline.processForQuery(tokenizer.sval));
+                    this.handleWordToken(tokenizer.sval);
                 } else if (tokenizer.ttype == '"') {
                     this.handlePhraseToken(pipeline.processPhraseForQuery(tokenizer.sval));
                 }
@@ -78,7 +78,6 @@ public class QueryParser {
     }
 
     private void handleWordToken(String word) {
-	    System.out.println("==========HANDLING " + word);
 	    if (word.equals("and")) {
             this.handleBinaryOp("and");
         } else if (word.equals("or")) {
@@ -90,7 +89,7 @@ public class QueryParser {
         } else if (word.endsWith("*")) {
             this.handleOperand(new PrefixedWord(word.substring(0, word.length() - 1)));
         } else {
-            this.handleOperand(new Word(word));
+            this.handleOperand(new Word(pipeline.processForQuery(word)));
         }
 
         return;
