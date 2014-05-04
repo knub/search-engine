@@ -78,7 +78,8 @@ public class QueryParser {
     }
 
     private void handleWordToken(String word) {
-        if (word.equals("and")) {
+	    System.out.println("==========HANDLING " + word);
+	    if (word.equals("and")) {
             this.handleBinaryOp("and");
         } else if (word.equals("or")) {
             this.handleBinaryOp("or");

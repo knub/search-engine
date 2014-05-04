@@ -18,8 +18,7 @@ public class Or implements Operator {
     @Override
     public OccurrenceMap evaluate(IndexSearcher searcher) {
         OccurrenceMap result = this.left.evaluate(searcher);
-        result.merge(this.right.evaluate(searcher));
-
+	    result.merge(this.right.evaluate(searcher));
         return result;
     }
 }

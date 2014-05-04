@@ -15,7 +15,7 @@ public class Word implements Operator {
 
     @Override
     public OccurrenceMap evaluate(IndexSearcher searcher) {
-	    //return result;
-	    return searcher.search(word);
+	    OccurrenceMap result =  searcher.search(word);
+	    return result;
     }
 }

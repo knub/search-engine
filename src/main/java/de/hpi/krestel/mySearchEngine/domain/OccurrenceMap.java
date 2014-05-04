@@ -3,6 +3,7 @@ package de.hpi.krestel.mySearchEngine.domain;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.Arrays;
 
@@ -20,8 +21,8 @@ public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 	}
 
 	public void merge(OccurrenceMap other) {
-		TIntSet thisKeys = this.keySet();
-		TIntSet otherKeys = other.keySet();
+		TIntSet thisKeys = new TIntHashSet(this.keySet());
+		TIntSet otherKeys = new TIntHashSet(other.keySet());
 		thisKeys.retainAll(otherKeys);
 
 		// merge the ones which exist in both results
