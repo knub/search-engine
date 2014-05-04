@@ -16,10 +16,11 @@ public class IndexSearcher {
     private IndexReader indexReader;
     private RandomAccessInputStream randomAccessInputStream;
 
-    public ResultSet search(String token) {
-	    if (seekList.containsKey(token)) {
+    public OccurrenceMap search(String token) {
+	    Long offset = seekList.get(token);
+	    if (offset != null) {
             try {
-                randomAccessInputStream.seek(seekList.get(token));
+                randomAccessInputStream.seek(offset);
             } catch (IOException e) {
                 System.out.println("Couldn't set seek position at index. Hmpf:");
                 System.out.println(e.getLocalizedMessage());
@@ -27,10 +28,10 @@ public class IndexSearcher {
             }
 	        WordMap wordMap = indexReader.read();
 	        OccurrenceMap occurrenceMap = wordMap.firstEntry().getValue();
+		    return occurrenceMap;
 
-            return new ResultSet(occurrenceMap.keySet());
         } else {
-            return new ResultSet();
+            return new OccurrenceMap();
         }
     }
 

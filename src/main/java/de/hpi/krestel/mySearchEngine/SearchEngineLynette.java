@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /* This is your file! Implement your search engine here!
  *
@@ -65,11 +66,11 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
         Operator op = queryParser.parse(query);
-        ResultSet result = op.evaluate(searcher);
+        ResultSet result = op.evaluate(searcher).toResultSet();
 
         ArrayList<String> results = new ArrayList<String>(result.size());
 
-        TIntIterator iterator = result.iterator();
+		TIntIterator iterator = result.iterator();
         for (int i = result.size(); i > 0; i--) {
             // Todo: find titles here
             results.add("" + iterator.next());

@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine.searching.query.operators;
 
+import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
@@ -13,9 +14,9 @@ public class PrefixedWord implements Operator {
     }
 
     @Override
-    public ResultSet evaluate(IndexSearcher searcher) {
+    public OccurrenceMap evaluate(IndexSearcher searcher) {
 	    String currentKey = searcher.getSeekList().ceilingKey(word);
-	    ResultSet result = new ResultSet();
+	    OccurrenceMap result = new OccurrenceMap();
 	    while (currentKey.startsWith(word)) {
 		    result.merge(searcher.search(currentKey));
 		    currentKey = searcher.getSeekList().higherKey(currentKey);

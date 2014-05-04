@@ -1,5 +1,6 @@
 package de.hpi.krestel.mySearchEngine.searching.query.operators;
 
+import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
@@ -15,9 +16,10 @@ public class And implements Operator {
     }
 
     @Override
-    public ResultSet evaluate(IndexSearcher searcher) {
-        ResultSet result = this.left.evaluate(searcher);
+    public OccurrenceMap evaluate(IndexSearcher searcher) {
+        OccurrenceMap result = this.left.evaluate(searcher);
         result.retain(this.right.evaluate(searcher));
+
 
         return result;
     }
