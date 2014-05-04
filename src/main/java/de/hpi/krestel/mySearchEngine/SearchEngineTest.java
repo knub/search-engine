@@ -10,7 +10,7 @@ package de.hpi.krestel.mySearchEngine;
 
 public class SearchEngineTest {
 	// Some test queries for development. The real test queries will be more difficult ;)
-	static String[] queries = {"Artikel", "deutsch", "Artikel AND deutsch", "Artikel OR deutsch", "deutsch BUT NOT Artikel", "de*"};
+	static String[] queries = {"Artikel", "deutsch", "Artikel AND deutsch", "Artikel OR deutsch", "deutsch BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 
 	// some variables (will be explained when needed, ignore for now!)
 	static int topK = 10;

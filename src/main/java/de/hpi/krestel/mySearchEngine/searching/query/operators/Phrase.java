@@ -4,19 +4,21 @@ import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 
+import java.util.Arrays;
+
 public class Phrase implements Operator {
 
-    private String phrase;
+    private String[] phrase;
 
-    public Phrase(String token) {
-        this.phrase = token;
+    public Phrase(String[] tokens) {
+        this.phrase = tokens;
     }
 
     @Override
     public ResultSet evaluate(IndexSearcher searcher) {
-        // searcher.retrieveOderSO(this.word
-
-        //return result;
-        return null;
+	    for (String word : phrase) {
+		    System.out.println("PhraseWord: " + word);
+	    }
+	    return null;
     }
 }

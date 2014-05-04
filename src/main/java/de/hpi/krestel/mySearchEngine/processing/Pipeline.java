@@ -49,6 +49,19 @@ public class Pipeline extends Vector<Processor> {
 		return this.process(text);
 	}
 
+	public String processForQuery(String queryToken) {
+		return start(queryToken).get(0).value();
+	}
+
+	public String[] processPhraseForQuery(String queryToken) {
+		List<CoreLabel> processedPhrase = start(queryToken);
+		String[] phrase = new String[processedPhrase.size()];
+		int i = 0;
+		for (CoreLabel label : processedPhrase)
+			phrase[i++] = label.value();
+		return phrase;
+	}
+
 	public void finished() {
         for (Processor processor : this) {
             processor.finished();
@@ -69,4 +82,5 @@ public class Pipeline extends Vector<Processor> {
 
         return list;
     }
+
 }

@@ -14,7 +14,7 @@ public class Word implements Operator {
 
     @Override
     public ResultSet evaluate(IndexSearcher searcher) {
-        //return result;
+	    //return result;
 	    return searcher.search(word);
     }
 }

@@ -2,8 +2,10 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
+import edu.stanford.nlp.ling.CoreLabel;
 
 import java.io.*;
+import java.util.List;
 
 public class Parser {
 
@@ -25,14 +27,15 @@ public class Parser {
             while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
 
                 if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-                    this.handleWordToken(tokenizer.sval);
+                    this.handleWordToken(pipeline.processForQuery(tokenizer.sval));
                 } else if (tokenizer.ttype == '"') {
-                    this.handlePhraseToken(tokenizer.sval);
+                    this.handlePhraseToken(pipeline.processPhraseForQuery(tokenizer.sval));
                 }
 
             }
         } catch (IOException e) {
             // Should not happen. We're not doing real IO here.
+	        throw new RuntimeException(e);
         }
 
         return this.createOperator();
@@ -92,7 +95,7 @@ public class Parser {
         return;
     }
 
-    private void handlePhraseToken(String phrase) {
+    private void handlePhraseToken(String[] phrase) {
         this.handleOperand(new Phrase(phrase));
     }
 

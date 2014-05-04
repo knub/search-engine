@@ -65,8 +65,7 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
-        Operator op = null;
-        op = queryParser.parse(query);
+        Operator op = queryParser.parse(query);
         ResultSet result = op.evaluate(searcher);
 
         ArrayList<String> results = new ArrayList<String>(result.size());
