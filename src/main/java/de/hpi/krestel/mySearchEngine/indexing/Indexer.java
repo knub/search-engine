@@ -22,6 +22,8 @@ public class Indexer implements TextCompletedListener {
 	private int documentId = 0;
     private String indexFilename;
     private SeekList seekList;
+	long docCount;
+	long cumulatedDocLength;
 	long startTime;
 
     public Indexer(String directory) {
@@ -30,6 +32,8 @@ public class Indexer implements TextCompletedListener {
 
 	public void run() {
 		System.out.println("INDEXING");
+		docCount = 0;
+		cumulatedDocLength = 0;
 		WikipediaReader reader = new WikipediaReader();
 		reader.addTextCompletedListener(this);
 		reader.readWikiFile();
@@ -42,6 +46,7 @@ public class Indexer implements TextCompletedListener {
 	private void writeSeekList() {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
+			seekList.setAverageDocumentLength(cumulatedDocLength / docCount);
 			oos.writeObject(seekList);
 			oos.close();
 		} catch (IOException e) {
@@ -52,6 +57,8 @@ public class Indexer implements TextCompletedListener {
 	@Override
 	public void onTextCompleted(String text, String title) {
 		List<CoreLabel> labels = preprocessingPipeline.start(title + "\0" + text);
+		docCount += 1;
+		cumulatedDocLength += labels.size();
 		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
 		documentId++;
