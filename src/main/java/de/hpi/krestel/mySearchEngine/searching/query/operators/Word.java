@@ -9,7 +9,11 @@ public class Word implements Operator {
 
     private String word;
 
-    public Word(String token) {
+	public String getWord() {
+		return word;
+	}
+
+	public Word(String token) {
         this.word = token;
     }
 
