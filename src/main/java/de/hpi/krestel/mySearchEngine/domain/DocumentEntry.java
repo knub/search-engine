@@ -8,6 +8,8 @@ public class DocumentEntry {
     public TIntList offsets = new TIntArrayList();
     public TIntList lengths = new TIntArrayList();
 
+	double rank = -1;
+
 	public DocumentEntry() {}
     public DocumentEntry(int position, int offset, int length) {
         positions.add(position);
@@ -34,4 +36,13 @@ public class DocumentEntry {
 	public int size() {
 		return positions.size();
 	}
+
+	public double getRank() {
+		return rank;
+	}
+
+	public void setRank(double rank) {
+		this.rank = rank;
+	}
+
 }
