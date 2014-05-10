@@ -34,7 +34,6 @@ public class QueryParser {
 				}
 			}
 		} catch (IOException e) {
-			// Should not happen. We're not doing real IO here.
 			throw new RuntimeException(e);
 		}
 

@@ -33,6 +33,10 @@ public class RankedWord implements Operator {
 			else
 				queryWords.put(word.getWord(), count + 1);
 		}
+
+		for (Map.Entry<String, Integer> entry : queryWords.entrySet()) {
+			searcher.search(entry.getKey(), entry.getValue());
+		}
 		return null;
 	}
 }
