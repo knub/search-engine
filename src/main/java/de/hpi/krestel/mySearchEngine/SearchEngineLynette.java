@@ -8,12 +8,14 @@ import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
 import gnu.trove.iterator.TIntIterator;
+import org.javatuples.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /* This is your file! Implement your search engine here!
  *
@@ -66,17 +68,16 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
         Operator op = queryParser.parse(query);
-		ResultSet result = op.evaluate(searcher).toResultSet();
+		ResultSet results = op.evaluate(searcher).toResultSet();
 
-        ArrayList<String> results = new ArrayList<String>(result.size());
+        ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
 
-		TIntIterator iterator = result.iterator();
-        for (int i = result.size(); i > 0; i--) {
-            // Todo: find titles here
-            results.add("" + iterator.next());
-        }
 
-        return results;
+		for (Pair<Integer, Double> result : results) {
+			resultsStrings.add("Document: " + result.getValue0() + ", Rank: " + result.getValue1());
+		}
+
+        return resultsStrings;
 	}
 
 

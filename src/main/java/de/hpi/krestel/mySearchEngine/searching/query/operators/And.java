@@ -20,7 +20,6 @@ public class And implements Operator {
         OccurrenceMap result = this.left.evaluate(searcher);
         result.retain(this.right.evaluate(searcher));
 
-
         return result;
     }
 }
