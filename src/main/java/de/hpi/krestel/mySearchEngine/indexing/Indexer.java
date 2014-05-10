@@ -8,6 +8,8 @@ import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import edu.stanford.nlp.ling.CoreLabel;
+import gnu.trove.map.TIntIntMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class Indexer implements TextCompletedListener {
 	private int documentId = 0;
     private String indexFilename;
     private SeekList seekList;
+	TIntIntMap docLengths = new TIntIntHashMap();
 	long docCount;
 	long cumulatedDocLength;
 	long startTime;
@@ -59,6 +62,7 @@ public class Indexer implements TextCompletedListener {
 		List<CoreLabel> labels = preprocessingPipeline.start(title + "\0" + text);
 		docCount += 1;
 		cumulatedDocLength += labels.size();
+		docLengths.put(documentId, labels.size());
 		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
 		documentId++;
@@ -125,6 +129,8 @@ public class Indexer implements TextCompletedListener {
         }
         indexFilename = indexWriter.getFileName();
         seekList = indexWriter.getSeekList();
+	    seekList.setDocLengths(docLengths);
+	    seekList.setDocumentCount(docCount);
     }
 
     public String getIndexFilename() {

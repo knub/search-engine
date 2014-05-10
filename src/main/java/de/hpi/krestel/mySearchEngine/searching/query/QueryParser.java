@@ -31,7 +31,6 @@ public class QueryParser {
                 } else if (tokenizer.ttype == '"') {
                     this.handlePhraseToken(pipeline.processPhraseForQuery(tokenizer.sval));
                 }
-
             }
         } catch (IOException e) {
             // Should not happen. We're not doing real IO here.
@@ -60,7 +59,8 @@ public class QueryParser {
     }
 
     private Operator createOperator() {
-        if (this.state.equals("operator")) {
+	    System.out.println(state);
+	    if (this.state.equals("operator")) {
             return this.leftStash;
         } else { /* TODO: SHould this be  if (this.state.equals("done")) ??? */
             return this.createBinaryOperator();
@@ -91,8 +91,6 @@ public class QueryParser {
         } else {
             this.handleOperand(new Word(pipeline.processForQuery(word)));
         }
-
-        return;
     }
 
     private void handlePhraseToken(String[] phrase) {
