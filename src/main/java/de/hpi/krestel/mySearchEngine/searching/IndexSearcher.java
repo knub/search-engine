@@ -45,6 +45,7 @@ public class IndexSearcher {
 				public boolean execute(int docId, DocumentEntry docEntry) {
 					long dl = seekList.getDocLengths().get(docId);
 					long fi = docEntry.size();
+//					System.out.println("Doc-ID: " + docId);
 					docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
 					return true;
 				}
@@ -56,6 +57,7 @@ public class IndexSearcher {
 	}
 
 	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi) {
+//		System.out.println(String.format("N: %d, ni: %d, dl: %d, avgdl: %f, fi: %d, qfi: %d", N, ni, dl, avgdl, fi, qfi));
 		double K = k1 * (1 - b + b * ((double) dl) / avgdl);
 		return Math.log((N - ni + 0.5) / (ni + 0.5)) * (k1 + 1) * fi / (K + fi) * (k2 + 1) * qfi / (k2 + qfi);
 	}

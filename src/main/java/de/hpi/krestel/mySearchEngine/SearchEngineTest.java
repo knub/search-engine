@@ -13,6 +13,7 @@ public class SearchEngineTest {
 //	static String[] queries = {"Artikel", "deutsch", "Artikel AND deutsch", "Artikel OR deutsch", "deutsch BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 //	static String[] queries = {"Artikel AND Smithee", "Artikel OR Reaktion", "Art* BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 	static String[] queries = {"artikel regisseur", "regisseur", "deutsch", "anschluss"};
+//	static String[] queries = {"regisseur"};
 
 	// some variables (will be explained when needed, ignore for now!)
 	static int topK = 10;
