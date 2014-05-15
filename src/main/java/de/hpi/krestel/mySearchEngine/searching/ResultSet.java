@@ -17,4 +17,9 @@ public class ResultSet extends ArrayList<Pair<Integer, DocumentEntry>> {
     public ResultSet(List collection) {
         super(collection);
     }
+
+	@Override
+	public ResultSet subList(int fromIndex, int toIndex) {
+		return new ResultSet(super.subList(fromIndex, Math.min(toIndex, this.size())));
+	}
 }
