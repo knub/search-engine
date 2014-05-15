@@ -32,6 +32,7 @@ public class CompoundWordSplitProcessor extends Processor {
 						setValue(splitWord);
 						setBeginPosition(el.beginPosition());
 						setEndPosition(el.endPosition());
+						setOriginalText(el.originalText());
 					}});
 			}
 			return elements;

@@ -4,11 +4,9 @@ import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
-import de.hpi.krestel.mySearchEngine.searching.ResultSet;
 import de.hpi.krestel.mySearchEngine.searching.query.PhraseTag;
 import gnu.trove.set.TIntSet;
 
-import javax.swing.text.Document;
 import java.util.*;
 
 public class Phrase implements Operator {

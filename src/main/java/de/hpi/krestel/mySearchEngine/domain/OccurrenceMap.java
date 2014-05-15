@@ -1,6 +1,6 @@
 package de.hpi.krestel.mySearchEngine.domain;
 
-import de.hpi.krestel.mySearchEngine.searching.ResultSet;
+import de.hpi.krestel.mySearchEngine.searching.ResultList;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TIntObjectProcedure;
 import gnu.trove.set.TIntSet;
@@ -10,7 +10,6 @@ import org.javatuples.Pair;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map;
 
 public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 	@Override
@@ -61,8 +60,8 @@ public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 
 	}
 
-	public ResultSet toResultSet() {
-		final ResultSet rs = new ResultSet();
+	public ResultList toResultSet() {
+		final ResultList rs = new ResultList();
 		this.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
 			@Override
 			public boolean execute(int docId, DocumentEntry docEntry) {

@@ -15,6 +15,7 @@ public class RankedWord implements Operator {
 
 	List<Word> words = new ArrayList();
 
+	public RankedWord() {}
 
 	public RankedWord(Word word1, Word word2) {
 		add(word1);
@@ -29,7 +30,7 @@ public class RankedWord implements Operator {
 	public OccurrenceMap evaluate(IndexSearcher searcher) {
 		Map<String, Integer> queryWords = new HashMap<String, Integer>();
 		for (Word word : words) {
-			Integer count = queryWords.get(word);
+			Integer count = queryWords.get(word.getWord());
 			if (count == null)
 				queryWords.put(word.getWord(), 1);
 			else

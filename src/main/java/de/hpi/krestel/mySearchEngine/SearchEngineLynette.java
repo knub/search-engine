@@ -5,20 +5,17 @@ import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.ResultSet;
+import de.hpi.krestel.mySearchEngine.searching.PseudoRelevanceSearcher;
+import de.hpi.krestel.mySearchEngine.searching.ResultList;
 import de.hpi.krestel.mySearchEngine.searching.SnippetReader;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
-import gnu.trove.iterator.TIntIterator;
 import org.javatuples.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /* This is your file! Implement your search engine here!
  *
@@ -71,10 +68,13 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
         Operator op = queryParser.parse(query);
-		ResultSet results = op.evaluate(searcher).toResultSet().subList(0, topK);
+		ResultList results = op.evaluate(searcher).toResultSet().subList(0, prf);
+
+		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300);
+		op = prs.buildNewSearchOperator();
+		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
-
 		SnippetReader snippetReader = new SnippetReader();
 		String setPlainText = "\033[0;0m";
 		String setBoldText = "\033[0;1m";

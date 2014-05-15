@@ -25,9 +25,9 @@ public class StanfordTokenizeProcessor extends Processor {
 		int lastEnd = 0;
 		for (CoreLabel token : tokens) {
 			try {
-				byte[] inputBytes = inputText.getBytes("UTF-8");
 //				int length = token.originalText().getBytes("UTF-8").length; // originalText does not always give the original text :(
-				int length = inputText.substring(token.beginPosition(), token.endPosition()).getBytes("UTF-8").length;
+				token.setOriginalText(inputText.substring(token.beginPosition(), token.endPosition()));
+				int length = token.originalText().getBytes("UTF-8").length;
 				int difference = token.beginPosition() - lastEnd;
 //				int difference = inputText.substring(lastEnd, token.beginPosition()).getBytes().length;
 				lastEnd = token.endPosition();

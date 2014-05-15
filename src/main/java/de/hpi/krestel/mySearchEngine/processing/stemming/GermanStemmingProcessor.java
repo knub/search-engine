@@ -22,6 +22,7 @@ public class GermanStemmingProcessor extends AbstractEachElementProcessor {
 		    setValue(stemmer.getCurrent());
 		    setBeginPosition(item.beginPosition());
 		    setEndPosition(item.endPosition());
+		    setOriginalText(item.originalText());
 	    }};
     }
 }
