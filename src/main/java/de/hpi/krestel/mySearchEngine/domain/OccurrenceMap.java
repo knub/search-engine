@@ -66,14 +66,14 @@ public class OccurrenceMap extends TIntObjectHashMap<DocumentEntry> {
 		this.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
 			@Override
 			public boolean execute(int docId, DocumentEntry docEntry) {
-				rs.add(Pair.with(docId, docEntry.getRank()));
+				rs.add(Pair.with(docId, docEntry));
 				return true;
 			}
 		});
-		Collections.sort(rs, new Comparator<Pair<Integer, Double>>() {
+		Collections.sort(rs, new Comparator<Pair<Integer, DocumentEntry>>() {
 			@Override
-			public int compare(Pair<Integer, Double> s1, Pair<Integer, Double> s2) {
-				return s2.getValue1().compareTo(s1.getValue1());
+			public int compare(Pair<Integer, DocumentEntry> s1, Pair<Integer, DocumentEntry> s2) {
+				return s2.getValue1().getRank().compareTo(s1.getValue1().getRank());
 			}
 		});
 		return rs;

@@ -57,8 +57,8 @@ public abstract class SearchEngine {
 				System.out.println(item);
 			}
 		}
-		output += "\nnDCG@" +topK +": " +ndcg;
-		log(output);
+//		output += "\nnDCG@" +topK +": " +ndcg;
+//		log(output);
 	}
 
 	synchronized void log(String line) {

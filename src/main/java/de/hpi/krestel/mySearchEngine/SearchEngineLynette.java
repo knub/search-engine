@@ -1,10 +1,12 @@
 package de.hpi.krestel.mySearchEngine;
 
+import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.ResultSet;
+import de.hpi.krestel.mySearchEngine.searching.SnippetReader;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
 import gnu.trove.iterator.TIntIterator;
@@ -13,6 +15,7 @@ import org.javatuples.Pair;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,9 +75,14 @@ public class SearchEngineLynette extends SearchEngine {
 
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
 
-
-		for (Pair<Integer, Double> result : results) {
-			resultsStrings.add("Document: " + result.getValue0() + ", Rank: " + result.getValue1());
+		SnippetReader snippetReader = new SnippetReader();
+		String setPlainText = "\033[0;0m";
+		String setBoldText = "\033[0;1m";
+		for (Pair<Integer, DocumentEntry> result : results) {
+			int docId = result.getValue0();
+			DocumentEntry docEntry = result.getValue1();
+			resultsStrings.add(setBoldText + "    Document: " + docId + ", Rank: " + docEntry.getRank() + setPlainText);
+			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
 		}
 
         return resultsStrings;

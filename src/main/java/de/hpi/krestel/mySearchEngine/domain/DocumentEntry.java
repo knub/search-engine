@@ -37,7 +37,7 @@ public class DocumentEntry {
 		return positions.size();
 	}
 
-	public double getRank() {
+	public Double getRank() {
 		return rank;
 	}
 

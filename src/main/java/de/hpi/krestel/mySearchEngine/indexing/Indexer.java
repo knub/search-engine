@@ -59,7 +59,7 @@ public class Indexer implements TextCompletedListener {
 
 	@Override
 	public void onTextCompleted(String text, String title) {
-		List<CoreLabel> labels = preprocessingPipeline.start(title + "\0" + text);
+		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		docCount += 1;
 		cumulatedDocLength += labels.size();
 		docLengths.put(documentId, labels.size());
