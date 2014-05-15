@@ -11,7 +11,7 @@ public class WriteToPlainTextFileProcessor extends Processor {
 	public final static String PLAIN_TEXT_FILE = "data/plain-texts.txt";
 	public final static String PLAIN_TEXT_OFFSETS_FILE = "data/plain-texts-lengths.txt";
 
-	final String NULL_STRING = new String(new byte[SnippetReader.SNIPPET_LENGTH]);
+	final String NULL_STRING = "\0";
 
 	PrintWriter textWriter;
 	DataOutputStream byteCountWriter;
@@ -53,10 +53,10 @@ public class WriteToPlainTextFileProcessor extends Processor {
 
 			accByteCount += byteCount;
 			textWriter.print(text);
-			// write SNIPPET_LENGTH null bytes after each text, so we can show the surrounding of a hit without running
+			// write DEFAULT_SNIPPET_LENGTH null bytes after each text, so we can show the surrounding of a hit without running
 			// into another file
 			textWriter.print(NULL_STRING);
-			accByteCount += SnippetReader.SNIPPET_LENGTH;
+			accByteCount += 1;
 			return input;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
