@@ -34,10 +34,11 @@ public class SnippetReader {
 			texts.read(text);
 			String snippet = new String(text);
 			snippet = snippet.replace("\n", " ").replace("\0", "");
-//			String setPlainText = "\033[0;0m";
-			snippet = snippet.substring(0, searchBeforeLength) +
-					"\033[4m" + snippet.substring(searchBeforeLength, searchBeforeLength + length) + "\033[0;m" +
-					snippet.substring(searchBeforeLength + length, snippet.length());
+			int snippetlength =  snippet.length();
+			System.out.println(searchBeforeLength);
+			snippet = snippet.substring(0, Math.min(searchBeforeLength, snippetlength)) +
+					"\033[4m" + snippet.substring(Math.min(searchBeforeLength, snippetlength), Math.min(searchBeforeLength + length, snippetlength)) + "\033[0;m" +
+					snippet.substring(Math.min(searchBeforeLength + length, snippetlength), snippetlength);
 			return snippet.substring(0, Math.min(SNIPPET_LENGTH, snippet.length()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
