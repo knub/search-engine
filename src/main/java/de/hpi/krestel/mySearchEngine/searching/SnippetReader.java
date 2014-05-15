@@ -26,19 +26,32 @@ public class SnippetReader {
 			// one long is 8 bytes, so we have to multiply by 8
 			offsets.seek(docId * 8);
 			long offset = offsets.readLong();
-			long seekStart = Math.max(offset + inFileOffset - SNIPPET_LENGTH / 2, 0);
-			int searchBeforeLength = (int) (offset + inFileOffset - seekStart);
-			texts.seek(seekStart);
 
-			byte[] text = new byte[SNIPPET_LENGTH * 2];
-			texts.read(text);
-			String snippet = new String(text);
-			snippet = snippet.replace("\n", " ").replace("\0", "");
-			int snippetlength =  snippet.length();
-			System.out.println(searchBeforeLength);
-			snippet = snippet.substring(0, Math.min(searchBeforeLength, snippetlength)) +
-					"\033[4m" + snippet.substring(Math.min(searchBeforeLength, snippetlength), Math.min(searchBeforeLength + length, snippetlength)) + "\033[0;m" +
-					snippet.substring(Math.min(searchBeforeLength + length, snippetlength), snippetlength);
+
+			long beforeSeekStart = Math.max(offset + inFileOffset - SNIPPET_LENGTH / 2, 0);
+			texts.seek(beforeSeekStart);
+			byte[] beforeBytes = new byte[SNIPPET_LENGTH / 2];
+			texts.read(beforeBytes);
+			String beforeText = new String(beforeBytes).replace("\n", "").replace("\0", "");
+
+
+			long middleSeekStart = offset + inFileOffset;
+			texts.seek(middleSeekStart);
+			byte[] middleBytes = new byte[length];
+			texts.read(middleBytes);
+			String middleText = new String(middleBytes);
+
+			long afterSeekStart = offset + inFileOffset + length;
+			texts.seek(afterSeekStart);
+			byte[] afterBytes = new byte[SNIPPET_LENGTH];
+			texts.read(afterBytes);
+			String afterText = new String(afterBytes).replace("\n", "").replace("\0", "");
+
+
+
+			String underlineSequence = "\033[4m";
+			String stopSequence = "\033[0;m";
+			String snippet = beforeText + underlineSequence + middleText + stopSequence + afterText;
 			return snippet.substring(0, Math.min(SNIPPET_LENGTH, snippet.length()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
