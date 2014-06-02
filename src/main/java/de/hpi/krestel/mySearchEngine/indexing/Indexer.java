@@ -24,6 +24,7 @@ public class Indexer implements TextCompletedListener {
 	private int documentId = 0;
     private String indexFilename;
     private SeekList seekList;
+    private List<String> titleMap;
 	TIntIntMap docLengths = new TIntIntHashMap();
 	long docCount;
 	long cumulatedDocLength;
@@ -31,6 +32,7 @@ public class Indexer implements TextCompletedListener {
 
     public Indexer(String directory) {
 	    this.directory = directory;
+        this.titleMap = new ArrayList<String>();
     }
 
 	public void run() {
@@ -47,6 +49,7 @@ public class Indexer implements TextCompletedListener {
 	}
 
 	private void writeSeekList() {
+        seekList.setTitleMap(this.titleMap);
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
 			seekList.setAverageDocumentLength(cumulatedDocLength / docCount);
@@ -65,7 +68,8 @@ public class Indexer implements TextCompletedListener {
 		docLengths.put(documentId, labels.size());
 		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
-		documentId++;
+        this.titleMap.add(title);
+        documentId++;
 		long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
 		if (documentId % 100 == 0) {

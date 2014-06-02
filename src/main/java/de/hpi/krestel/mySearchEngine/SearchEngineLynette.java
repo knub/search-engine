@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /* This is your file! Implement your search engine here!
  *
@@ -31,6 +32,7 @@ public class SearchEngineLynette extends SearchEngine {
 
     private final IndexSearcher searcher = new IndexSearcher();
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
+    private List<String> titleMap;
 
 	public SearchEngineLynette() {
 		super();
@@ -53,6 +55,7 @@ public class SearchEngineLynette extends SearchEngine {
 			if (seekFile.exists()) {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
 				SeekList seekList = (SeekList) ois.readObject();
+                this.titleMap = seekList.getTitleMap();
 				searcher.setSeekList(seekList);
 				// hard-coding index file for now
 				searcher.setIndexFilename(directory + "/final_index0001");
@@ -80,7 +83,7 @@ public class SearchEngineLynette extends SearchEngine {
 		for (Pair<Integer, DocumentEntry> result : results) {
 			int docId = result.getValue0();
 			DocumentEntry docEntry = result.getValue1();
-			resultsStrings.add(setBoldText + "    Document: " + docId + ", Rank: " + docEntry.getRank() + setPlainText);
+			resultsStrings.add(setBoldText + "    Document: " + this.titleMap.get(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
 			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
 		}
 
