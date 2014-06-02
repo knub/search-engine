@@ -33,10 +33,6 @@ public class SearchEngineLynette extends SearchEngine {
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
 
 	public SearchEngineLynette() {
-		if ( ! new File(this.baseDirectory).exists())) {
-			this.baseDirectory = "./data/";
-		}
-
 		super();
 	}
 

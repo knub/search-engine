@@ -27,7 +27,11 @@ public abstract class SearchEngine {
 
 	public SearchEngine() {
 
-		// Directory to store index and result logs
+        if ( ! new File(this.baseDirectory).exists()) {
+            this.baseDirectory = "./data/";
+        }
+
+        // Directory to store index and result logs
 		this.directory = this.baseDirectory +this.getClass().getSimpleName().toString();
 		new File(this.directory).mkdirs();
 		this.logFile = this.directory +"/" +System.currentTimeMillis() +".log";
