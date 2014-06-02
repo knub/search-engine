@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /* This is your file! Implement your search engine here!
@@ -77,6 +78,11 @@ public class SearchEngineLynette extends SearchEngine {
 		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
+        for (Pair<Integer, DocumentEntry> result : results) {
+            int docId = result.getValue0();
+            resultsStrings.add(this.titleMap.get(docId));
+        }
+        /*
 		SnippetReader snippetReader = new SnippetReader();
 		String setPlainText = "\033[0;0m";
 		String setBoldText = "\033[0;1m";
@@ -86,6 +92,7 @@ public class SearchEngineLynette extends SearchEngine {
 			resultsStrings.add(setBoldText + "    Document: " + this.titleMap.get(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
 			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
 		}
+		*/
 
         return resultsStrings;
 	}
@@ -94,7 +101,37 @@ public class SearchEngineLynette extends SearchEngine {
 
 	@Override
 	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> ranking, int ndcgAt) {
-		// TODO Auto-generated method stub
-		return null;
+        double goldDcg = 0.0;
+        double origDcg = 0.0;
+
+        goldRanking.retainAll(ranking);
+
+        if (ranking != null) {
+            int origRank = 1;
+            Iterator<String> iter = ranking.iterator();
+            while(iter.hasNext() && origRank <= ndcgAt) {
+                String item = iter.next();
+                if (goldRanking.contains(item)) {
+                    System.out.println("has word: " + item);
+                    int goldRank = goldRanking.indexOf(item) + 1;
+                    int goldGain = dcgAtRank(goldRank);
+                    int origGain = dcgAtRank(origRank);
+                    goldDcg += goldGain;
+                    origDcg += origGain;
+                }
+                origRank++;
+            }
+        }
+
+        if (goldDcg == 0.0) {
+            return 0.0;
+        }
+
+        return origDcg / goldDcg;
 	}
+
+    private int dcgAtRank(int rank) {
+        return 1 + (int) Math.floor(10 * Math.pow(0.5, 0.1 * rank));
+    }
+
 }
