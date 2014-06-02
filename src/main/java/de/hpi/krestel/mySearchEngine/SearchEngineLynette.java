@@ -33,7 +33,10 @@ public class SearchEngineLynette extends SearchEngine {
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
 
 	public SearchEngineLynette() {
-		// This should stay as is! Don't add anything here!
+		if ( ! new File(this.baseDirectory).exists())) {
+			this.baseDirectory = "./data/";
+		}
+
 		super();
 	}
 
@@ -91,7 +94,7 @@ public class SearchEngineLynette extends SearchEngine {
 
 
 	@Override
-	Double computeNdcg(String query, ArrayList<String> ranking, int ndcgAt) {
+	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> ranking, int ndcgAt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
