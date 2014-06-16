@@ -49,7 +49,8 @@ public class IndexWriter {
 	    this.directory = directory;
 	    this.indexString = indexString;
         this.fillSeekList = fillSeekList;
-	    this.indexCounter.put(indexString, 0);
+        if (!this.indexCounter.containsKey(indexString))
+	        this.indexCounter.put(indexString, 0);
     }
 
 	public void write(WordMap partIndex) {
