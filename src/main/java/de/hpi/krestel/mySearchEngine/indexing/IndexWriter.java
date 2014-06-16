@@ -40,7 +40,7 @@ public class IndexWriter {
 		this("data");
 	}
 	public IndexWriter(String directory) {
-		this(directory, "index_first_five");
+		this(directory, "index");
 	}
     public IndexWriter(String directory, String indexString) {
 	    this(directory, indexString, false);

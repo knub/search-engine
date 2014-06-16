@@ -12,7 +12,8 @@ public class SearchEngineTest {
 	// Some test queries for development. The real test queries will be more difficult ;)
 //	static String[] queries = {"Artikel", "deutsch", "Artikel AND deutsch", "Artikel OR deutsch", "deutsch BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 //	static String[] queries = {"Artikel AND Smithee", "Artikel OR Reaktion", "Art* BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
-	static String[] queries = {"artikel regisseur", "regisseur", "deutsch", "anschluss", "soziologie"};
+//	static String[] queries = {"artikel regisseur", "regisseur", "deutsch", "anschluss", "soziologie"};
+	static String[] queries = {"anschluss luhmann", "actinium", "information retrieval"};
 //	static String[] queries = {"deutsch"};
 //	static String[] queries = {"regisseur"};
 
