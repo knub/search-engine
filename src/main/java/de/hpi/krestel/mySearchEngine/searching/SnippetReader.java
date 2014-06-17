@@ -53,7 +53,7 @@ public class SnippetReader {
 			String beforeText = new String(beforeBytes).replace("\n", "");
 			int nullByteIndex = beforeText.indexOf("\0");
 			if (nullByteIndex != -1) {
-				beforeText = beforeText.substring(nullByteIndex);
+				beforeText = beforeText.substring(nullByteIndex + 1);
 			}
 			int startHit = beforeText.length();
 
