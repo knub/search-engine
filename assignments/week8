@@ -1,0 +1,10 @@
+Assignment 1
+
+a)
+A HEAD request only requests the header of a resource, i.e. the information about the content size, the last update, the content type etc., without actually downloading the resource. This can be used to determine whether a resource needs to be downloaded again or not while at the same time not using to many resources (disk space, processing power) on both the crawler and the crawlee.
+
+b)
+A crawler needs to take care of not crawling one host too often, because this is impolite (wasting the server's resources on a crawl task) and, in the extreme case, can cause the server to fail, because there are too many requests (denial of service). So a crawler needs to keep track about when he last crawled a server. This information is best kept in memory for one machine, instead of distributing it (which would be an unnecessary overhead for this task).
+
+c)
+It justs restarts another server. The data can be read from the transaction log, as per definition, all changes to a tablet are recorded in a transaction log.
