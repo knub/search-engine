@@ -16,7 +16,7 @@ public class WikipediaReader {
 
 	public void readWikiFile() {
 		try {
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(WIKI_FILE), StandardCharsets.UTF_8));
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(WIKI_FILE_SHORT), StandardCharsets.UTF_8));
 			XMLStreamReader streamReader = factory.createXMLStreamReader(reader);
 
 			boolean isInText = false;

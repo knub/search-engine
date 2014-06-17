@@ -13,7 +13,11 @@ import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Indexer implements TextCompletedListener {
 
@@ -29,6 +33,10 @@ public class Indexer implements TextCompletedListener {
 	long docCount;
 	long cumulatedDocLength;
 	long startTime;
+
+	boolean createLinkConnections = true;
+
+	private Map<String, StringBuilder> links = new HashMap<String, StringBuilder>();
 
     public Indexer(String directory) {
 	    this.directory = directory;
@@ -46,6 +54,7 @@ public class Indexer implements TextCompletedListener {
 		preprocessingPipeline.finished();
 		triggerMergingProcess();
 		writeSeekList();
+		writeLinkList();
 	}
 
 	private void writeSeekList() {
@@ -60,8 +69,46 @@ public class Indexer implements TextCompletedListener {
 		}
 	}
 
+	private void writeLinkList() {
+		try {
+			PrintWriter printWriter = new PrintWriter(directory + "/links");
+			for (Map.Entry<String, StringBuilder> key : links.entrySet())
+				printWriter.println(key.getKey() + "\t" + key.getValue().toString());
+			printWriter.close();
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
 	@Override
 	public void onTextCompleted(String text, String title) {
+		if (createLinkConnections) {
+			Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+			Matcher matcher = pattern.matcher(text);
+			while (matcher.find()) {
+				String s = matcher.group(1);
+				String anchorText = "";
+				String destination = "";
+				if (s.contains("|")) {
+					String[] splits = s.split("\\|");
+					destination = splits[0];
+					anchorText = splits[1];
+				} else {
+					destination = s;
+					anchorText = s;
+				}
+				StringBuilder sb = links.get(destination);
+				String newLink = "\0" + title + "\0" + anchorText;
+				if (sb == null) {
+					StringBuilder builder = new StringBuilder();
+					builder.append(newLink);
+					links.put(destination, builder);
+				} else
+					sb.append(newLink);
+			}
+		}
+
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		docCount += 1;
 		cumulatedDocLength += labels.size();
