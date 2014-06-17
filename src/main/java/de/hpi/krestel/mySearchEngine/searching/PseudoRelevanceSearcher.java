@@ -77,7 +77,7 @@ public class PseudoRelevanceSearcher {
 				maxCount = it.value();
 			}
 		}
-		System.out.println("Max word is " + maxWord + " with " + maxCount + " counts.");
+//		System.out.println("Max word is " + maxWord + " with " + maxCount + " counts.");
 		return Pair.with(maxWord, maxCount);
 
 	}

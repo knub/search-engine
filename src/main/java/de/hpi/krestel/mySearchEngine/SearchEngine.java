@@ -67,7 +67,7 @@ public abstract class SearchEngine {
 			while(iter.hasNext()){
 				String item = iter.next();
 				output += item +"\n";
-				//		System.out.println(item);
+						System.out.println(item);
 			}
 		}
 		output += "\nnDCG@" +topK +": " +ndcg;

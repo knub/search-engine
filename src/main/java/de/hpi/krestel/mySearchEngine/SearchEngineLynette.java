@@ -35,6 +35,11 @@ public class SearchEngineLynette extends SearchEngine {
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
     private List<String> titleMap;
 
+//	String setPlainText = "\033[0;0m";
+//	String setBoldText = "\033[0;1m";
+	String setPlainText = "";
+	String setBoldText = "";
+
 	public SearchEngineLynette() {
 		super();
 	}
@@ -73,26 +78,22 @@ public class SearchEngineLynette extends SearchEngine {
         Operator op = queryParser.parse(query);
 		ResultList results = op.evaluate(searcher).toResultSet().subList(0, prf);
 
-		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300);
-		op = prs.buildNewSearchOperator();
-		results = op.evaluate(searcher).toResultSet().subList(0, topK);
+//		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300);
+//		op = prs.buildNewSearchOperator();
+//		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
         for (Pair<Integer, DocumentEntry> result : results) {
             int docId = result.getValue0();
             resultsStrings.add(this.titleMap.get(docId));
         }
-        /*
 		SnippetReader snippetReader = new SnippetReader();
-		String setPlainText = "\033[0;0m";
-		String setBoldText = "\033[0;1m";
 		for (Pair<Integer, DocumentEntry> result : results) {
 			int docId = result.getValue0();
 			DocumentEntry docEntry = result.getValue1();
 			resultsStrings.add(setBoldText + "    Document: " + this.titleMap.get(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
 			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
 		}
-		*/
 
         return resultsStrings;
 	}
@@ -112,7 +113,7 @@ public class SearchEngineLynette extends SearchEngine {
             while(iter.hasNext() && origRank <= ndcgAt) {
                 String item = iter.next();
                 if (goldRanking.contains(item)) {
-                    System.out.println("has word: " + item);
+//                    System.out.println("has word: " + item);
                     int goldRank = goldRanking.indexOf(item) + 1;
                     int goldGain = dcgAtRank(goldRank);
                     int origGain = dcgAtRank(origRank);

@@ -15,7 +15,10 @@ public class SnippetReader {
 	RandomAccessFile texts;
 	RandomAccessFile offsets;
 
-	String endFoundSequence   = "\033[0;m"; // underline stop
+//	String startFoundSequence = "\033[4m";  // underline
+//	String endFoundSequence   = "\033[0;m"; // underline stop
+	String startFoundSequence = "##";  // underline
+	String endFoundSequence   = "##"; // underline stop
 
 	public SnippetReader() {
 		this(DEFAULT_SNIPPET_LENGTH);
@@ -103,7 +106,6 @@ public class SnippetReader {
 		return endFoundSequence;
 	}
 
-	String startFoundSequence = "\033[4m";  // underline
 
 	public void setEndFoundSequence(String endFoundSequence) {
 		this.endFoundSequence = endFoundSequence;
