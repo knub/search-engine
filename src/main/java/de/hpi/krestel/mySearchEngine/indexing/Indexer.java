@@ -34,7 +34,7 @@ public class Indexer implements TextCompletedListener {
 	long cumulatedDocLength;
 	long startTime;
 
-	boolean createLinkConnections = true;
+	boolean createLinkConnections = false;
 
 	private Map<String, StringBuilder> links = new HashMap<String, StringBuilder>();
 
