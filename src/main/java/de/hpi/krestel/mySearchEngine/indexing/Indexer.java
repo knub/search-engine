@@ -66,19 +66,23 @@ public class Indexer implements TextCompletedListener {
 		docCount += 1;
 		cumulatedDocLength += labels.size();
 		docLengths.put(documentId, labels.size());
-		System.out.println("Title: " + title + ", Document-ID: " + documentId);
+//		System.out.println("Title: " + title + ", Document-ID: " + documentId);
 		indexText(labels);
         this.titleMap.add(title);
         documentId++;
 		long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long freeMemory = Runtime.getRuntime().maxMemory() - usedMemory;
-		if (documentId % 100 == 0) {
+		if (documentId % 1000 == 0) {
 			if (startTime != 0)
-			System.out.println("Dokument-ID: " + documentId + ". Last 100 took: " + (System.currentTimeMillis() - startTime) + " ms");
+			System.out.println("Dokument-ID: " + documentId + ". Last 1000 took: " + (System.currentTimeMillis() - startTime) + " ms");
 			startTime = System.currentTimeMillis();
 		}
 		if (freeMemory / 1024 / 1024 < 400) {
 			writePartIndex();
+			System.out.print("Garbage collect ..");
+			for (int i = 0; i < 10; i++)
+				System.gc();
+			System.out.println("Done.");
 		}
 	}
 
