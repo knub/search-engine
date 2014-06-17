@@ -53,8 +53,6 @@ public class WriteToPlainTextFileProcessor extends Processor {
 
 			accByteCount += byteCount;
 			textWriter.print(text);
-			// write DEFAULT_SNIPPET_LENGTH null bytes after each text, so we can show the surrounding of a hit without running
-			// into another file
 			textWriter.print(NULL_STRING);
 			accByteCount += 1;
 			return input;

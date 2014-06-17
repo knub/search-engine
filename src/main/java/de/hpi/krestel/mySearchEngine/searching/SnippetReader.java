@@ -88,7 +88,21 @@ public class SnippetReader {
 			}
 			firstSpace = firstSpace > startHit ?  0 : firstSpace;
 			snippet = snippet.substring(firstSpace, lastSpace);
-			return snippet;
+			return snippet
+					.replace("'''", "")
+					.replace("''", "")
+					.replace("======", "")
+					.replace("=====", "")
+					.replace("====", "")
+					.replace("===", "")
+					.replace("==", "")
+					.replace("<u>", "")
+					.replace("</u>", "")
+					.replace("**", "")
+					.replace("[[", "")
+					.replace("]]", "")
+					.replace("{{", "")
+					.replace("}}", "");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
