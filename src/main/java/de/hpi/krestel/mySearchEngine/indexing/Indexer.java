@@ -104,10 +104,10 @@ public class Indexer implements TextCompletedListener {
 				if (s.contains("|")) {
 					String[] splits = s.split("\\|");
 					destination = splits[0];
-                    if(splits.length > 0){
-                        // dunno why but there was an java.lang.ArrayIndexOutOfBoundsException here
+                    try {
                         anchorText = splits[1];
-                    } else {
+                    } catch (Exception e) {
+                        System.out.println("I'm dumb.");
                         anchorText = splits[0];
                     }
 				} else {
