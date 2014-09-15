@@ -5,7 +5,6 @@ import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.PseudoRelevanceSearcher;
 import de.hpi.krestel.mySearchEngine.searching.ResultList;
 import de.hpi.krestel.mySearchEngine.searching.SnippetReader;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
@@ -14,6 +13,7 @@ import org.javatuples.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,26 +52,48 @@ public class SearchEngineLynette extends SearchEngine {
         searcher.setSeekList(indexer.getSeekList());
 	}
 
-
-
+    /**
+     * Load the index if the seek file exists.
+     *
+     * @param directory
+     * @return
+     */
 	@Override
 	boolean loadIndex(String directory) {
 		try {
-			File seekFile = new File(directory + "/" + "seek_list");
-			if (seekFile.exists()) {
-				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
-				SeekList seekList = (SeekList) ois.readObject();
+            SeekList seekList = loadSeekListFromFile(directory + "/seek_list");
+
+            if (seekList != null) {
                 this.titleMap = seekList.getTitleMap();
-				searcher.setSeekList(seekList);
-				// hard-coding index file for now
+
+                searcher.setSeekList(seekList);
 				searcher.setIndexFilename(directory + "/final_index0001");
-				return true;
+
+                return true;
 			}
+
 			return false;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+    /**
+     * Load the seek list from disk.
+     *
+     * @param filename
+     * @return SeekList
+     */
+    private SeekList loadSeekListFromFile(String filename) throws Exception {
+        File seekFile = new File(filename);
+
+        if (seekFile.exists()) {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
+            return (SeekList) ois.readObject();
+        }
+
+        return null;
+    }
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
@@ -82,11 +104,14 @@ public class SearchEngineLynette extends SearchEngine {
 //		op = prs.buildNewSearchOperator();
 //		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
+        // Add titles to result list
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
         for (Pair<Integer, DocumentEntry> result : results) {
             int docId = result.getValue0();
             resultsStrings.add(this.titleMap.get(docId));
         }
+
+        // Generate snippets for our results
 		SnippetReader snippetReader = new SnippetReader();
 		for (Pair<Integer, DocumentEntry> result : results) {
 			int docId = result.getValue0();
@@ -97,8 +122,6 @@ public class SearchEngineLynette extends SearchEngine {
 
         return resultsStrings;
 	}
-
-
 
 	@Override
 	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> ranking, int ndcgAt) {
@@ -113,7 +136,6 @@ public class SearchEngineLynette extends SearchEngine {
             while(iter.hasNext() && origRank <= ndcgAt) {
                 String item = iter.next();
                 if (goldRanking.contains(item)) {
-//                    System.out.println("has word: " + item);
                     int goldRank = goldRanking.indexOf(item) + 1;
                     int goldGain = dcgAtRank(goldRank);
                     int origGain = dcgAtRank(origRank);
