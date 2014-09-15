@@ -53,16 +53,6 @@ public class Indexer implements TextCompletedListener {
 		writePartIndex();
 		preprocessingPipeline.finished();
 
-        // TODO: remove this the following dirty lines again
-        String linkterm = "schnitzelmitkartoffelsalat";
-        if(links.containsKey(linkterm)) {
-            System.out.println("Links to " + linkterm + ": " + links.get(linkterm).toString());
-        } else {
-            System.out.println("Link to "+ linkterm + " doesn't exist");
-        }
-        if(true)
-            return;
-
         triggerMergingProcess();
 		writeSeekList();
 		writeLinkList();
@@ -124,21 +114,6 @@ public class Indexer implements TextCompletedListener {
 					sb.append(newLink);
 			}
 		}
-
-        // TODO: remove following lines (until early return)
-        documentId++;
-        if (documentId % 1000 == 0) {
-            System.out.println("Dokument-ID: " + documentId);
-        }
-        long freemem = Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory();
-        if (freemem / 1024 / 1024 < 400) {
-            System.out.print("Free Memory: " + freemem + ". Garbage collect ...");
-            for (int i = 0; i < 10; i++)
-                System.gc();
-            System.out.println("Done.");
-        }
-        if(true)
-            return;
 
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 		docCount += 1;
