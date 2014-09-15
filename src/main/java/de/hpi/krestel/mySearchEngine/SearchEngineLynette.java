@@ -98,7 +98,9 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {
         Operator op = queryParser.parse(query);
-		ResultList results = op.evaluate(searcher).toResultSet().subList(0, prf);
+		ResultList results = op.evaluate(searcher) // Execute the search
+                               .toResultSet()      // Convert to result set
+                               .subList(0, prf);   // Use only the first
 
 //		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300);
 //		op = prs.buildNewSearchOperator();
