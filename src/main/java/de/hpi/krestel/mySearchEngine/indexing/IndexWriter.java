@@ -36,35 +36,47 @@ public class IndexWriter {
 
 	boolean closed = true;
 
-	public IndexWriter() {
+	public IndexWriter()
+    {
 		this("data");
 	}
-	public IndexWriter(String directory) {
+
+    public IndexWriter(String directory)
+    {
 		this(directory, "index");
 	}
-    public IndexWriter(String directory, String indexString) {
+
+    public IndexWriter(String directory, String indexString)
+    {
 	    this(directory, indexString, false);
     }
-    public IndexWriter(String directory, String indexString, boolean fillSeekList) {
+
+    public IndexWriter(String directory, String indexString, boolean fillSeekList)
+    {
 	    this.directory = directory;
 	    this.indexString = indexString;
         this.fillSeekList = fillSeekList;
-        if (!this.indexCounter.containsKey(indexString))
-	        this.indexCounter.put(indexString, 0);
+
+        if (!this.indexCounter.containsKey(indexString)) {
+            this.indexCounter.put(indexString, 0);
+        }
     }
 
-	public void write(WordMap partIndex) {
+	public void write(WordMap partIndex)
+    {
 		try {
-			if (closed)
-				intializeStreams();
+			if (this.closed) {
+                this.initializeStreams();
+            }
 
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				// save byte count to store in seek list later
 				long byteCount = bos.getByteCount();
-				writeIndexWord(entry.getKey());
-				writeOccurrenceMap(entry.getValue());
-                if (fillSeekList) {
-	                seekList.put(entry.getKey(), byteCount);
+				this.writeIndexWord(entry.getKey());
+				this.writeOccurrenceMap(entry.getValue());
+
+                if (this.fillSeekList) {
+	                this.seekList.put(entry.getKey(), byteCount);
                 }
 			}
 		} catch (IOException e) {
@@ -72,27 +84,32 @@ public class IndexWriter {
 		}
 	}
 
-	private void intializeStreams() throws FileNotFoundException {
+	private void initializeStreams() throws FileNotFoundException
+    {
 		String fileName  = nextFileName();
 		bos              = new BitOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
 		bit23writer      = new Bit23Writer(bos);
 		eliasGammaWriter = new EliasGammaWriter(bos);
 		eliasDeltaWriter = new EliasDeltaWriter(bos);
+
         try {
-            ps               = new PrintStream(bos, false, "UTF-8");
+            this.ps = new PrintStream(bos, false, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getLocalizedMessage());
             throw new RuntimeException("This machine does NOT support UTF-8. Ha.");
         }
+
 		closed = false;
 	}
 
-	private void writeIndexWord(String indexWord) throws IOException {
-		ps.print(indexWord);
-		bos.write(new byte[]{0});
+	private void writeIndexWord(String indexWord) throws IOException
+    {
+		this.ps.print(indexWord);
+		this.bos.write(new byte[]{0});
 	}
 
-	private void writeOccurrenceMap(OccurrenceMap occurrenceMap) throws IOException {
+	private void writeOccurrenceMap(OccurrenceMap occurrenceMap) throws IOException
+    {
 		int[] documentIds = occurrenceMap.keys();
 		Arrays.sort(documentIds);
 
@@ -103,7 +120,8 @@ public class IndexWriter {
 		}
 	}
 
-	private void writeDocumentEntry(DocumentEntry documentEntry) throws IOException {
+	private void writeDocumentEntry(DocumentEntry documentEntry) throws IOException
+    {
 		eliasGammaWriter.write(documentEntry.size());
 		int lastPos = 0;
 		int lastOffset = 0;
@@ -113,42 +131,48 @@ public class IndexWriter {
 			int currentPosition = documentEntry.positions.get(i);
 			if (i == 0) {
 				eliasDeltaWriter.write(currentPosition + 1);
-			}
-			else
-				eliasDeltaWriter.write(currentPosition - lastPos + 1);
+			} else {
+                eliasDeltaWriter.write(currentPosition - lastPos + 1);
+            }
 			lastPos = currentPosition;
 
 			int currentOffset = documentEntry.offsets.get(i);
 			if (i == 0) {
 				eliasDeltaWriter.write(currentOffset + 1);
-			}
-			else
-				eliasDeltaWriter.write(currentOffset - lastOffset + 1);
+			} else {
+                eliasDeltaWriter.write(currentOffset - lastOffset + 1);
+            }
 			lastOffset = currentOffset;
 
 			eliasGammaWriter.write(documentEntry.lengths.get(i));
 		}
 	}
 
-	private String nextFileName() {
-		this.indexCounter.put(indexString, this.indexCounter.get(indexString) + 1);
-		return getFileName();
+	private String nextFileName()
+    {
+		this.indexCounter.put(this.indexString, this.indexCounter.get(this.indexString) + 1);
+		return this.getFileName();
 	}
 
-	public String getFileName() {
-		return String.format(directory + "/" + indexString + "%04d", this.indexCounter.get(indexString));
+	public String getFileName()
+    {
+		return String.format(
+                directory + "/" + indexString + "%04d", this.indexCounter.get(indexString)
+        );
 	}
 
-	public void close() {
+	public void close()
+    {
 		try {
-			closed = true;
-			bos.close();
-		} catch (IOException e) {
+			this.bos.close();
+            this.closed = true;
+        } catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-    public SeekList getSeekList() {
+    public SeekList getSeekList()
+    {
         return seekList;
     }
 }
