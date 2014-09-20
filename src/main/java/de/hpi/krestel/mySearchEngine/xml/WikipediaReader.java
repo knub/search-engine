@@ -7,16 +7,26 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WikipediaReader {
-	final String WIKI_FILE_SHORT = "data/dewiki-20140216-pages-articles-multistream-first-five.xml";
-	final String WIKI_FILE       = "data/dewiki-20140216-pages-articles-multistream.xml";
+/**
+ * A parser for Wikipedia XML dumps.
+ */
+public class WikipediaReader implements DocumentReaderInterface
+{
+	private XMLInputFactory factory = XMLInputFactory.newInstance();
+	private List<DocumentReaderListener> listeners = new ArrayList<DocumentReaderListener>();
 
-	XMLInputFactory factory = XMLInputFactory.newInstance();
-	List<TextCompletedListener> listeners = new ArrayList<TextCompletedListener>();
+    private String filename;
 
-	public void readWikiFile() {
+    public WikipediaReader(String filename)
+    {
+        this.filename = filename;
+    }
+
+	@Override
+    public void startReading()
+    {
 		try {
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(WIKI_FILE_SHORT), StandardCharsets.UTF_8));
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), StandardCharsets.UTF_8));
 			XMLStreamReader streamReader = factory.createXMLStreamReader(reader);
 
 			boolean isInText = false;
@@ -24,9 +34,11 @@ public class WikipediaReader {
 			String title = "";
 
 			StringBuilder text = null;
+
 			while (streamReader.hasNext()) {
 				streamReader.next();
 
+                // Opening tags
 				if (streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 					if (streamReader.getLocalName().equals("text")) {
 						isInText = true;
@@ -34,15 +46,19 @@ public class WikipediaReader {
 					} else if (streamReader.getLocalName().equals("title")) {
 						isInTitle= true;
 					}
-				} else if (streamReader.getEventType() == XMLStreamReader.END_ELEMENT) {
+				}
+                // Closing tags
+                else if (streamReader.getEventType() == XMLStreamReader.END_ELEMENT) {
 					if (streamReader.getLocalName().equals("text")) {
 						isInText = false;
-						onTextCompleted(text.toString(), title);
+						this.notifyListeners(text.toString(), title);
 						text  = new StringBuilder();
 					} else if (streamReader.getLocalName().equals("title")) {
 						isInTitle = false;
 					}
-				} else if (streamReader.getEventType() == XMLStreamReader.CHARACTERS) {
+				}
+                // Text
+                else if (streamReader.getEventType() == XMLStreamReader.CHARACTERS) {
 					if (isInText) {
 						text.append(streamReader.getText());
 					}
@@ -56,12 +72,16 @@ public class WikipediaReader {
 		}
 	}
 
-	public void addTextCompletedListener(TextCompletedListener listener) {
+	@Override
+    public void addListener(DocumentReaderListener listener)
+    {
 		this.listeners.add(listener);
 	}
 
-	public void onTextCompleted(String text, String title) {
-		for (TextCompletedListener listener : listeners)
-			listener.onTextCompleted(text, title);
+	private void notifyListeners(String text, String title)
+    {
+		for (DocumentReaderListener listener : this.listeners) {
+            listener.documentParsed(text, title);
+        }
 	}
 }

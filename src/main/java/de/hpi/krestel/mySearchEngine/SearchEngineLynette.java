@@ -9,11 +9,11 @@ import de.hpi.krestel.mySearchEngine.searching.ResultList;
 import de.hpi.krestel.mySearchEngine.searching.SnippetReader;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
+import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import org.javatuples.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,18 +35,22 @@ public class SearchEngineLynette extends SearchEngine {
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
     private List<String> titleMap;
 
-//	String setPlainText = "\033[0;0m";
+    private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream-first-five.xml";
+//    private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream.xml";
+
+    //	String setPlainText = "\033[0;0m";
 //	String setBoldText = "\033[0;1m";
 	String setPlainText = "";
 	String setBoldText = "";
 
-	public SearchEngineLynette() {
+	public SearchEngineLynette()
+    {
 		super();
 	}
 
 	@Override
 	void index(String directory) {
-		Indexer indexer = new Indexer(directory);
+		Indexer indexer = new Indexer(directory, new WikipediaReader(WIKI_FILE));
 		indexer.run();
         searcher.setIndexFilename(indexer.getIndexFilename());
         searcher.setSeekList(indexer.getSeekList());

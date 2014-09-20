@@ -5,8 +5,8 @@ import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
-import de.hpi.krestel.mySearchEngine.xml.TextCompletedListener;
-import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
+import de.hpi.krestel.mySearchEngine.xml.DocumentReaderInterface;
+import de.hpi.krestel.mySearchEngine.xml.DocumentReaderListener;
 import edu.stanford.nlp.ling.CoreLabel;
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Indexer implements TextCompletedListener
+public class Indexer implements DocumentReaderListener
 {
 
 	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
@@ -37,12 +37,14 @@ public class Indexer implements TextCompletedListener
 
 	boolean createLinkConnections = false;
 
-	private Map<String, StringBuilder> links = new HashMap<String, StringBuilder>();
+    private DocumentReaderInterface reader;
+    private Map<String, StringBuilder> links = new HashMap<String, StringBuilder>();
 
-    public Indexer(String directory)
+    public Indexer(String directory, DocumentReaderInterface reader)
     {
 	    this.directory = directory;
         this.titleMap = new ArrayList<String>();
+        this.reader = reader;
     }
 
 	public void run()
@@ -52,12 +54,11 @@ public class Indexer implements TextCompletedListener
 		docCount = 0;
 		cumulatedDocLength = 0;
 
-        // Set up the parser and make sure we're notified every time a
-		WikipediaReader reader = new WikipediaReader();
-		reader.addTextCompletedListener(this);
+        // Set up the parser and make sure we're notified every time a new document is found
+		this.reader.addListener(this);
 
-        // Parse the Wiki entries and write the partial indexes
-        reader.readWikiFile();
+        // Parse the entries and write the partial indexes
+        this.reader.startReading();
 		this.writePartIndex();
 
         // Do some cleanup in the processing pipeline
@@ -107,43 +108,15 @@ public class Indexer implements TextCompletedListener
      * @param title
      */
 	@Override
-	public void onTextCompleted(String text, String title)
+	public void documentParsed(String text, String title)
     {
         // Parse the links, too
 		if (this.createLinkConnections) {
-			Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
-			Matcher matcher = pattern.matcher(text);
-			while (matcher.find()) {
-				String s = matcher.group(1);
-				String anchorText = "";
-				String destination = "";
-				if (s.contains("|")) {
-					String[] splits = s.split("\\|");
-					destination = splits[0];
-                    try {
-                        anchorText = splits[1];
-                    } catch (Exception e) {
-                        System.out.println("I'm dumb.");
-                        anchorText = splits[0];
-                    }
-				} else {
-					destination = s;
-					anchorText = s;
-				}
-				StringBuilder sb = links.get(destination);
-				String newLink = "\0" + title + "\0" + anchorText;
-				if (sb == null) {
-					StringBuilder builder = new StringBuilder();
-					builder.append(newLink);
-					links.put(destination, builder);
-				} else
-					sb.append(newLink);
-			}
+            this.parseLinks(text, title);
 		}
 
         // Tokenize and preprocess the document
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
-
 
 //		System.out.println("Title: " + title + ", Document-ID: " + documentId);
         // Index the tests
@@ -157,6 +130,38 @@ public class Indexer implements TextCompletedListener
         this.documentId += 1;
         this.cumulatedDocLength += labels.size();
         this.docLengths.put(this.documentId, labels.size());
+    }
+
+    private void parseLinks(String text, String title)
+    {
+        Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            String s = matcher.group(1);
+            String anchorText = "";
+            String destination = "";
+            if (s.contains("|")) {
+                String[] splits = s.split("\\|");
+                destination = splits[0];
+                try {
+                anchorText = splits[1];
+                } catch (Exception e) {
+                System.out.println("I'm dumb.");
+                anchorText = splits[0];
+                }
+            } else {
+                destination = s;
+                anchorText = s;
+            }
+            StringBuilder sb = links.get(destination);
+            String newLink = "\0" + title + "\0" + anchorText;
+            if (sb == null) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(newLink);
+                links.put(destination, builder);
+            } else
+                sb.append(newLink);
+        }
     }
 
     protected void watchMemory()
