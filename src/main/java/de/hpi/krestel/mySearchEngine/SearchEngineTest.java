@@ -13,9 +13,21 @@ public class SearchEngineTest {
 //	static String[] queries = {"Artikel", "deutsch", "Artikel AND deutsch", "Artikel OR deutsch", "deutsch BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 //	static String[] queries = {"Artikel AND Smithee", "Artikel OR Reaktion", "Art* BUT NOT Artikel", "\"Filmfestspiele in Venedig\""};
 //	static String[] queries = {"artikel regisseur", "regisseur", "deutsch", "anschluss", "soziologie"};
-	static String[] queries = {"anschluss luhmann", "actinium", "information retrieval"};
+//	static String[] queries = {"anschluss luhmann", "actinium", "information retrieval"};
 //	static String[] queries = {"deutsch"};
 //	static String[] queries = {"regisseur"};
+    static String[] queries = {
+            "\"ein trauriges Arschloch\"",
+            "Toskana AND Wein",
+            "sülz* AND staatlich",
+            "öffentlicher nahverkehr stadtpiraten",
+            "schnitzel AND kaffe BUT NOT schwein",
+            "Dr. No",
+            "ICE BUT NOT T",
+            "Bierzelt Oktoberfest",
+            "Los Angeles sport",
+            "08/15"
+    };
 
 	// some variables (will be explained when needed, ignore for now!)
 	static int topK = 10;
