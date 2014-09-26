@@ -171,6 +171,10 @@ public class IndexWriter {
 		}
 	}
 
+    public void setSeekList(SeekList seekList) {
+        this.seekList = seekList;
+    }
+
     public SeekList getSeekList()
     {
         return seekList;
