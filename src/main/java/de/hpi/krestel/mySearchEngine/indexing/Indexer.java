@@ -27,8 +27,6 @@ public class Indexer implements DocumentReaderListener
     private final List<String> partIndexFileNames = new ArrayList<String>();
 	private final String directory;
 	private int documentId = 0;
-    private String indexFilename;
-    private SeekList seekList;
     private List<String> titleMap;
 	TIntIntMap docLengths = new TIntIntHashMap();
 	long docCount;
@@ -76,13 +74,12 @@ public class Indexer implements DocumentReaderListener
 
         // Merge the partial indices and list of links
         this.triggerMergingProcess();
-		this.writeSeekList();
 	}
 
     /**
      * Write the seek list to a file.
      */
-	private void writeSeekList()
+	private void writeSeekList(SeekList seekList)
     {
         seekList.setTitleMap(this.titleMap);
 		try {
@@ -272,21 +269,14 @@ public class Indexer implements DocumentReaderListener
             System.out.println(e.getLocalizedMessage());
         }
 
-        this.indexFilename = indexWriter.getFileName();
+        // Extract and write SeekList
+        System.out.print("Seek list: Extract... ");
+        SeekList seekList = indexWriter.getSeekList();
+	    seekList.setDocLengths(this.docLengths);
+	    seekList.setDocumentCount(this.docCount);
 
-        // Extract the seek list
-        this.seekList = indexWriter.getSeekList();
-	    this.seekList.setDocLengths(this.docLengths);
-	    this.seekList.setDocumentCount(this.docCount);
-    }
-
-    public String getIndexFilename()
-    {
-        return this.indexFilename;
-    }
-
-    public SeekList getSeekList()
-    {
-        return this.seekList;
+        System.out.print("done. Write...");
+        this.writeSeekList(seekList);
+        System.out.println("done.");
     }
 }
