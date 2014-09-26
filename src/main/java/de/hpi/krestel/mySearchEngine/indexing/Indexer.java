@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class Indexer implements DocumentReaderListener
 {
 
-	private final Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
+	private Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
     private final WordMap partIndex = new WordMap();
     private final List<String> partIndexFileNames = new ArrayList<String>();
 	private final String directory;
@@ -59,12 +59,15 @@ public class Indexer implements DocumentReaderListener
         this.reader.startReading();
 		this.writePartIndex();
 
+        System.out.println("FINISHED WRITING PART INDICES");
+
         // Do some cleanup in the processing pipeline
 		this.preprocessingPipeline.finished();
+        this.preprocessingPipeline = null;
+        collectGarbage();
 
-        System.out.println("FINISHED WRITING PART INDICES");
         System.out.println("Number of documents: " + docCount);
-        System.out.println("Culmulated length of documents: " + cumulatedDocLength);
+        System.out.println("Cumulated length of documents: " + cumulatedDocLength);
 
         // Write out seek list
         System.out.print("Writing LinkList... ");
@@ -81,7 +84,6 @@ public class Indexer implements DocumentReaderListener
      */
 	private void writeSeekList(SeekList seekList)
     {
-        seekList.setTitleMap(this.titleMap);
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
 			seekList.setAverageDocumentLength(cumulatedDocLength / docCount);
@@ -127,7 +129,10 @@ public class Indexer implements DocumentReaderListener
 //		System.out.println("Title: " + title + ", Document-ID: " + documentId);
         // Index the tests
         this.indexText(labels);
+        // two infos about the document
+        // TODO: can those be merged to one data structure? PLZ write them incrementally to one or two files PLZ!
         this.titleMap.add(title);
+        this.docLengths.put(this.documentId, labels.size());
 
         this.watchMemory();
 
@@ -135,7 +140,6 @@ public class Indexer implements DocumentReaderListener
         this.docCount += 1;
         this.documentId += 1;
         this.cumulatedDocLength += labels.size();
-        this.docLengths.put(this.documentId, labels.size());
     }
 
     private void parseLinks(String text, String title)
@@ -190,12 +194,17 @@ public class Indexer implements DocumentReaderListener
             // Dump the current partial index
             this.writePartIndex();
 
-            System.out.print("Garbage collect ..");
-            for (int i = 0; i < 10; i++) {
-                System.gc();
-            }
-            System.out.println("Done.");
+            collectGarbage();
         }
+    }
+
+    protected void collectGarbage()
+    {
+        System.out.print("Garbage collect ..");
+        for (int i = 0; i < 10; i++) {
+            System.gc();
+        }
+        System.out.println("Done.");
     }
 
 	public void indexText(List<CoreLabel> labels)
@@ -251,7 +260,7 @@ public class Indexer implements DocumentReaderListener
     public void triggerMergingProcess()
     {
         // Create reader instances for all our part indices
-        List<IndexReader> indexReaders = new ArrayList<IndexReader>(preprocessingPipeline.size());
+        List<IndexReader> indexReaders = new ArrayList<IndexReader>(partIndexFileNames.size());
         for (String partIndexFileName : partIndexFileNames) {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
@@ -272,8 +281,9 @@ public class Indexer implements DocumentReaderListener
         // Extract and write SeekList
         System.out.print("Seek list: Extract... ");
         SeekList seekList = indexWriter.getSeekList();
-	    seekList.setDocLengths(this.docLengths);
-	    seekList.setDocumentCount(this.docCount);
+        seekList.setDocLengths(this.docLengths);
+        seekList.setDocumentCount(this.docCount);
+        seekList.setTitleMap(this.titleMap);
 
         System.out.print("done. Write...");
         this.writeSeekList(seekList);
