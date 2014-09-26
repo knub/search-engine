@@ -64,10 +64,19 @@ public class Indexer implements DocumentReaderListener
         // Do some cleanup in the processing pipeline
 		this.preprocessingPipeline.finished();
 
-        // Merge the partial indices, write out seek list and list of links
+        System.out.println("FINISHED WRITING PART INDICES");
+        System.out.println("Number of documents: " + docCount);
+        System.out.println("Culmulated length of documents: " + cumulatedDocLength);
+
+        // Write out seek list
+        System.out.print("Writing LinkList... ");
+        this.writeLinkList();
+        this.links = null;
+        System.out.println("Done.");
+
+        // Merge the partial indices and list of links
         this.triggerMergingProcess();
 		this.writeSeekList();
-		this.writeLinkList();
 	}
 
     /**
