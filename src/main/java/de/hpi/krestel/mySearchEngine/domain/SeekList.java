@@ -1,7 +1,6 @@
 package de.hpi.krestel.mySearchEngine.domain;
 
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.list.TIntList;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -9,9 +8,8 @@ import java.util.TreeMap;
 public class SeekList extends TreeMap<String, Long> {
 	long averageDocLength = -1;
 	long documentCount = -1;
-    List<String> titleMap;
-
-	private TIntIntMap docLengths = new TIntIntHashMap();
+    private List<String> titleMap;
+    private TIntList docLengths;
 
 	public long getAverageDocumentLength() {
 		return this.averageDocLength;
@@ -21,11 +19,11 @@ public class SeekList extends TreeMap<String, Long> {
 		this.averageDocLength = v;
 	}
 
-	public TIntIntMap getDocLengths() {
+	public TIntList getDocLengths() {
 		return docLengths;
 	}
 
-	public void setDocLengths(TIntIntMap docLengths) {
+	public void setDocLengths(TIntList docLengths) {
 		this.docLengths = docLengths;
 	}
 

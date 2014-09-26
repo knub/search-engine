@@ -8,8 +8,8 @@ import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderInterface;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderListener;
 import edu.stanford.nlp.ling.CoreLabel;
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class Indexer implements DocumentReaderListener
 	private final String directory;
 	private int documentId = 0;
     private List<String> titleMap;
-	TIntIntMap docLengths = new TIntIntHashMap();
+    TIntList docLengths = new TIntArrayList();
 	long docCount;
 	long cumulatedDocLength;
 	long startTime;
@@ -132,7 +132,7 @@ public class Indexer implements DocumentReaderListener
         // two infos about the document
         // TODO: can those be merged to one data structure? PLZ write them incrementally to one or two files PLZ!
         this.titleMap.add(title);
-        this.docLengths.put(this.documentId, labels.size());
+        this.docLengths.add(labels.size());
 
         this.watchMemory();
 
