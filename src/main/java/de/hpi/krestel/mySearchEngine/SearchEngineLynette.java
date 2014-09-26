@@ -52,8 +52,6 @@ public class SearchEngineLynette extends SearchEngine {
 	void index(String directory) {
 		Indexer indexer = new Indexer(directory, new WikipediaReader(WIKI_FILE));
 		indexer.run();
-        searcher.setIndexFilename(indexer.getIndexFilename());
-        searcher.setSeekList(indexer.getSeekList());
 	}
 
     /**
