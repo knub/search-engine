@@ -36,9 +36,7 @@ public class Indexer implements DocumentReaderListener
     {
 	    this.directory = directory;
         this.reader = reader;
-        //TODO: handle filename to constructor to create it in insert mode
-        documents = new Documents();
-        //documents = new Documents(directory + "/documents");
+        documents = new Documents(directory + "/documents");
     }
 
 	public void run()
@@ -52,15 +50,15 @@ public class Indexer implements DocumentReaderListener
 		this.writePartIndex();
 
         System.out.println("FINISHED WRITING PART INDICES");
+        System.out.println("Number of documents: " + documents.getCount());
+        System.out.println("Cumulated length of documents: " + documents.getCumulatedLength());
 
         // Do some cleanup in the processing pipeline
 		this.preprocessingPipeline.finished();
         this.preprocessingPipeline = null;
-        // TODO finalize documents here, too. (file must be closed)
+        documents.finalize();
+        documents = null;
         collectGarbage();
-
-        System.out.println("Number of documents: " + documents.getCount());
-        System.out.println("Cumulated length of documents: " + documents.getCumulatedLength());
 
         // Write out seek list
         System.out.print("Writing LinkList... ");
@@ -272,7 +270,6 @@ public class Indexer implements DocumentReaderListener
         // TODO this will be exchanged with seekList.finalize()
         System.out.print("Seek list: Extract... ");
         SeekList seekList = indexWriter.getSeekList();
-        seekList.setDocuments(documents);
 
         System.out.print("done. Write...");
         this.writeSeekList(seekList);

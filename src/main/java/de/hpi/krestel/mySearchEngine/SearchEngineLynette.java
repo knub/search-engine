@@ -67,9 +67,7 @@ public class SearchEngineLynette extends SearchEngine {
             SeekList seekList = loadSeekListFromFile(directory + "/seek_list");
 
             if (seekList != null) {
-                //TODO exchange following two lines
-                documents = seekList.getDocuments();
-                // documents = Documents.readFromFile(directory + "/documents");
+                documents = Documents.readFromFile(directory + "/documents");
 
                 searcher.setDocuments(documents);
                 searcher.setSeekList(seekList);
