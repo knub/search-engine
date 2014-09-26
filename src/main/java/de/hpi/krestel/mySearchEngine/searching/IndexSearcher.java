@@ -1,9 +1,6 @@
 package de.hpi.krestel.mySearchEngine.searching;
 
-import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
-import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
-import de.hpi.krestel.mySearchEngine.domain.SeekList;
-import de.hpi.krestel.mySearchEngine.domain.WordMap;
+import de.hpi.krestel.mySearchEngine.domain.*;
 import de.hpi.krestel.mySearchEngine.indexing.IndexReader;
 import de.hpi.krestel.mySearchEngine.util.stream.RandomAccessInputStream;
 import gnu.trove.procedure.TIntObjectProcedure;
@@ -15,7 +12,8 @@ import java.util.Map;
 public class IndexSearcher {
 
 	private SeekList seekList;
-	private IndexReader indexReader;
+    private Documents documents;
+    private IndexReader indexReader;
 	private RandomAccessInputStream randomAccessInputStream;
 	private static final double k1 = 1.2;
 	private static final double k2 = 100;
@@ -36,14 +34,14 @@ public class IndexSearcher {
 			}
 			WordMap wordMap = indexReader.read();
 			OccurrenceMap occurrenceMap = wordMap.firstEntry().getValue();
-			final long N = seekList.getDocumentCount();
+			final long N = documents.getCount();
 			final long ni = occurrenceMap.size();
-			final double avgdl = seekList.getAverageDocumentLength();
+			final double avgdl = documents.getAverageLength();
 			final long qfi = occurenceInQuery;
 			occurrenceMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
 				@Override
 				public boolean execute(int docId, DocumentEntry docEntry) {
-					long dl = seekList.getDocLengths().get(docId);
+					long dl = documents.getLength(docId);
 					long fi = docEntry.size();
 //					System.out.println("Doc-ID: " + docId);
 					docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
@@ -80,4 +78,9 @@ public class IndexSearcher {
 	public SeekList getSeekList() {
 		return this.seekList;
 	}
+
+    public void setDocuments(Documents documents) {
+        this.documents = documents;
+    }
+
 }

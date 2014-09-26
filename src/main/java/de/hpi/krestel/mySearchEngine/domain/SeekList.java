@@ -1,42 +1,19 @@
 package de.hpi.krestel.mySearchEngine.domain;
 
-import gnu.trove.list.TIntList;
-
-import java.util.List;
 import java.util.TreeMap;
 
 public class SeekList extends TreeMap<String, Long> {
-	long averageDocLength = -1;
-	long documentCount = -1;
-    private List<String> titleMap;
-    private TIntList docLengths;
+    //TODO: PLZ write me incrementally to a file, read me from there
 
-	public long getAverageDocumentLength() {
-		return this.averageDocLength;
-	}
+    private Documents documents;
 
-	public void setAverageDocumentLength(long v) {
-		this.averageDocLength = v;
-	}
+    public Documents getDocuments() {
+        return documents;
+    }
 
-	public TIntList getDocLengths() {
-		return docLengths;
-	}
+    public void setDocuments(Documents documents) {
+        this.documents = documents;
+    }
 
-	public void setDocLengths(TIntList docLengths) {
-		this.docLengths = docLengths;
-	}
-
-	public long getDocumentCount() {
-		return documentCount;
-	}
-
-	public void setDocumentCount(long documentCount) {
-		this.documentCount = documentCount;
-	}
-
-    public void setTitleMap(List<String> list) { this.titleMap = list; }
-
-    public List<String> getTitleMap() { return this.titleMap; }
 
 }

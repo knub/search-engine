@@ -1,6 +1,7 @@
 package de.hpi.krestel.mySearchEngine;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
+import de.hpi.krestel.mySearchEngine.domain.Documents;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.indexing.Indexer;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
@@ -33,7 +34,7 @@ public class SearchEngineLynette extends SearchEngine {
 
     private final IndexSearcher searcher = new IndexSearcher();
     private final QueryParser queryParser = new QueryParser(Pipeline.createSearchPipeline());
-    private List<String> titleMap;
+    private Documents documents;
 
     private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream-first-five.xml";
 //    private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream.xml";
@@ -66,8 +67,9 @@ public class SearchEngineLynette extends SearchEngine {
             SeekList seekList = loadSeekListFromFile(directory + "/seek_list");
 
             if (seekList != null) {
-                this.titleMap = seekList.getTitleMap();
+                documents = seekList.getDocuments();
 
+                searcher.setDocuments(documents);
                 searcher.setSeekList(seekList);
 				searcher.setIndexFilename(directory + "/final_index0001");
 
@@ -112,7 +114,7 @@ public class SearchEngineLynette extends SearchEngine {
         ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
         for (Pair<Integer, DocumentEntry> result : results) {
             int docId = result.getValue0();
-            resultsStrings.add(this.titleMap.get(docId));
+            resultsStrings.add(documents.getTitle(docId));
         }
 
         // Generate snippets for our results
@@ -120,7 +122,7 @@ public class SearchEngineLynette extends SearchEngine {
 		for (Pair<Integer, DocumentEntry> result : results) {
 			int docId = result.getValue0();
 			DocumentEntry docEntry = result.getValue1();
-			resultsStrings.add(setBoldText + "    Document: " + this.titleMap.get(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
+			resultsStrings.add(setBoldText + "    Document: " + documents.getTitle(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
 			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
 		}
 

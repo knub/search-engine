@@ -1,9 +1,6 @@
 package de.hpi.krestel.mySearchEngine.indexing;
 
-import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
-import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
-import de.hpi.krestel.mySearchEngine.domain.SeekList;
-import de.hpi.krestel.mySearchEngine.domain.WordMap;
+import de.hpi.krestel.mySearchEngine.domain.*;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderInterface;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderListener;
@@ -27,10 +24,7 @@ public class Indexer implements DocumentReaderListener
     private final List<String> partIndexFileNames = new ArrayList<String>();
 	private final String directory;
 	private int documentId = 0;
-    private List<String> titleMap;
-    TIntList docLengths = new TIntArrayList();
-	long docCount;
-	long cumulatedDocLength;
+    private Documents documents = new Documents();
 	long startTime;
 
 	boolean createLinkConnections = false;
@@ -41,17 +35,12 @@ public class Indexer implements DocumentReaderListener
     public Indexer(String directory, DocumentReaderInterface reader)
     {
 	    this.directory = directory;
-        this.titleMap = new ArrayList<String>();
         this.reader = reader;
     }
 
 	public void run()
     {
 		System.out.println("INDEXING");
-
-		docCount = 0;
-		cumulatedDocLength = 0;
-
         // Set up the parser and make sure we're notified every time a new document is found
 		this.reader.addListener(this);
 
@@ -66,8 +55,8 @@ public class Indexer implements DocumentReaderListener
         this.preprocessingPipeline = null;
         collectGarbage();
 
-        System.out.println("Number of documents: " + docCount);
-        System.out.println("Cumulated length of documents: " + cumulatedDocLength);
+        System.out.println("Number of documents: " + documents.getCount());
+        System.out.println("Cumulated length of documents: " + documents.getCumulatedLength());
 
         // Write out seek list
         System.out.print("Writing LinkList... ");
@@ -86,7 +75,6 @@ public class Indexer implements DocumentReaderListener
     {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
-			seekList.setAverageDocumentLength(cumulatedDocLength / docCount);
 			oos.writeObject(seekList);
 			oos.close();
 		} catch (IOException e) {
@@ -130,16 +118,11 @@ public class Indexer implements DocumentReaderListener
         // Index the tests
         this.indexText(labels);
         // two infos about the document
-        // TODO: can those be merged to one data structure? PLZ write them incrementally to one or two files PLZ!
-        this.titleMap.add(title);
-        this.docLengths.add(labels.size());
+        documents.add(title, labels.size());
+        this.documentId += 1;
 
         this.watchMemory();
 
-        // Gather some statistics
-        this.docCount += 1;
-        this.documentId += 1;
-        this.cumulatedDocLength += labels.size();
     }
 
     private void parseLinks(String text, String title)
@@ -281,9 +264,7 @@ public class Indexer implements DocumentReaderListener
         // Extract and write SeekList
         System.out.print("Seek list: Extract... ");
         SeekList seekList = indexWriter.getSeekList();
-        seekList.setDocLengths(this.docLengths);
-        seekList.setDocumentCount(this.docCount);
-        seekList.setTitleMap(this.titleMap);
+        seekList.setDocuments(documents);
 
         System.out.print("done. Write...");
         this.writeSeekList(seekList);
