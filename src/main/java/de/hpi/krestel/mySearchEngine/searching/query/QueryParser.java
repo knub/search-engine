@@ -2,10 +2,8 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
-import edu.stanford.nlp.ling.CoreLabel;
 
 import java.io.*;
-import java.util.List;
 
 public class QueryParser
 {
@@ -49,6 +47,7 @@ public class QueryParser
 		this.leftStash = null;
 		this.rightStash = null;
 		this.binaryOp = "";
+        this.specialOperatorOccured = false;
 	}
 
 	private StreamTokenizer buildTokenizer(String query)
@@ -85,7 +84,7 @@ public class QueryParser
 
 	private void handleWordToken(String word)
     {
-		if (word.toLowerCase().equals("and")) {
+        if (word.toLowerCase().equals("and")) {
 			specialOperatorOccured = true;
 			this.handleBinaryOp("and");
 		} else if (word.toLowerCase().equals("or")) {
@@ -142,7 +141,7 @@ public class QueryParser
 
 	private void handleOperand(Operator op)
     {
-		if (this.state.equals("left")) {
+        if (this.state.equals("left")) {
 			this.leftStash = op;
 			this.state = "operator";
 		} else if (this.state.equals("right")) {
@@ -154,11 +153,18 @@ public class QueryParser
 			} else if (this.leftStash instanceof RankedWord) {
 				((RankedWord) this.leftStash).add((Word) op);
 			} else {
-				throw new RuntimeException("Unhandled state.");
+				this.fail(op);
 			}
 		} else {
-			throw new RuntimeException("Unhandled state.");
-
+            this.fail(op);
 		}
 	}
+
+    private void fail(Operator op)
+    {
+        throw new RuntimeException(String.format(
+            "Unhandled state. [state=%s, op=%s]",
+            this.state, op
+        ));
+    }
 }
