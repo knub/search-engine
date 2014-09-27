@@ -1,8 +1,9 @@
 package de.hpi.krestel.mySearchEngine.domain;
 
+import java.io.Serializable;
 import java.util.TreeMap;
 
-public class SeekList extends TreeMap<String, Long>
+public class SeekList extends TreeMap<String, Long> implements Serializable
 {
     //TODO: PLZ write me incrementally to a file, read me from there
     // see Documents
