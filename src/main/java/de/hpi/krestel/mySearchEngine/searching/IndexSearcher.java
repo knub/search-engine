@@ -7,10 +7,9 @@ import gnu.trove.procedure.TIntObjectProcedure;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
-public class IndexSearcher {
-
+public class IndexSearcher
+{
 	private SeekList seekList;
     private Documents documents;
     private IndexReader indexReader;
@@ -19,24 +18,27 @@ public class IndexSearcher {
 	private static final double k2 = 100;
 	private static final double b  = 0.75;
 
-	public OccurrenceMap search(String token) {
+	public OccurrenceMap search(String token)
+    {
 		return this.search(token, 1);
 	}
-	public OccurrenceMap search(String token, int occurenceInQuery) {
-		Long offset = seekList.get(token);
-		if (offset != null) {
-			try {
-				randomAccessInputStream.seek(offset);
+
+	public OccurrenceMap search(String token, int occurenceInQuery)
+    {
+		if (this.seekList.containsKey(token)) {
+            long offset = this.seekList.get(token);
+            try {
+				this.randomAccessInputStream.seek(offset);
 			} catch (IOException e) {
 				System.out.println("Couldn't set seek position at index. Hmpf:");
 				System.out.println(e.getLocalizedMessage());
 				throw new RuntimeException(e);
 			}
-			WordMap wordMap = indexReader.read();
+			WordMap wordMap = this.indexReader.read();
 			OccurrenceMap occurrenceMap = wordMap.firstEntry().getValue();
-			final long N = documents.getCount();
+			final long N = this.documents.getCount();
 			final long ni = occurrenceMap.size();
-			final double avgdl = documents.getAverageLength();
+			final double avgdl = this.documents.getAverageLength();
 			final long qfi = occurenceInQuery;
 			occurrenceMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
 				@Override
@@ -54,32 +56,37 @@ public class IndexSearcher {
 		}
 	}
 
-	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi) {
+	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi)
+    {
 //		System.out.println(String.format("N: %d, ni: %d, dl: %d, avgdl: %f, fi: %d, qfi: %d", N, ni, dl, avgdl, fi, qfi));
 		double K = k1 * (1 - b + b * ((double) dl) / avgdl);
 		return Math.log((N - ni + 0.5) / (ni + 0.5)) * (k1 + 1) * fi / (K + fi) * (k2 + 1) * qfi / (k2 + qfi);
 	}
 
-	public void setIndexFilename(String indexFilename) {
+	public void setIndexFilename(String indexFilename)
+    {
 		try {
-			randomAccessInputStream = new RandomAccessInputStream(indexFilename);
+			this.randomAccessInputStream = new RandomAccessInputStream(indexFilename);
 		} catch (FileNotFoundException e) {
 			System.out.println("The index file does not exist. Hmpf:");
 			System.out.println(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
-		indexReader = new IndexReader(randomAccessInputStream);
+		indexReader = new IndexReader(this.randomAccessInputStream);
 	}
 
-	public void setSeekList(SeekList seekList) {
+	public void setSeekList(SeekList seekList)
+    {
 		this.seekList = seekList;
 	}
 
-	public SeekList getSeekList() {
+	public SeekList getSeekList()
+    {
 		return this.seekList;
 	}
 
-    public void setDocuments(Documents documents) {
+    public void setDocuments(Documents documents)
+    {
         this.documents = documents;
     }
 
