@@ -4,17 +4,12 @@ import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class QueryParser
 {
-
 	private Pipeline pipeline;
-	private String state;
-	private Operator leftStash;
-	private Operator rightStash;
-	private String binaryOp;
-
-	boolean specialOperatorOccured = false;
+    private Operator stack;
 
 	public QueryParser(Pipeline preprocessing)
     {
@@ -23,31 +18,30 @@ public class QueryParser
 
 	public Operator parse(String query)
     {
+        query = query.replaceAll("(?i)but +not", "butnot");
 		StreamTokenizer tokenizer = this.buildTokenizer(query);
 
 		this.resetState();
 		try {
 			while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
-				if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-					this.handleWordToken(tokenizer.sval);
-				} else if (tokenizer.ttype == '"') {
-					this.handlePhraseToken(pipeline.processPhraseForQuery(tokenizer.sval));
+                if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
+                    this.handleToken(tokenizer.sval);
+				} else if (tokenizer.ttype == StreamTokenizer.TT_NUMBER) {
+                    this.handleToken(tokenizer.toString());
+                } else if (tokenizer.ttype == '"') {
+                    this.handlePhraseToken(tokenizer.sval);
 				}
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
-		return this.createOperator();
+        return this.stack;
 	}
 
 	private void resetState()
     {
-		this.state = "left";
-		this.leftStash = null;
-		this.rightStash = null;
-		this.binaryOp = "";
-        this.specialOperatorOccured = false;
+        this.stack = null;
 	}
 
 	private StreamTokenizer buildTokenizer(String query)
@@ -62,109 +56,58 @@ public class QueryParser
 		return tokenizer;
 	}
 
-	private Operator createOperator()
+	private void handleToken(String token)
     {
-		if (this.state.equals("operator")) {
-			return this.leftStash;
-		} else { /* TODO: SHould this be  if (this.state.equals("done")) ??? */
-			return this.createBinaryOperator();
-		}
-	}
-
-	private Operator createBinaryOperator()
-    {
-		if (this.binaryOp.equals("and")) {
-			return new And(this.leftStash, this.rightStash);
-		} else if (this.binaryOp.equals("or")) {
-			return new Or(this.leftStash, this.rightStash);
+        Operator op;
+        if (token.toLowerCase().equals("and")) {
+            op = this.createBinaryOperator("and");
+		} else if (token.toLowerCase().equals("or")) {
+            op = this.createBinaryOperator("or");
+		} else if (token.toLowerCase().equals("butnot")) {
+            op = this.createBinaryOperator("butnot");
+		} else if (token.endsWith("*")) {
+            op = this.createPrefixedWord(token);
 		} else {
-			return new ButNot(this.leftStash, this.rightStash);
+            op = this.createWord(token);
 		}
+
+        this.stack = op.pushOnto(this.stack);
 	}
 
-	private void handleWordToken(String word)
+	private void handlePhraseToken(String phrase)
     {
-        if (word.toLowerCase().equals("and")) {
-			specialOperatorOccured = true;
-			this.handleBinaryOp("and");
-		} else if (word.toLowerCase().equals("or")) {
-			specialOperatorOccured = true;
-			this.handleBinaryOp("or");
-		} else if (word.toLowerCase().equals("but")) {
-			specialOperatorOccured = true;
-			this.handleBut();
-		} else if (word.toLowerCase().equals("not")) {
-			specialOperatorOccured = true;
-			this.handleNot();
-		} else if (word.endsWith("*")) {
-			specialOperatorOccured = true;
-			this.handleOperand(new PrefixedWord(word.substring(0, word.length() - 1)));
-		} else {
-			this.handleOperand(new Word(pipeline.processForQuery(word)));
-		}
+        Phrase op = new Phrase(phrase.split(" "));
+
+        this.stack = op.pushOnto(this.stack);
 	}
 
-	private void handlePhraseToken(String[] phrase)
+    private Operator createBinaryOperator(String type)
     {
-		specialOperatorOccured = true;
-		this.handleOperand(new Phrase(phrase));
-	}
+        if (this.stack == null) {
+            return new Word(type);
+        } else if (this.stack instanceof BinaryOperator) {
+            BinaryOperator binary = (BinaryOperator) this.stack;
+            if (! binary.hasRight()) {
+                return new Word(type);
+            }
+        }
 
-	private void handleBinaryOp(String type)
-    {
-		if (this.state.equals("operator")) {
-			this.binaryOp = type;
-			this.state = "right";
-		} else {
-			this.handleOperand(new Word(type));
-		}
-	}
+        if (type.equals("and")) {
+            return new And();
+        } else if (type.equals("or")) {
+            return new Or();
+        } else {
+            return new ButNot();
+        }
+    }
 
-	private void handleBut()
+    private Word createWord(String token)
     {
-		if (this.state.equals("operator")) {
-			this.state = "but";
-		} else {
-			this.handleOperand(new Word("but"));
-		}
-	}
+        return new Word(pipeline.processForQuery(token));
+    }
 
-	private void handleNot()
+    private PrefixedWord createPrefixedWord(String token)
     {
-		if (this.state.equals("but")) {
-			this.binaryOp = "butnot";
-			this.state = "right";
-		} else {
-			this.handleOperand(new Word("not"));
-		}
-	}
-
-	private void handleOperand(Operator op)
-    {
-        if (this.state.equals("left")) {
-			this.leftStash = op;
-			this.state = "operator";
-		} else if (this.state.equals("right")) {
-			this.rightStash = op;
-			this.state = "done";
-		} else if (!this.specialOperatorOccured && op instanceof Word && this.state.equals("operator")) {
-			if (this.leftStash instanceof Word) {
-				this.leftStash = new RankedWord((Word) this.leftStash, (Word) op);
-			} else if (this.leftStash instanceof RankedWord) {
-				((RankedWord) this.leftStash).add((Word) op);
-			} else {
-				this.fail(op);
-			}
-		} else {
-            this.fail(op);
-		}
-	}
-
-    private void fail(Operator op)
-    {
-        throw new RuntimeException(String.format(
-            "Unhandled state. [state=%s, op=%s]",
-            this.state, op
-        ));
+        return new PrefixedWord(token.substring(0, token.length() - 1));
     }
 }
