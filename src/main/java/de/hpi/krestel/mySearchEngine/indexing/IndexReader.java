@@ -39,7 +39,7 @@ public class IndexReader
             throw new RuntimeException(e);
         }
     }
-    
+
     private void initializeReader(InputStream inputStream) throws FileNotFoundException
     {
 		this.bis = new BitInputStream(inputStream);
@@ -53,8 +53,9 @@ public class IndexReader
 		try {
 			String word = this.readWord();
 			// check for end of file
-			if (word == null)
-				return null;
+			if (word == null) {
+                return null;
+            }
 			OccurrenceMap occurrenceMap = this.readOccurenceMap();
 
 			WordMap wordMap = new WordMap();
