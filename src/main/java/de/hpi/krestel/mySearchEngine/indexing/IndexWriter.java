@@ -11,7 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndexWriter {
+public class IndexWriter
+{
 
 	// the base stream for all other streams
 	private BitOutputStream bos = null;
@@ -71,7 +72,7 @@ public class IndexWriter {
 
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				// save byte count to store in seek list later
-				long byteCount = bos.getByteCount();
+				long byteCount = this.bos.getByteCount();
 				this.writeIndexWord(entry.getKey());
 				this.writeOccurrenceMap(entry.getValue());
 
@@ -87,19 +88,19 @@ public class IndexWriter {
 	private void initializeStreams() throws FileNotFoundException
     {
 		String fileName  = nextFileName();
-		bos              = new BitOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
-		bit23writer      = new Bit23Writer(bos);
-		eliasGammaWriter = new EliasGammaWriter(bos);
-		eliasDeltaWriter = new EliasDeltaWriter(bos);
+		this.bos              = new BitOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
+		this.bit23writer      = new Bit23Writer(this.bos);
+		this.eliasGammaWriter = new EliasGammaWriter(this.bos);
+		this.eliasDeltaWriter = new EliasDeltaWriter(this.bos);
 
         try {
-            this.ps = new PrintStream(bos, false, "UTF-8");
+            this.ps = new PrintStream(this.bos, false, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getLocalizedMessage());
             throw new RuntimeException("This machine does NOT support UTF-8. Ha.");
         }
 
-		closed = false;
+		this.closed = false;
 	}
 
 	private void writeIndexWord(String indexWord) throws IOException
@@ -113,38 +114,39 @@ public class IndexWriter {
 		int[] documentIds = occurrenceMap.keys();
 		Arrays.sort(documentIds);
 
-		eliasGammaWriter.write(documentIds.length);
+		this.eliasGammaWriter.write(documentIds.length);
 		for (int documentId : documentIds) {
-			bit23writer.write(documentId);
-			writeDocumentEntry(occurrenceMap.get(documentId));
+			this.bit23writer.write(documentId);
+			this.writeDocumentEntry(occurrenceMap.get(documentId));
 		}
 	}
 
 	private void writeDocumentEntry(DocumentEntry documentEntry) throws IOException
     {
-		eliasGammaWriter.write(documentEntry.size());
+		this.eliasGammaWriter.write(documentEntry.size());
 		int lastPos = 0;
 		int lastOffset = 0;
-		for (int i = 0; i < documentEntry.size(); i++) {
+
+        for (int i = 0; i < documentEntry.size(); i++) {
 			// yes, this could be refactored, e.g. to a subclass of elias-delta, which
 			// automatically uses delta encoding
 			int currentPosition = documentEntry.positions.get(i);
 			if (i == 0) {
-				eliasDeltaWriter.write(currentPosition + 1);
+				this.eliasDeltaWriter.write(currentPosition + 1);
 			} else {
-                eliasDeltaWriter.write(currentPosition - lastPos + 1);
+                this.eliasDeltaWriter.write(currentPosition - lastPos + 1);
             }
 			lastPos = currentPosition;
 
 			int currentOffset = documentEntry.offsets.get(i);
 			if (i == 0) {
-				eliasDeltaWriter.write(currentOffset + 1);
+				this.eliasDeltaWriter.write(currentOffset + 1);
 			} else {
-                eliasDeltaWriter.write(currentOffset - lastOffset + 1);
+                this.eliasDeltaWriter.write(currentOffset - lastOffset + 1);
             }
 			lastOffset = currentOffset;
 
-			eliasGammaWriter.write(documentEntry.lengths.get(i));
+			this.eliasGammaWriter.write(documentEntry.lengths.get(i));
 		}
 	}
 
@@ -171,7 +173,8 @@ public class IndexWriter {
 		}
 	}
 
-    public void setSeekList(SeekList seekList) {
+    public void setSeekList(SeekList seekList)
+    {
         this.seekList = seekList;
     }
 
