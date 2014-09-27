@@ -5,8 +5,6 @@ import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderInterface;
 import de.hpi.krestel.mySearchEngine.xml.DocumentReaderListener;
 import edu.stanford.nlp.ling.CoreLabel;
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -76,7 +74,7 @@ public class Indexer implements DocumentReaderListener
     private void createSeekList()
     {
         System.out.print("Seek list: Extract... ");
-        SeekListCreator creator = new SeekListCreator(new IndexReader(this.directory + "/final_index"));
+        SeekListCreator creator = new SeekListCreator(new IndexReader(this.directory + "/final_index0001"));
         SeekList seekList = creator.createSeekList();
 
         System.out.print("done. Write...");
