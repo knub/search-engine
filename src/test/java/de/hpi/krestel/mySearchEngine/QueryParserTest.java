@@ -3,8 +3,7 @@ package de.hpi.krestel.mySearchEngine;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.And;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.ButNot;
+import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -30,16 +29,40 @@ public class QueryParserTest extends TestCase {
     public void testParsing() {
         QueryParser queryParser = new QueryParser(new Pipeline());
 
-        Operator op;
+        Operator op, left, right;
 
-        op = queryParser.parse("Haus AND Baum*");
+        op = queryParser.parse("\"eine lange Phrase\"");
+        assertTrue(op instanceof Phrase);
+
+        op = queryParser.parse("Italien AND Pizza");
         assertTrue(op instanceof And);
 
-        op = queryParser.parse("baum BUT NOT fish");
-        assertTrue(op instanceof ButNot);
+        op = queryParser.parse("prefix* AND attribut");
+        assertTrue(op instanceof And);
+
+        op = queryParser.parse("komplizierte wörter sammlung");
+        assertTrue(op instanceof RankedWord);
 
         op = queryParser.parse("apfel AND birne BUT NOT obst");
         assertTrue(op instanceof ButNot);
+        right = ((ButNot) op).getRight();
+        assertTrue(right instanceof Word);
+        left = ((ButNot) op).getLeft();
+        assertTrue(left instanceof And);
+        right = ((And) left).getRight();
+        left = ((And) left).getLeft();
+        assertTrue(right instanceof Word);
+        assertTrue(left instanceof Word);
+
+        op = queryParser.parse("Dr. No");
+        assertTrue(op instanceof RankedWord);
+
+        op = queryParser.parse("ICE BUT NOT T");
+        assertTrue(op instanceof ButNot);
+
+        op = queryParser.parse("08/15");
+        System.out.println(op);
+        assertTrue(op instanceof Word);
     }
 
 }
