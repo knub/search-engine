@@ -22,12 +22,11 @@ public class IndexReader
 	private Bit23Reader bit23Reader;
 	private EliasGammaReader eliasGammaReader;
 	private EliasDeltaReader eliasDeltaReader;
-	String fileName;
 
 	public IndexReader(String fileName)
     {
 		try {
-			this.initializeReader(fileName);
+			this.initializeReader(new FileInputStream(fileName));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -40,13 +39,7 @@ public class IndexReader
             throw new RuntimeException(e);
         }
     }
-
-	private void initializeReader(String fileName) throws FileNotFoundException
-    {
-        this.initializeReader(new FileInputStream(fileName));
-        this.fileName = fileName;
-    }
-
+    
     private void initializeReader(InputStream inputStream) throws FileNotFoundException
     {
 		this.bis = new BitInputStream(inputStream);
@@ -127,10 +120,5 @@ public class IndexReader
 		}
 		String word = new String(wordBytes.toArray(), StandardCharsets.UTF_8);
 		return  word;
-	}
-
-	public String getFileName()
-    {
-		return this.fileName;
 	}
 }
