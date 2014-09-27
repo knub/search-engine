@@ -122,4 +122,9 @@ public class IndexReader
 		String word = new String(wordBytes.toArray(), StandardCharsets.UTF_8);
 		return  word;
 	}
+
+    public long getCurrentOffset()
+    {
+        return this.bis.getCurrentOffset();
+    }
 }

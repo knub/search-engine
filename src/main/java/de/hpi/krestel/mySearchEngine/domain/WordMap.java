@@ -3,7 +3,13 @@ package de.hpi.krestel.mySearchEngine.domain;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparable<WordMap> {
+public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparable<WordMap>
+{
+
+    public String getWord()
+    {
+        return this.firstKey();
+    }
 
 	@Override
 	public String toString() {
@@ -27,7 +33,8 @@ public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparab
 	 * The result is stored in this WordMap.
 	 * @param otherMap The map to merge with.
 	 */
-    public void partIndexMerge(WordMap otherMap) {
+    public void partIndexMerge(WordMap otherMap)
+    {
 	    if (this.size() == 0) {
 		    this.putAll(otherMap);
 		    return;
@@ -49,7 +56,8 @@ public class WordMap extends TreeMap<String, OccurrenceMap> implements  Comparab
     }
 
 	@Override
-	public int compareTo(WordMap wordMap) {
+	public int compareTo(WordMap wordMap)
+    {
 		if (this.size() != 1 || wordMap.size() != 1)
 			throw new RuntimeException("Cannot compare WordMaps with more than one element.");
 		return this.firstKey().compareTo(wordMap.firstKey());

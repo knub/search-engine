@@ -71,11 +71,24 @@ public class Indexer implements DocumentReaderListener
 	}
 
     /**
+     * Create the seek list from the finalized index.
+     */
+    private void createSeekList()
+    {
+        System.out.print("Seek list: Extract... ");
+        SeekListCreator creator = new SeekListCreator(new IndexReader(this.directory + "/final_index"));
+        SeekList seekList = creator.createSeekList();
+
+        System.out.print("done. Write...");
+        this.writeSeekList(seekList);
+        System.out.println("done.");
+    }
+
+    /**
      * Write the seek list to a file.
      */
 	private void writeSeekList(SeekList seekList)
     {
-        // TODO implement this in the seeklist class by incremental writing.
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
 			oos.writeObject(seekList);
@@ -246,15 +259,13 @@ public class Indexer implements DocumentReaderListener
     public void triggerMergingProcess()
     {
         // Create reader instances for all our part indices
-        List<IndexReader> indexReaders = new ArrayList<IndexReader>(partIndexFileNames.size());
-        for (String partIndexFileName : partIndexFileNames) {
+        List<IndexReader> indexReaders = new ArrayList<IndexReader>(this.partIndexFileNames.size());
+        for (String partIndexFileName : this.partIndexFileNames) {
             indexReaders.add(new IndexReader(partIndexFileName));
         }
 
-        //TODO create empty Seeklist here, set filename, handle ist to indexwriter
-
         // Our merger needs access to a writer and all of our readers
-        IndexWriter indexWriter = new IndexWriter(directory, "final_index", true);
+        IndexWriter indexWriter = new IndexWriter(directory, "final_index");
         IndexMerger indexMerger = new IndexMerger(indexReaders, indexWriter);
 
         // Run the merge!
@@ -266,13 +277,7 @@ public class Indexer implements DocumentReaderListener
             System.out.println(e.getLocalizedMessage());
         }
 
-        // Extract and write SeekList
-        // TODO this will be exchanged with seekList.finalize()
-        System.out.print("Seek list: Extract... ");
-        SeekList seekList = indexWriter.getSeekList();
-
-        System.out.print("done. Write...");
-        this.writeSeekList(seekList);
-        System.out.println("done.");
+        // Extract and write out the seek list
+        this.createSeekList();
     }
 }

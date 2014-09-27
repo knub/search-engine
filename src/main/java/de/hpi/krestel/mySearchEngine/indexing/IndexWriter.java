@@ -2,7 +2,6 @@ package de.hpi.krestel.mySearchEngine.indexing;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
-import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 import de.hpi.krestel.mySearchEngine.util.stream.*;
 
@@ -29,9 +28,6 @@ public class IndexWriter
 	// counter for naming the index files
 	private static Map<String, Integer> indexCounter = new HashMap<String, Integer>();
 
-    private SeekList seekList = new SeekList();
-    private boolean fillSeekList = false;
-
 	private String indexString;
 	private final String directory;
 
@@ -49,14 +45,8 @@ public class IndexWriter
 
     public IndexWriter(String directory, String indexString)
     {
-	    this(directory, indexString, false);
-    }
-
-    public IndexWriter(String directory, String indexString, boolean fillSeekList)
-    {
 	    this.directory = directory;
 	    this.indexString = indexString;
-        this.fillSeekList = fillSeekList;
 
         if (!this.indexCounter.containsKey(indexString)) {
             this.indexCounter.put(indexString, 0);
@@ -72,13 +62,8 @@ public class IndexWriter
 
 			for (Map.Entry<String, OccurrenceMap> entry : partIndex.entrySet()) {
 				// save byte count to store in seek list later
-				long byteCount = this.bos.getByteCount();
 				this.writeIndexWord(entry.getKey());
 				this.writeOccurrenceMap(entry.getValue());
-
-                if (this.fillSeekList) {
-	                this.seekList.put(entry.getKey(), byteCount);
-                }
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -172,14 +157,4 @@ public class IndexWriter
 			throw new RuntimeException(e);
 		}
 	}
-
-    public void setSeekList(SeekList seekList)
-    {
-        this.seekList = seekList;
-    }
-
-    public SeekList getSeekList()
-    {
-        return seekList;
-    }
 }
