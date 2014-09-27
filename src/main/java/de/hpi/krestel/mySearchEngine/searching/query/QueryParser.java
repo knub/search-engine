@@ -7,7 +7,8 @@ import edu.stanford.nlp.ling.CoreLabel;
 import java.io.*;
 import java.util.List;
 
-public class QueryParser {
+public class QueryParser
+{
 
 	private Pipeline pipeline;
 	private String state;
@@ -17,11 +18,13 @@ public class QueryParser {
 
 	boolean specialOperatorOccured = false;
 
-	public QueryParser(Pipeline preprocessing) {
+	public QueryParser(Pipeline preprocessing)
+    {
 		this.pipeline = preprocessing;
 	}
 
-	public Operator parse(String query) {
+	public Operator parse(String query)
+    {
 		StreamTokenizer tokenizer = this.buildTokenizer(query);
 
 		this.resetState();
@@ -40,14 +43,16 @@ public class QueryParser {
 		return this.createOperator();
 	}
 
-	private void resetState() {
+	private void resetState()
+    {
 		this.state = "left";
 		this.leftStash = null;
 		this.rightStash = null;
 		this.binaryOp = "";
 	}
 
-	private StreamTokenizer buildTokenizer(String query) {
+	private StreamTokenizer buildTokenizer(String query)
+    {
 		Reader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(query.getBytes())));
 		StreamTokenizer tokenizer = new StreamTokenizer(reader);
 
@@ -58,7 +63,8 @@ public class QueryParser {
 		return tokenizer;
 	}
 
-	private Operator createOperator() {
+	private Operator createOperator()
+    {
 		if (this.state.equals("operator")) {
 			return this.leftStash;
 		} else { /* TODO: SHould this be  if (this.state.equals("done")) ??? */
@@ -66,7 +72,8 @@ public class QueryParser {
 		}
 	}
 
-	private Operator createBinaryOperator() {
+	private Operator createBinaryOperator()
+    {
 		if (this.binaryOp.equals("and")) {
 			return new And(this.leftStash, this.rightStash);
 		} else if (this.binaryOp.equals("or")) {
@@ -76,17 +83,18 @@ public class QueryParser {
 		}
 	}
 
-	private void handleWordToken(String word) {
-		if (word.equals("and")) {
+	private void handleWordToken(String word)
+    {
+		if (word.toLowerCase().equals("and")) {
 			specialOperatorOccured = true;
 			this.handleBinaryOp("and");
-		} else if (word.equals("or")) {
+		} else if (word.toLowerCase().equals("or")) {
 			specialOperatorOccured = true;
 			this.handleBinaryOp("or");
-		} else if (word.equals("but")) {
+		} else if (word.toLowerCase().equals("but")) {
 			specialOperatorOccured = true;
 			this.handleBut();
-		} else if (word.equals("not")) {
+		} else if (word.toLowerCase().equals("not")) {
 			specialOperatorOccured = true;
 			this.handleNot();
 		} else if (word.endsWith("*")) {
@@ -97,12 +105,14 @@ public class QueryParser {
 		}
 	}
 
-	private void handlePhraseToken(String[] phrase) {
+	private void handlePhraseToken(String[] phrase)
+    {
 		specialOperatorOccured = true;
 		this.handleOperand(new Phrase(phrase));
 	}
 
-	private void handleBinaryOp(String type) {
+	private void handleBinaryOp(String type)
+    {
 		if (this.state.equals("operator")) {
 			this.binaryOp = type;
 			this.state = "right";
@@ -111,7 +121,8 @@ public class QueryParser {
 		}
 	}
 
-	private void handleBut() {
+	private void handleBut()
+    {
 		if (this.state.equals("operator")) {
 			this.state = "but";
 		} else {
@@ -119,7 +130,8 @@ public class QueryParser {
 		}
 	}
 
-	private void handleNot() {
+	private void handleNot()
+    {
 		if (this.state.equals("but")) {
 			this.binaryOp = "butnot";
 			this.state = "right";
@@ -128,7 +140,8 @@ public class QueryParser {
 		}
 	}
 
-	private void handleOperand(Operator op) {
+	private void handleOperand(Operator op)
+    {
 		if (this.state.equals("left")) {
 			this.leftStash = op;
 			this.state = "operator";
