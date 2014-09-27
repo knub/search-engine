@@ -81,8 +81,7 @@ public class Documents implements Serializable {
         if(writeFileMode) {
             // format line to "12length34 this is the title"
             try {
-                fileWriter.write("" + length + " " + title);
-                fileWriter.append(System.getProperty("line.separator"));
+                fileWriter.write("" + length + " " + title + "\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("cannot write to documents file");
