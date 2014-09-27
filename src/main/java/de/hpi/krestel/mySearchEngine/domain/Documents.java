@@ -7,8 +7,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Documents implements Serializable {
-    // this class stores a list of titles and lengths, each for one document
+// this class stores a list of titles and lengths, each for one document
+public class Documents implements Serializable
+{
     private List<String> titles;
     private TIntList lengths;
     private long cumulatedLength;
@@ -16,7 +17,7 @@ public class Documents implements Serializable {
     private FileWriter fileWriter;
     private int count = 0;
 
-    static public Documents readFromFile(String filename)
+    public static Documents readFromFile(String filename)
     {
         Documents documents = new Documents();
         FileReader fileReader;
@@ -55,20 +56,22 @@ public class Documents implements Serializable {
         return documents;
     }
 
-    public Documents() {
+    public Documents()
+    {
         // for reading mode
-        titles = new ArrayList<String>();
-        lengths = new TIntArrayList();
-        cumulatedLength = 0;
+        this.titles = new ArrayList<String>();
+        this.lengths = new TIntArrayList();
+        this.cumulatedLength = 0;
     }
 
-    public Documents(String filename) {
+    public Documents(String filename)
+    {
         // for inserting mode
-        writeFileMode = true;
+        this.writeFileMode = true;
 
         // open writer
         try {
-            fileWriter = new FileWriter(filename);
+            this.fileWriter = new FileWriter(filename);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("cannot open documents file");
@@ -77,26 +80,26 @@ public class Documents implements Serializable {
 
     public void add(String title, int length)
     {
-        count += 1;
-        if(writeFileMode) {
+        this.count += 1;
+        if (this.writeFileMode) {
             // format line to "12length34 this is the title"
             try {
-                fileWriter.write("" + length + " " + title + "\n");
+                this.fileWriter.write("" + length + " " + title + "\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException("cannot write to documents file");
             }
         } else {
-            titles.add(title);
-            lengths.add(length);
-            cumulatedLength += length;
+            this.titles.add(title);
+            this.lengths.add(length);
+            this.cumulatedLength += length;
         }
     }
 
     public void finalize()
     {
         try {
-            fileWriter.close();
+            this.fileWriter.close();
         } catch (IOException e) {
             System.out.println("Cannot close documents file... anyway.");
         }
@@ -104,26 +107,26 @@ public class Documents implements Serializable {
 
     public String getTitle(int id)
     {
-        return titles.get(id);
+        return this.titles.get(id);
     }
 
     public int getLength(int id)
     {
-        return lengths.get(id);
+        return this.lengths.get(id);
     }
 
     public long getCumulatedLength()
     {
-        return cumulatedLength;
+        return this.cumulatedLength;
     }
 
     public int getCount()
     {
-        return count;
+        return this.count;
     }
 
     public long getAverageLength()
     {
-        return cumulatedLength / getCount();
+        return this.cumulatedLength / this.count;
     }
 }
