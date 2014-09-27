@@ -36,7 +36,10 @@ public class QueryParserTest extends TestCase {
         assertTrue(op instanceof And);
 
         op = queryParser.parse("baum BUT NOT fish");
-        assertTrue(op instanceof ButNot);;
+        assertTrue(op instanceof ButNot);
+
+        op = queryParser.parse("apfel AND birne BUT NOT obst");
+        assertTrue(op instanceof ButNot);
     }
 
 }
