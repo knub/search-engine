@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class IndexReader {
+public class IndexReader
+{
 
 	private BitInputStream bis;
 	private Bit23Reader bit23Reader;
@@ -23,40 +24,45 @@ public class IndexReader {
 	private EliasDeltaReader eliasDeltaReader;
 	String fileName;
 
-	public IndexReader(String fileName) {
+	public IndexReader(String fileName)
+    {
 		try {
-			initializeReader(fileName);
+			this.initializeReader(fileName);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
-    public IndexReader(InputStream stream) {
+    public IndexReader(InputStream stream)
+    {
         try {
-            initializeReader(stream);
+            this.initializeReader(stream);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-	private void initializeReader(String fileName) throws FileNotFoundException {
-        initializeReader(new FileInputStream(fileName));
+	private void initializeReader(String fileName) throws FileNotFoundException
+    {
+        this.initializeReader(new FileInputStream(fileName));
         this.fileName = fileName;
     }
 
-    private void initializeReader(InputStream inputStream) throws FileNotFoundException {
-		bis = new BitInputStream(inputStream);
-		bit23Reader = new Bit23Reader(bis);
-		eliasGammaReader = new EliasGammaReader(bis);
-		eliasDeltaReader = new EliasDeltaReader(bis);
+    private void initializeReader(InputStream inputStream) throws FileNotFoundException
+    {
+		this.bis = new BitInputStream(inputStream);
+		this.bit23Reader = new Bit23Reader(bis);
+		this.eliasGammaReader = new EliasGammaReader(bis);
+		this.eliasDeltaReader = new EliasDeltaReader(bis);
 	}
 
-	public WordMap read() {
+	public WordMap read()
+    {
 		try {
-			String word = readWord();
+			String word = this.readWord();
 			// check for end of file
 			if (word == null)
 				return null;
-			OccurrenceMap occurrenceMap = readOccurenceMap();
+			OccurrenceMap occurrenceMap = this.readOccurenceMap();
 
 			WordMap wordMap = new WordMap();
 			wordMap.put(word, occurrenceMap);
@@ -66,56 +72,65 @@ public class IndexReader {
 		}
 	}
 
-	private OccurrenceMap readOccurenceMap() throws IOException {
+	private OccurrenceMap readOccurenceMap() throws IOException
+    {
 		OccurrenceMap occurrenceMap = new OccurrenceMap();
-		int documentCount = eliasGammaReader.read();
+		int documentCount = this.eliasGammaReader.read();
 		for (int i = 1; i <= documentCount; i++) {
-			int documentId    = bit23Reader.read();
-			DocumentEntry docEntry = readDocumentEntry();
+			int documentId = this.bit23Reader.read();
+			DocumentEntry docEntry = this.readDocumentEntry();
 			occurrenceMap.put(documentId, docEntry);
 		}
 		return occurrenceMap;
 	}
 
-	private DocumentEntry readDocumentEntry() throws IOException {
-		int occurCount = eliasGammaReader.read();
+	private DocumentEntry readDocumentEntry() throws IOException
+    {
+		int occurCount = this.eliasGammaReader.read();
 		DocumentEntry docEntry = new DocumentEntry();
-		int lastPos = 0;
+
+        int lastPos = 0;
 		int lastOffset = 0;
+
 		for (int i = 0; i < occurCount; i++) {
-			int currentPos = eliasDeltaReader.read() - 1;
-			if (i == 0)
-				lastPos = currentPos;
-			else
-				lastPos = lastPos + currentPos;
+			int currentPos = this.eliasDeltaReader.read() - 1;
+			if (i == 0) {
+                lastPos = currentPos;
+            } else {
+                lastPos = lastPos + currentPos;
+            }
 			docEntry.positions.add(lastPos);
 
-			int currentOffset = eliasDeltaReader.read() - 1;
-			if (i == 0)
-				lastOffset = currentOffset;
-			else
-				lastOffset = lastOffset + currentOffset;
+			int currentOffset = this.eliasDeltaReader.read() - 1;
+			if (i == 0) {
+                lastOffset = currentOffset;
+            } else {
+                lastOffset = lastOffset + currentOffset;
+            }
 			docEntry.offsets.add(lastOffset);
 
-			docEntry.lengths.add(eliasGammaReader.read());
+			docEntry.lengths.add(this.eliasGammaReader.read());
 		}
 		return docEntry;
 	}
 
-	private String readWord() throws IOException {
+	private String readWord() throws IOException
+    {
 		TByteArrayList wordBytes = new TByteArrayList();
-		byte currentByte = (byte) bis.read();
-		if (currentByte == -1)
-			return null;
+		byte currentByte = (byte) this.bis.read();
+		if (currentByte == -1) {
+            return null;
+        }
 		while (currentByte != 0) {
 			wordBytes.add(currentByte);
-			currentByte = (byte) bis.read();
+			currentByte = (byte) this.bis.read();
 		}
 		String word = new String(wordBytes.toArray(), StandardCharsets.UTF_8);
 		return  word;
 	}
 
-	public String getFileName() {
+	public String getFileName()
+    {
 		return this.fileName;
 	}
 }
