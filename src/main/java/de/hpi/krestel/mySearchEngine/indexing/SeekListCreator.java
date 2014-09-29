@@ -40,6 +40,12 @@ public class SeekListCreator
 
             curOffset = this.reader.getCurrentOffset();
         }
+        
+        try {
+            this.fileWriter.close();
+        } catch (IOException e) {
+            System.out.println("Cannot close documents file... anyway.");
+        }
     }
 
     public void writeToFile(String word, long offset)
