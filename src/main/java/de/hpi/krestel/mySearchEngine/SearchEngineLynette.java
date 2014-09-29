@@ -64,7 +64,7 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	boolean loadIndex(String directory) {
 		try {
-            SeekList seekList = loadSeekListFromFile(directory + "/seek_list");
+            SeekList seekList = SeekList.createFromFile(directory + "/seek_list");
 
             if (seekList != null) {
                 documents = Documents.readFromFile(directory + "/documents");
@@ -81,23 +81,6 @@ public class SearchEngineLynette extends SearchEngine {
 			throw new RuntimeException(e);
 		}
 	}
-
-    /**
-     * Load the seek list from disk.
-     *
-     * @param filename
-     * @return SeekList
-     */
-    private SeekList loadSeekListFromFile(String filename) throws Exception {
-        File seekFile = new File(filename);
-
-        if (seekFile.exists()) {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(seekFile));
-            return (SeekList) ois.readObject();
-        }
-
-        return null;
-    }
 
 	@Override
 	ArrayList<String> search(String query, int topK, int prf) {

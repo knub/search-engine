@@ -34,7 +34,6 @@ public class Documents
         // read each line; parse length and title; add them to lists
         String line;
         String[] splitted;
-        int length;
         try {
             while ((line = bufferedReader.readLine()) != null) {
                 // line has format "12length34 this is da title"
