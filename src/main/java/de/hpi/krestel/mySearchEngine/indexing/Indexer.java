@@ -36,36 +36,48 @@ public class Indexer implements DocumentReaderListener
         this.reader = reader;
         documents = new Documents(directory + "/documents");
     }
+    
+    private void announce(String msg)
+    {
+        System.out.println(msg);
+    }
 
 	public void run()
     {
-		System.out.println("INDEXING");
-        // Set up the parser and make sure we're notified every time a new document is found
-		this.reader.addListener(this);
+        // Recreate the final index if necessary
+        if (! new File(this.directory + "/final_index0001").isFile()) {
+            this.announce("INDEXING");
 
-        // Parse the entries and write the partial indexes
-        this.reader.startReading();
-		this.writePartIndex();
+            // Set up the parser and make sure we're notified every time a new document is found
+            this.reader.addListener(this);
 
-        System.out.println("FINISHED WRITING PART INDICES");
-        System.out.println("Number of documents: " + documents.getCount());
-        System.out.println("Cumulated length of documents: " + documents.getCumulatedLength());
+            // Parse the entries and write the partial indexes
+            this.reader.startReading();
+            this.writePartIndex();
 
-        // Do some cleanup in the processing pipeline
-		this.preprocessingPipeline.finished();
-        this.preprocessingPipeline = null;
-        documents.finalize();
-        documents = null;
-        collectGarbage();
+            this.announce("FINISHED WRITING PART INDICES");
+            this.announce("Number of documents: " + documents.getCount());
+            this.announce("Cumulated length of documents: " + documents.getCumulatedLength());
 
-        // Write out seek list
-        System.out.print("Writing LinkList... ");
-        this.writeLinkList();
-        this.links = null;
-        System.out.println("Done.");
+            // Do some cleanup in the processing pipeline
+            this.preprocessingPipeline.finished();
+            this.preprocessingPipeline = null;
+            this.documents.finalize();
+            this.documents = null;
+            this.collectGarbage();
 
-        // Merge the partial indices and list of links
-        this.triggerMergingProcess();
+            // Write out seek list
+            this.announce("Writing LinkList... ");
+            this.writeLinkList();
+            this.links = null;
+            this.announce("Done.");
+
+            // Merge the partial indices and list of links
+            this.triggerMergingProcess();
+        }
+
+        // Extract and write out the seek list
+        this.createSeekList();
 	}
 
     /**
@@ -73,13 +85,13 @@ public class Indexer implements DocumentReaderListener
      */
     private void createSeekList()
     {
-        System.out.print("Seek list: Extract... ");
+        this.announce("Seek list: Extract... ");
         SeekListCreator creator = new SeekListCreator(new IndexReader(this.directory + "/final_index0001"));
         SeekList seekList = creator.createSeekList();
 
-        System.out.print("done. Write...");
+        this.announce("done. Write...");
         this.writeSeekList(seekList);
-        System.out.println("done.");
+        this.announce("done.");
     }
 
     /**
@@ -128,7 +140,7 @@ public class Indexer implements DocumentReaderListener
         // Tokenize and preprocess the document
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 
-//		System.out.println("Title: " + title + ", Document-ID: " + documentId);
+//		this.announce("Title: " + title + ", Document-ID: " + documentId);
         // Index the tests
         this.indexText(labels);
         // two infos about the document
@@ -136,7 +148,6 @@ public class Indexer implements DocumentReaderListener
         this.documentId += 1;
 
         this.watchMemory();
-
     }
 
     private void parseLinks(String text, String title)
@@ -153,7 +164,7 @@ public class Indexer implements DocumentReaderListener
                 try {
                 anchorText = splits[1];
                 } catch (Exception e) {
-                System.out.println("I'm dumb.");
+                this.announce("I'm dumb.");
                 anchorText = splits[0];
                 }
             } else {
@@ -181,7 +192,7 @@ public class Indexer implements DocumentReaderListener
         if (this.documentId % 1000 == 0) {
             long now = System.currentTimeMillis();
             if (this.documentId > 0) {
-                System.out.println("Dokument-ID: " + this.documentId + ". Last 1000 took: " + (now - this.startTime) + " ms");
+                this.announce("Dokument-ID: " + this.documentId + ". Last 1000 took: " + (now - this.startTime) + " ms");
             }
             this.startTime = now;
         }
@@ -197,11 +208,11 @@ public class Indexer implements DocumentReaderListener
 
     protected void collectGarbage()
     {
-        System.out.print("Garbage collect ..");
+        this.announce("Garbage collect ..");
         for (int i = 0; i < 10; i++) {
             System.gc();
         }
-        System.out.println("Done.");
+        this.announce("Done.");
     }
 
 	public void indexText(List<CoreLabel> labels)
@@ -271,11 +282,8 @@ public class Indexer implements DocumentReaderListener
             indexMerger.merge();
         }
         catch (Exception e) {
-            System.out.println("Something bad happened at merging time:");
-            System.out.println(e.getLocalizedMessage());
+            this.announce("Something bad happened at merging time:");
+            this.announce(e.getLocalizedMessage());
         }
-
-        // Extract and write out the seek list
-        this.createSeekList();
     }
 }
