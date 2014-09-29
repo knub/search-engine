@@ -45,42 +45,52 @@ public class Indexer implements DocumentReaderListener
 	public void run()
     {
         // Recreate the final index if necessary
-        if (! new File(this.directory + "/final_index0001").isFile()) {
-            this.announce("INDEXING");
-
-            // Set up the parser and make sure we're notified every time a new document is found
-            this.reader.addListener(this);
-
-            // Parse the entries and write the partial indexes
-            this.reader.startReading();
-            this.writePartIndex();
-
-            this.announce("FINISHED WRITING PART INDICES");
-            this.announce("Number of documents: " + documents.getCount());
-            this.announce("Cumulated length of documents: " + documents.getCumulatedLength());
-
-            // Do some cleanup in the processing pipeline
-            this.preprocessingPipeline.finished();
-            this.preprocessingPipeline = null;
-            this.documents.finalize();
-            this.documents = null;
-            this.collectGarbage();
-
-            // Write out seek list
-            if (createLinkConnections) {
-                this.announce("Writing LinkList... ");
-                this.writeLinkList();
-                this.links = null;
-                this.announce("Done.");
-            }
-
-            // Merge the partial indices and list of links
-            this.triggerMergingProcess();
+        if (! this.finalIndexExists()) {
+            this.createIndex();
         }
 
         // Extract and write out the seek list
         this.createSeekList();
 	}
+
+    private boolean finalIndexExists()
+    {
+        return new File(this.directory + "/final_index0001").isFile();
+    }
+
+    private void createIndex()
+    {
+        this.announce("INDEXING");
+
+        // Set up the parser and make sure we're notified every time a new document is found
+        this.reader.addListener(this);
+
+        // Parse the entries and write the partial indexes
+        this.reader.startReading();
+        this.writePartIndex();
+
+        this.announce("FINISHED WRITING PART INDICES");
+        this.announce("Number of documents: " + documents.getCount());
+        this.announce("Cumulated length of documents: " + documents.getCumulatedLength());
+
+        // Do some cleanup in the processing pipeline
+        this.preprocessingPipeline.finished();
+        this.preprocessingPipeline = null;
+        this.documents.finalize();
+        this.documents = null;
+        this.collectGarbage();
+
+        // Write out link list
+        if (createLinkConnections) {
+            this.announce("Writing LinkList... ");
+            this.writeLinkList();
+            this.links = null;
+            this.announce("Done.");
+        }
+
+        // Merge the partial indices and list of links
+        this.triggerMergingProcess();
+    }
 
     /**
      * Create the seek list from the finalized index.
