@@ -99,28 +99,15 @@ public class Indexer implements DocumentReaderListener
      */
     private void createSeekList()
     {
-        this.announce("Seek list: Extract... ");
-        SeekListCreator creator = new SeekListCreator(new IndexReader(this.directory + "/final_index0001"));
-        SeekList seekList = creator.createSeekList();
+        this.announce("Seek list: Write... ");
+        SeekListCreator creator = new SeekListCreator(
+                new IndexReader(this.directory + "/final_index0001"),
+                this.directory + "/seek_list"
+        );
+        creator.createSeekList();
 
-        this.announce("done. Write...");
-        this.writeSeekList(seekList);
         this.announce("done.");
     }
-
-    /**
-     * Write the seek list to a file.
-     */
-	private void writeSeekList(SeekList seekList)
-    {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(directory + "/seek_list"));
-			oos.writeObject(seekList);
-			oos.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
     /**
      * Write the list of links to a file.
