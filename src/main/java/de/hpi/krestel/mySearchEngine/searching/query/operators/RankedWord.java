@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class RankedWord extends AbstractOperator implements Operator {
 
-	List<Word> words = new ArrayList();
+	List<Word> words = new ArrayList<Word>();
 
 	public RankedWord() {}
 
