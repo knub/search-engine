@@ -24,10 +24,15 @@ public class SeekList extends TreeMap<String, Long> implements Serializable
         String[] splitted;
         try {
             while ((line = bufferedReader.readLine()) != null) {
-                if(line.length() == 0) break;
+                if(line.length() == 0) continue;
                 // line has format "12offset34 word"
-                splitted = line.split(" ", 2);
-                seekList.put(splitted[1], Long.valueOf(splitted[0]));
+                try {
+                    splitted = line.split(" ", 2);
+                    seekList.put(splitted[1], Long.valueOf(splitted[0]));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.print("splitting failed for: ");
+                    System.out.println(line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
