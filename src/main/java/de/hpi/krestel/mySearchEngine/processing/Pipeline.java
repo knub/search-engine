@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 
 public class Pipeline extends Vector<Processor> {
 
-    static public Pipeline createPreprocessingPipeline() {
+    static public Pipeline createPreprocessingPipeline(String directory) {
         Pipeline pipeline = new Pipeline();
-        pipeline.add(new WriteToPlainTextFileProcessor());
+        pipeline.add(new WriteToPlainTextFileProcessor(directory));
         pipeline.add(new LowerCaseProcessor());
         pipeline.add(new StanfordTokenizeProcessor());
         pipeline.add(new StoppingProcessor());

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class WriteToPlainTextFileProcessor extends Processor {
 
-	public final static String PLAIN_TEXT_FILE = "data/plain-texts.txt";
-	public final static String PLAIN_TEXT_OFFSETS_FILE = "data/plain-texts-lengths.txt";
+	public final static String PLAIN_TEXT_FILE = "/plain-texts.txt";
+	public final static String PLAIN_TEXT_OFFSETS_FILE = "/plain-texts-lengths.txt";
 
 	final String NULL_STRING = "\0";
 
@@ -36,10 +36,10 @@ public class WriteToPlainTextFileProcessor extends Processor {
 		}
 	}
 
-	public WriteToPlainTextFileProcessor() {
+	public WriteToPlainTextFileProcessor(String directory) {
 		try {
-			textWriter = new PrintWriter(new File(PLAIN_TEXT_FILE), "UTF-8");
-			byteCountWriter = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(PLAIN_TEXT_OFFSETS_FILE)));
+			textWriter = new PrintWriter(new File(directory + PLAIN_TEXT_FILE), "UTF-8");
+			byteCountWriter = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(directory + PLAIN_TEXT_OFFSETS_FILE)));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

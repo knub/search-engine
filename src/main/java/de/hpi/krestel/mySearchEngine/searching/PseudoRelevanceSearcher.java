@@ -25,10 +25,10 @@ public class PseudoRelevanceSearcher {
 	final int SNIPPET_WORD_COUNT = 3;
 
 
-	public PseudoRelevanceSearcher(ResultList resultList, int snippetSize) {
+	public PseudoRelevanceSearcher(ResultList resultList, int snippetSize, String directory) {
 		this.resultList = resultList;
 		this.snippetSize = snippetSize;
-		snippetReader = new SnippetReader(snippetSize);
+		snippetReader = new SnippetReader(snippetSize, directory);
 		snippetReader.setStartFoundSequence("");
 		snippetReader.setEndFoundSequence("");
 	}

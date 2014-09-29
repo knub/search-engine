@@ -89,7 +89,7 @@ public class SearchEngineLynette extends SearchEngine {
                                .toResultSet()      // Convert to result set
                                .subList(0, prf);   // Use only the first
 
-//		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300);
+//		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300, directory);
 //		op = prs.buildNewSearchOperator();
 //		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
@@ -101,7 +101,7 @@ public class SearchEngineLynette extends SearchEngine {
         }
 
         // Generate snippets for our results
-		SnippetReader snippetReader = new SnippetReader();
+		SnippetReader snippetReader = new SnippetReader(directory);
 		for (Pair<Integer, DocumentEntry> result : results) {
 			int docId = result.getValue0();
 			DocumentEntry docEntry = result.getValue1();

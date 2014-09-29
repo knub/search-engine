@@ -65,7 +65,7 @@ public class Indexer implements DocumentReaderListener
         documents = new Documents(directory + "/documents");
 
         // set up processing pipeline
-        preprocessingPipeline = Pipeline.createPreprocessingPipeline();
+        preprocessingPipeline = Pipeline.createPreprocessingPipeline(directory);
 
         // Set up the parser and make sure we're notified every time a new document is found
         this.reader.addListener(this);

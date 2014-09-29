@@ -20,14 +20,14 @@ public class SnippetReader {
 	String startFoundSequence = "##";  // underline
 	String endFoundSequence   = "##"; // underline stop
 
-	public SnippetReader() {
-		this(DEFAULT_SNIPPET_LENGTH);
+	public SnippetReader(String directory) {
+		this(DEFAULT_SNIPPET_LENGTH, directory);
 	}
 
-	public SnippetReader(int maxSnippetLength) {
+	public SnippetReader(int maxSnippetLength, String directory) {
 		try {
-			texts = new RandomAccessFile(WriteToPlainTextFileProcessor.PLAIN_TEXT_FILE, "r");
-			offsets = new RandomAccessFile(WriteToPlainTextFileProcessor.PLAIN_TEXT_OFFSETS_FILE, "r");
+            texts = new RandomAccessFile(directory + WriteToPlainTextFileProcessor.PLAIN_TEXT_FILE, "r");
+			offsets = new RandomAccessFile(directory + WriteToPlainTextFileProcessor.PLAIN_TEXT_OFFSETS_FILE, "r");
 			this.maxSnippetLength = maxSnippetLength;
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
