@@ -14,8 +14,7 @@ public class SeekList extends TreeMap<String, Long> implements Serializable
         try {
             fileReader = new FileReader(filename);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("cannot open seekList file");
+            System.out.println("cannot open seekList file - it probably does not exist");
             return null;
         }
         BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -25,6 +24,7 @@ public class SeekList extends TreeMap<String, Long> implements Serializable
         String[] splitted;
         try {
             while ((line = bufferedReader.readLine()) != null) {
+                if(line.length() == 0) break;
                 // line has format "12offset34 word"
                 splitted = line.split(" ", 2);
                 seekList.put(splitted[1], Long.valueOf(splitted[0]));

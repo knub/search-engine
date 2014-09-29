@@ -36,6 +36,7 @@ public class Documents
         String[] splitted;
         try {
             while ((line = bufferedReader.readLine()) != null) {
+                if(line.length() == 0) break;
                 // line has format "12length34 this is da title"
                 splitted = line.split(" ", 2);
                 documents.add(splitted[1], Integer.valueOf(splitted[0]));
