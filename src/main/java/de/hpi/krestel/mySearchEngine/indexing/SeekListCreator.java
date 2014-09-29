@@ -7,6 +7,8 @@ public class SeekListCreator
 {
     private IndexReader reader;
 
+    private int counter = 0;
+
     public SeekListCreator(IndexReader reader)
     {
         this.reader = reader;
@@ -20,11 +22,20 @@ public class SeekListCreator
         // For every word in the index, store the word and the index offset in the seek list
         while (true) {
             WordMap current = this.reader.read();
+
             if (current == null) {
                 break;
             }
 
-            seekList.put(current.getWord(), curOffset);
+            // Only write every fourth word
+            if (counter == 0) {
+                seekList.put(current.getWord(), curOffset);
+            }
+
+            // Overflow protection
+            counter++;
+            if (counter == 4) counter = 0;
+
             curOffset = this.reader.getCurrentOffset();
         }
 
