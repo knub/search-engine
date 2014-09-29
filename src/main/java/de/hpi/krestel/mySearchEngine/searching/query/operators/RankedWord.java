@@ -44,6 +44,13 @@ public class RankedWord extends AbstractOperator implements Operator {
     }
 
     @Override
+    public Operator pushBinary(BinaryOperator operator)
+    {
+        operator.setLeft(this);
+        return operator;
+    }
+
+    @Override
 	public OccurrenceMap evaluate(IndexSearcher searcher) {
 		Map<String, Integer> queryWords = new HashMap<String, Integer>();
 		for (Word word : words) {

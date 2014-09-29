@@ -35,7 +35,7 @@ public class QueryParserTest extends TestCase {
         assertTrue(op instanceof Phrase);
 
         op = queryParser.parse("Italien AND Pizza");
-        assertTrue(op instanceof And);
+        assertTrue(op instanceof RankedWord);
 
         op = queryParser.parse("prefix* AND attribut");
         assertTrue(op instanceof And);
@@ -48,11 +48,7 @@ public class QueryParserTest extends TestCase {
         right = ((ButNot) op).getRight();
         assertTrue(right instanceof Word);
         left = ((ButNot) op).getLeft();
-        assertTrue(left instanceof And);
-        right = ((And) left).getRight();
-        left = ((And) left).getLeft();
-        assertTrue(right instanceof Word);
-        assertTrue(left instanceof Word);
+        assertTrue(left instanceof RankedWord);
 
         op = queryParser.parse("Dr. No");
         assertTrue(op instanceof RankedWord);
@@ -62,6 +58,7 @@ public class QueryParserTest extends TestCase {
 
         op = queryParser.parse("08/15");
         System.out.println(op);
+        System.out.println(((Word) op).getWord());
         assertTrue(op instanceof Word);
     }
 

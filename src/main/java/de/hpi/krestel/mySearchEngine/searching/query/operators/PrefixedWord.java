@@ -30,6 +30,15 @@ public class PrefixedWord extends AbstractOperator implements Operator {
     }
 
     @Override
+    public Operator pushWord(Word operator)
+    {
+        And and = new And();
+        and.setLeft(this);
+        and.setRight(operator);
+        return and;
+    }
+
+    @Override
     public OccurrenceMap evaluate(IndexSearcher searcher) {
 	    String currentKey = searcher.getSeekList().ceilingKey(word);
 	    OccurrenceMap result = new OccurrenceMap();

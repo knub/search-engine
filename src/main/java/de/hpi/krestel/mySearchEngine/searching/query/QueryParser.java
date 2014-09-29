@@ -58,9 +58,9 @@ public class QueryParser
 
 	private void handleToken(String token)
     {
-        Operator op;
+        Operator op = null;
         if (token.toLowerCase().equals("and")) {
-            op = this.createBinaryOperator("and");
+            // Do nothing here
 		} else if (token.toLowerCase().equals("or")) {
             op = this.createBinaryOperator("or");
 		} else if (token.toLowerCase().equals("butnot")) {
@@ -71,7 +71,9 @@ public class QueryParser
             op = this.createWord(token);
 		}
 
-        this.stack = op.pushOnto(this.stack);
+        if (op != null) {
+            this.stack = op.pushOnto(this.stack);
+        }
 	}
 
 	private void handlePhraseToken(String phrase)
