@@ -32,17 +32,16 @@ public class Indexer implements DocumentReaderListener
 
     public Indexer(String directory, DocumentReaderInterface reader)
     {
-	    this.directory = directory;
+        this.directory = directory;
         this.reader = reader;
-        documents = new Documents(directory + "/documents");
     }
-    
+
     private void announce(String msg)
     {
         System.out.println(msg);
     }
 
-	public void run()
+    public void run()
     {
         // Recreate the final index if necessary
         if (! this.finalIndexExists()) {
@@ -51,7 +50,7 @@ public class Indexer implements DocumentReaderListener
 
         // Extract and write out the seek list
         this.createSeekList();
-	}
+    }
 
     private boolean finalIndexExists()
     {
@@ -61,6 +60,9 @@ public class Indexer implements DocumentReaderListener
     private void createIndex()
     {
         this.announce("INDEXING");
+
+        // open documents-file to write titles and lengths
+        documents = new Documents(directory + "/documents");
 
         // Set up the parser and make sure we're notified every time a new document is found
         this.reader.addListener(this);
