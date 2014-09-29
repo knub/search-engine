@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // this class stores a list of titles and lengths, each for one document
-public class Documents implements Serializable
+public class Documents
 {
     private List<String> titles;
     private TIntList lengths;
