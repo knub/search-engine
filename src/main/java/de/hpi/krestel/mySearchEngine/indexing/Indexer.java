@@ -67,10 +67,12 @@ public class Indexer implements DocumentReaderListener
             this.collectGarbage();
 
             // Write out seek list
-            this.announce("Writing LinkList... ");
-            this.writeLinkList();
-            this.links = null;
-            this.announce("Done.");
+            if (createLinkConnections) {
+                this.announce("Writing LinkList... ");
+                this.writeLinkList();
+                this.links = null;
+                this.announce("Done.");
+            }
 
             // Merge the partial indices and list of links
             this.triggerMergingProcess();
@@ -162,10 +164,10 @@ public class Indexer implements DocumentReaderListener
                 String[] splits = s.split("\\|");
                 destination = splits[0];
                 try {
-                anchorText = splits[1];
+                    anchorText = splits[1];
                 } catch (Exception e) {
-                this.announce("I'm dumb.");
-                anchorText = splits[0];
+                    this.announce("I'm dumb.");
+                    anchorText = splits[0];
                 }
             } else {
                 destination = s;

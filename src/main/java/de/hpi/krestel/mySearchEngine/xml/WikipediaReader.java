@@ -68,6 +68,7 @@ public class WikipediaReader implements DocumentReaderInterface
 				}
 			}
 		} catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
 			throw new RuntimeException(e);
 		}
 	}
