@@ -159,6 +159,35 @@ public class SearchEngineLynette extends SearchEngine {
         return origDcg / goldDcg;
 	}
 
+   /* Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> ranking, int at) {
+
+        double dcg = 0.0;
+        double idcg = 0.0;
+        int rank=1;
+        Iterator<String> iter = ranking.iterator();
+        while(rank<=at){
+            if(rank==1) idcg += 1+Math.floor(10 * Math.pow(0.5,0.1*rank));
+            else idcg += 1+Math.floor(10 * Math.pow(0.5,0.1*rank))/Math.log(rank);
+            if(iter.hasNext()){
+                // change to get the titles of your ranking
+                String title = iter.next().split("###")[1].trim();
+                int origRank = goldRanking.indexOf(title)+1;
+                if(origRank<1){
+                    rank++;
+                    continue;
+                }
+                if(rank==1){
+                    dcg += 1+Math.floor(10 * Math.pow(0.5,0.1*origRank));
+                    rank++;
+                    continue;
+                }
+                dcg += 1+Math.floor(10 * Math.pow(0.5,0.1*origRank))/Math.log(rank);
+            }
+            rank++;
+        }
+        return dcg/idcg;
+    }*/
+
     private int dcgAtRank(int rank) {
         return 1 + (int) Math.floor(10 * Math.pow(0.5, 0.1 * rank));
     }
