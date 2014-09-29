@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Indexer implements DocumentReaderListener
 {
 
-	private Pipeline preprocessingPipeline = Pipeline.createPreprocessingPipeline();
+	private Pipeline preprocessingPipeline;
     private final WordMap partIndex = new WordMap();
     private final List<String> partIndexFileNames = new ArrayList<String>();
 	private final String directory;
@@ -63,6 +63,9 @@ public class Indexer implements DocumentReaderListener
 
         // open documents-file to write titles and lengths
         documents = new Documents(directory + "/documents");
+
+        // set up processing pipeline
+        preprocessingPipeline = Pipeline.createPreprocessingPipeline();
 
         // Set up the parser and make sure we're notified every time a new document is found
         this.reader.addListener(this);
