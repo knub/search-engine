@@ -1,10 +1,16 @@
 package de.hpi.krestel.mySearchEngine.domain;
 
-import java.io.*;
-import java.util.TreeMap;
+import gnu.trove.list.TLongList;
+import gnu.trove.list.array.TLongArrayList;
 
-public class SeekList extends TreeMap<String, Long> implements Serializable
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SeekList
 {
+    private List<String> wordVector;
+    private TLongList offsetVector;
 
     public static SeekList createFromFile(String filename) {
         SeekList seekList = new SeekList();
@@ -50,4 +56,45 @@ public class SeekList extends TreeMap<String, Long> implements Serializable
         return seekList;
     }
 
+
+    public SeekList()
+    {
+        this.wordVector = new ArrayList<String>();
+        this.offsetVector = new TLongArrayList();
+    }
+
+    public void put(String word, long offset)
+    {
+        this.wordVector.add(word);
+        this.offsetVector.add(offset);
+    }
+
+    public long getOffsetFor(String word)
+    {
+        int index = this.findNearestWordIndex(word);
+        return offsetVector.get(index);
+    }
+
+    private int findNearestWordIndex(String word)
+    {
+        int lower = 0;
+        int upper = wordVector.size();
+        int current;
+        String cur_word;
+        int compared;
+        // binary search
+        do {
+            current = (upper - lower) / 2 + lower;
+            cur_word = wordVector.get(current);
+            compared = word.compareTo(cur_word);
+            if (compared == 0) {
+                return current;
+            } else if (compared < 0) {
+                upper = current - 1;
+            } else {
+                lower = current;
+            }
+        } while ((upper - lower) > 1);
+        return lower;
+    }
 }

@@ -23,38 +23,64 @@ public class IndexSearcher
 		return this.search(token, 1);
 	}
 
-	public OccurrenceMap search(String token, int occurenceInQuery)
+	public OccurrenceMap search(String token, int occurrenceInQuery)
     {
-		if (this.seekList.containsKey(token)) {
-            long offset = this.seekList.get(token);
-            try {
-				this.randomAccessInputStream.seek(offset);
-			} catch (IOException e) {
-				System.out.println("Couldn't set seek position at index. Hmpf:");
-				System.out.println(e.getLocalizedMessage());
-				throw new RuntimeException(e);
-			}
-			WordMap wordMap = this.indexReader.read();
-			OccurrenceMap occurrenceMap = wordMap.firstEntry().getValue();
-			final long N = this.documents.getCount();
-			final long ni = occurrenceMap.size();
-			final double avgdl = this.documents.getAverageLength();
-			final long qfi = occurenceInQuery;
-			occurrenceMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
-				@Override
-				public boolean execute(int docId, DocumentEntry docEntry) {
-					long dl = documents.getLength(docId);
-					long fi = docEntry.size();
+        OccurrenceMap occurrenceMap = findOccurrenceMapFor(token);
+        if (occurrenceMap == null) {
+            // found nothing
+            return new OccurrenceMap();
+        }
+
+        final long N = this.documents.getCount();
+        final long ni = occurrenceMap.size();
+        final double avgdl = this.documents.getAverageLength();
+        final long qfi = occurrenceInQuery;
+        occurrenceMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
+            @Override
+            public boolean execute(int docId, DocumentEntry docEntry) {
+                long dl = documents.getLength(docId);
+                long fi = docEntry.size();
 //					System.out.println("Doc-ID: " + docId);
-					docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
-					return true;
-				}
-			});
-			return occurrenceMap;
-		} else {
-			return new OccurrenceMap();
-		}
+                docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
+                return true;
+            }
+        });
+        return occurrenceMap;
 	}
+
+    private OccurrenceMap findOccurrenceMapFor(String token)
+    {
+        // find nearest index offset for this token
+        long baseOffset = seekList.getOffsetFor(token);
+
+        // set stream offset to this position
+        try {
+            this.randomAccessInputStream.seek(baseOffset);
+        } catch (IOException e) {
+            System.out.println("Couldn't set seek position at index. Hmpf:");
+            System.out.println(e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        }
+
+        // read WordMaps until either a) the token is found,
+        // or b) a word "greater" than the token is returned (--> token is not in the index)
+        WordMap wordMap;
+        String foundWord;
+        int compared;
+        do {
+            // read words from index until
+            wordMap = this.indexReader.read();
+            foundWord = wordMap.firstEntry().getKey();
+            compared = token.compareTo(foundWord);
+        } while (compared < 0);
+
+        if (compared == 0) {
+            return wordMap.firstEntry().getValue();
+        } else {
+            // when the token is not found, return null
+            return null;
+        }
+    }
 
 	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi)
     {
