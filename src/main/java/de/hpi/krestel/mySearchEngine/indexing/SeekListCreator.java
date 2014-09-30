@@ -24,7 +24,7 @@ public class SeekListCreator {
 
     public void createSeekList() {
         long curOffset = this.reader.getCurrentOffset();
-        short round = 0;
+        short round = 0;  // first token should be in the index
 
         // For every word in the index, store the word and the index offset in the seek list
         while (true) {
@@ -35,11 +35,11 @@ public class SeekListCreator {
             }
 
             // just save every forth word
-            if (round == 0) {
-                round = 3;
+            if (round != 0) {
+                round -= 1;
                 continue;
             }
-            round -= 1;
+            round = 3;
 
             this.writeToFile(sanitizeWord(current.getWord()), curOffset);
 
