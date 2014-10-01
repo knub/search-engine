@@ -16,7 +16,7 @@ public class QueryParser
 		this.pipeline = preprocessing;
 	}
 
-	public Operator parse(String query)
+	public Operator parse(String query) throws QueryException
     {
         query = query.replaceAll("(?i)but +not", "butnot");
 		StreamTokenizer tokenizer = this.buildTokenizer(query);

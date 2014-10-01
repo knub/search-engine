@@ -9,7 +9,7 @@ import de.hpi.krestel.mySearchEngine.searching.query.operators.Word;
 
 public interface Operator {
 
-    public Operator pushOnto(Operator operator) throws RuntimeException;
+    public Operator pushOnto(Operator operator) throws QueryException;
 
     public Operator pushBinary(BinaryOperator operator);
 

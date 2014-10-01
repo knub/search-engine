@@ -9,6 +9,7 @@ import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.ResultList;
 import de.hpi.krestel.mySearchEngine.searching.SnippetReader;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
+import de.hpi.krestel.mySearchEngine.searching.query.QueryException;
 import de.hpi.krestel.mySearchEngine.searching.query.QueryParser;
 import de.hpi.krestel.mySearchEngine.xml.WikipediaReader;
 import org.javatuples.Pair;
@@ -83,33 +84,40 @@ public class SearchEngineLynette extends SearchEngine {
 	}
 
 	@Override
-	ArrayList<String> search(String query, int topK, int prf) {
-        Operator op = queryParser.parse(query);
-		ResultList results = op.evaluate(searcher) // Execute the search
-                               .toResultSet()      // Convert to result set
-                               .subList(0, prf);   // Use only the first
+	ArrayList<String> search(String query, int topK, int prf)
+    {
+        try
+        {
+            Operator op = queryParser.parse(query);
+
+            ResultList results = op.evaluate(searcher) // Execute the search
+                    .toResultSet()      // Convert to result set
+                    .subList(0, prf);   // Use only the first
 
 //		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300, directory);
 //		op = prs.buildNewSearchOperator();
 //		results = op.evaluate(searcher).toResultSet().subList(0, topK);
 
-        // Add titles to result list
-        ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
-        for (Pair<Integer, DocumentEntry> result : results) {
-            int docId = result.getValue0();
-            resultsStrings.add(documents.getTitle(docId));
+            // Add titles to result list
+            ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
+            for (Pair<Integer, DocumentEntry> result : results) {
+                int docId = result.getValue0();
+                resultsStrings.add(documents.getTitle(docId));
+            }
+
+            // Generate snippets for our results
+            SnippetReader snippetReader = new SnippetReader(directory);
+            for (Pair<Integer, DocumentEntry> result : results) {
+                int docId = result.getValue0();
+                DocumentEntry docEntry = result.getValue1();
+                resultsStrings.add(setBoldText + "    Document: " + documents.getTitle(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
+                resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
+            }
+
+            return resultsStrings;
+        } catch (QueryException e) {
+            return new ArrayList<String>();
         }
-
-        // Generate snippets for our results
-		SnippetReader snippetReader = new SnippetReader(directory);
-		for (Pair<Integer, DocumentEntry> result : results) {
-			int docId = result.getValue0();
-			DocumentEntry docEntry = result.getValue1();
-			resultsStrings.add(setBoldText + "    Document: " + documents.getTitle(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
-			resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
-		}
-
-        return resultsStrings;
 	}
 
 	@Override
