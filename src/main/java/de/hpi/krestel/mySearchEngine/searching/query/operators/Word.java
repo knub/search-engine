@@ -2,11 +2,11 @@ package de.hpi.krestel.mySearchEngine.searching.query.operators;
 
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.query.AbstractOperator;
-import de.hpi.krestel.mySearchEngine.searching.query.BinaryOperator;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
+import de.hpi.krestel.mySearchEngine.searching.query.QueryException;
+import de.hpi.krestel.mySearchEngine.searching.query.UnaryOperator;
 
-public class Word extends AbstractOperator implements Operator {
+public class Word extends UnaryOperator implements Operator {
 
     private String word;
 
@@ -19,7 +19,7 @@ public class Word extends AbstractOperator implements Operator {
     }
 
     @Override
-    public Operator pushOnto(Operator operator) throws RuntimeException
+    public Operator pushOnto(Operator operator) throws QueryException
     {
         if (operator == null) return this;
 
@@ -30,13 +30,6 @@ public class Word extends AbstractOperator implements Operator {
     public Operator pushWord(Word operator)
     {
         return new RankedWord(this, operator);
-    }
-
-    @Override
-    public Operator pushBinary(BinaryOperator operator)
-    {
-        operator.setLeft(this);
-        return operator;
     }
 
     @Override

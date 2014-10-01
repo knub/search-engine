@@ -3,9 +3,9 @@ package de.hpi.krestel.mySearchEngine.searching.query.operators;
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.query.AbstractOperator;
-import de.hpi.krestel.mySearchEngine.searching.query.BinaryOperator;
 import de.hpi.krestel.mySearchEngine.searching.query.Operator;
+import de.hpi.krestel.mySearchEngine.searching.query.QueryException;
+import de.hpi.krestel.mySearchEngine.searching.query.UnaryOperator;
 import gnu.trove.procedure.TIntObjectProcedure;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RankedWord extends AbstractOperator implements Operator {
+public class RankedWord extends UnaryOperator implements Operator {
 
 	List<Word> words = new ArrayList<Word>();
 
@@ -29,7 +29,7 @@ public class RankedWord extends AbstractOperator implements Operator {
 	}
 
     @Override
-    public Operator pushOnto(Operator operator) throws RuntimeException
+    public Operator pushOnto(Operator operator) throws QueryException
     {
         if (operator == null) return this;
 
@@ -41,13 +41,6 @@ public class RankedWord extends AbstractOperator implements Operator {
     {
         this.add(operator);
         return this;
-    }
-
-    @Override
-    public Operator pushBinary(BinaryOperator operator)
-    {
-        operator.setLeft(this);
-        return operator;
     }
 
     @Override

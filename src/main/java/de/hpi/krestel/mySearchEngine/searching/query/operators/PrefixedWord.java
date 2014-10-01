@@ -2,11 +2,9 @@ package de.hpi.krestel.mySearchEngine.searching.query.operators;
 
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.query.AbstractOperator;
-import de.hpi.krestel.mySearchEngine.searching.query.BinaryOperator;
-import de.hpi.krestel.mySearchEngine.searching.query.Operator;
+import de.hpi.krestel.mySearchEngine.searching.query.*;
 
-public class PrefixedWord extends AbstractOperator implements Operator {
+public class PrefixedWord extends UnaryOperator implements Operator {
 
     private String word;
 
@@ -15,18 +13,11 @@ public class PrefixedWord extends AbstractOperator implements Operator {
     }
 
     @Override
-    public Operator pushOnto(Operator operator) throws RuntimeException
+    public Operator pushOnto(Operator operator) throws QueryException
     {
         if (operator == null) return this;
 
         return operator.pushPrefixedWord(this);
-    }
-
-    @Override
-    public Operator pushBinary(BinaryOperator operator)
-    {
-        operator.setLeft(this);
-        return operator;
     }
 
     @Override
