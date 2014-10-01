@@ -76,7 +76,6 @@ public class Indexer implements DocumentReaderListener
 
         this.announce("FINISHED WRITING PART INDICES");
         this.announce("Number of documents: " + documents.getCount());
-        this.announce("Cumulated length of documents: " + documents.getCumulatedLength());
 
         // Do some cleanup in the processing pipeline
         this.preprocessingPipeline.finished();

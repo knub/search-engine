@@ -4,6 +4,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,28 +15,27 @@ public class Documents
     private TIntList lengths;
     private long cumulatedLength;
     private boolean writeFileMode = false;
-    private FileWriter fileWriter;
+    private Writer fileWriter;
     private int count = 0;
 
     public static Documents readFromFile(String filename)
     {
         Documents documents = new Documents();
-        FileReader fileReader;
+        BufferedReader reader;
 
         //open file
         try {
-            fileReader = new FileReader(filename);
+            reader= new BufferedReader(new InputStreamReader(new FileInputStream(filename), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("cannot open documents file");
         }
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
 
         // read each line; parse length and title; add them to lists
         String line;
         String[] splitted;
         try {
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 if(line.length() == 0) continue;
                 // line has format "12length34 this is da title"
                 splitted = line.split(" ", 2);
@@ -48,7 +48,7 @@ public class Documents
 
         // close file
         try {
-            fileReader.close();
+            reader.close();
         } catch (IOException e) {
             System.out.println("Cannot close documents file... anyway.");
         }
@@ -71,7 +71,8 @@ public class Documents
 
         // open writer
         try {
-            this.fileWriter = new FileWriter(filename);
+            this.fileWriter = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(filename), StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("cannot open documents file");

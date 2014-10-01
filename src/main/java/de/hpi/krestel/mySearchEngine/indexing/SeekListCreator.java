@@ -16,7 +16,7 @@ public class SeekListCreator {
 
         try {
             this.fileWriter = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(filename), StandardCharsets.UTF_8));;
+                    new FileOutputStream(filename), StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("cannot open seek list file for writing");
