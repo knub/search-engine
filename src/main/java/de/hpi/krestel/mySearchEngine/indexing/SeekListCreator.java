@@ -26,6 +26,8 @@ public class SeekListCreator {
     public void createSeekList() {
         long curOffset = this.reader.getCurrentOffset();
         short round = 0;  // first token should be in the index
+        String currentWord;
+        String lastWord = "";
 
         // For every word in the index, store the word and the index offset in the seek list
         while (true) {
@@ -41,7 +43,13 @@ public class SeekListCreator {
                 curOffset = this.reader.getCurrentOffset();
             } else {
                 round = 3;
-                this.writeToFile(sanitizeWord(current.getWord()), curOffset);
+
+                // if trimmed word didn't changed, don't create another entry
+                currentWord = sanitizeWord(current.getWord());
+                if (!currentWord.equals(lastWord)) {
+                    this.writeToFile(currentWord, curOffset);
+                }
+                lastWord = currentWord;
             }
         }
 
@@ -54,10 +62,14 @@ public class SeekListCreator {
 
     private String sanitizeWord(String originalWord)
     {
+        String sanitizedWord;
         if (originalWord.contains("\n")) {
-            return originalWord.replaceAll("\n", "<br>");
+            sanitizedWord = originalWord.replaceAll("\n", "<br>");
+        } else {
+            sanitizedWord = originalWord;
         }
-        return originalWord;
+        // trim to first 20 letters
+        return sanitizedWord.substring(0, Math.min(19, sanitizedWord.length()));
     }
 
     private void writeToFile(String word, long offset)
