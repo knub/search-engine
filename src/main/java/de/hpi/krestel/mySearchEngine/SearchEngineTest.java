@@ -17,7 +17,7 @@ public class SearchEngineTest {
 //	static String[] queries = {"deutsch"};
 //	static String[] queries = {"regisseur"};
     static String[] queries = {
-            "\"ein trauriges Arschloch\"",
+            "ein trauriges Arschloch",
             "Toskana AND Wein",
             "sülz* AND staatlich",
             "öffentlicher nahverkehr stadtpiraten",
