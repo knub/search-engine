@@ -69,9 +69,9 @@ public class QueryParser
         if (token.equals("and")) {
             // Do nothing here
 		} else if (token.equals("or")) {
-            op = this.createBinaryOperator("or");
+            op = new Or();
 		} else if (token.equals("butnot")) {
-            op = this.createBinaryOperator("butnot");
+            op = new ButNot();
 		} else if (token.endsWith("*")) {
             op = this.createPrefixedWord(token);
 		} else {
@@ -89,17 +89,6 @@ public class QueryParser
 
         this.stack = op.pushOnto(this.stack);
 	}
-
-    private Operator createBinaryOperator(String type)
-    {
-        if (type.equals("and")) {
-            return new And();
-        } else if (type.equals("or")) {
-            return new Or();
-        } else {
-            return new ButNot();
-        }
-    }
 
     private Word createWord(String token)
     {
