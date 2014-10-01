@@ -85,15 +85,6 @@ public class QueryParser
 
     private Operator createBinaryOperator(String type)
     {
-        if (this.stack == null) {
-            return new Word(type);
-        } else if (this.stack instanceof BinaryOperator) {
-            BinaryOperator binary = (BinaryOperator) this.stack;
-            if (! binary.hasRight()) {
-                return new Word(type);
-            }
-        }
-
         if (type.equals("and")) {
             return new And();
         } else if (type.equals("or")) {

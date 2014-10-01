@@ -38,10 +38,12 @@ abstract public class BinaryOperator extends AbstractOperator implements Operato
     @Override
     public Operator pushOnto(Operator operator) throws RuntimeException
     {
-        if (operator == null) return this;
+        if (operator == null) return this.asWordOp();
 
         return operator.pushBinary(this);
     }
+
+    abstract protected Operator asWordOp();
 
     @Override
     public Operator pushBinary(BinaryOperator operator)
@@ -50,7 +52,7 @@ abstract public class BinaryOperator extends AbstractOperator implements Operato
             operator.setLeft(this);
             return operator;
         } else {
-            return this.pushOperator(operator);
+            return operator.asWordOp().pushOnto(this);
         }
     }
 
