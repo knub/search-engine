@@ -36,7 +36,7 @@ abstract public class BinaryOperator extends AbstractOperator implements Operato
     }
 
     @Override
-    public Operator pushOnto(Operator operator) throws RuntimeException
+    public Operator pushOnto(Operator operator) throws QueryException
     {
         if (operator == null) return this.asWordOp();
 
