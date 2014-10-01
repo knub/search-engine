@@ -30,9 +30,11 @@ public class QueryParser
 
             if (token.startsWith("\"")) {
                 inPhrase = true;
+                phrase = token.substring(1);
             } else if (token.endsWith("\"")) {
                 inPhrase = false;
-                this.handlePhraseToken(phrase.trim());
+                phrase += " " + token.substring(0, token.length() - 1);
+                this.handlePhraseToken(phrase);
                 phrase = "";
             } else {
                 if (inPhrase) {
