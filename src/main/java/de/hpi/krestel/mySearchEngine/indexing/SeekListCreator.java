@@ -55,7 +55,7 @@ public class SeekListCreator {
     private String sanitizeWord(String originalWord)
     {
         if (originalWord.contains("\n")) {
-            originalWord.replaceAll("\n", "");
+            return originalWord.replaceAll("\n", "<br>");
         }
         return originalWord;
     }
