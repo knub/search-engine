@@ -18,23 +18,42 @@ public class QueryParser
 
 	public Operator parse(String query) throws QueryException
     {
-        query = query.replaceAll("(?i)but +not", "butnot");
-		StreamTokenizer tokenizer = this.buildTokenizer(query);
+        this.resetState();
+        String[] parts = query.split(" +");
 
-		this.resetState();
-		try {
-			while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
-                if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-                    this.handleToken(tokenizer.sval);
-				} else if (tokenizer.ttype == StreamTokenizer.TT_NUMBER) {
-                    this.handleToken(tokenizer.toString());
-                } else if (tokenizer.ttype == '"') {
-                    this.handlePhraseToken(tokenizer.sval);
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+        boolean inBut = false;
+        boolean inPhrase = false;
+        String phrase = "";
+
+        for (String token: parts) {
+            token = token.trim().toLowerCase();
+
+            if (token.startsWith("\"")) {
+                inPhrase = true;
+            } else if (token.endsWith("\"")) {
+                inPhrase = false;
+                this.handlePhraseToken(phrase.trim());
+                phrase = "";
+            } else {
+                if (inPhrase) {
+                    phrase += " " + token;
+                } else {
+                    if (inBut) {
+                        inBut = false;
+                        if (token.equals("not")) {
+                            this.handleToken("butnot");
+                            continue;
+                        } else {
+                            this.handleToken("but");
+                        }
+                    } else if (token.equals("but")) {
+                        inBut = true;
+                        continue;
+                    }
+                    this.handleToken(token);
+                }
+            }
+        }
 
         return this.stack;
 	}
@@ -44,26 +63,14 @@ public class QueryParser
         this.stack = null;
 	}
 
-	private StreamTokenizer buildTokenizer(String query)
-    {
-		Reader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(query.getBytes())));
-		StreamTokenizer tokenizer = new StreamTokenizer(reader);
-
-		tokenizer.eolIsSignificant(false);
-		tokenizer.lowerCaseMode(true);
-		tokenizer.wordChars('*', '*');
-
-		return tokenizer;
-	}
-
 	private void handleToken(String token)
     {
         Operator op = null;
-        if (token.toLowerCase().equals("and")) {
+        if (token.equals("and")) {
             // Do nothing here
-		} else if (token.toLowerCase().equals("or")) {
+		} else if (token.equals("or")) {
             op = this.createBinaryOperator("or");
-		} else if (token.toLowerCase().equals("butnot")) {
+		} else if (token.equals("butnot")) {
             op = this.createBinaryOperator("butnot");
 		} else if (token.endsWith("*")) {
             op = this.createPrefixedWord(token);

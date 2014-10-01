@@ -57,9 +57,8 @@ public class QueryParserTest extends TestCase {
         assertTrue(op instanceof ButNot);
 
         op = queryParser.parse("08/15");
-        System.out.println(op);
-        System.out.println(((Word) op).getWord());
         assertTrue(op instanceof Word);
+        assertEquals("08/15", ((Word) op).getWord());
     }
 
 }
