@@ -3,19 +3,20 @@ package de.hpi.krestel.mySearchEngine.indexing;
 import de.hpi.krestel.mySearchEngine.domain.SeekList;
 import de.hpi.krestel.mySearchEngine.domain.WordMap;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class SeekListCreator {
     private IndexReader reader;
 
-    private FileWriter fileWriter;
+    private Writer fileWriter;
 
     public SeekListCreator(IndexReader reader, String filename) {
         this.reader = reader;
 
         try {
-            this.fileWriter = new FileWriter(filename);
+            this.fileWriter = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(filename), StandardCharsets.UTF_8));;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("cannot open seek list file for writing");
@@ -37,13 +38,11 @@ public class SeekListCreator {
             // just save every forth word
             if (round != 0) {
                 round -= 1;
-                continue;
+                curOffset = this.reader.getCurrentOffset();
+            } else {
+                round = 3;
+                this.writeToFile(sanitizeWord(current.getWord()), curOffset);
             }
-            round = 3;
-
-            this.writeToFile(sanitizeWord(current.getWord()), curOffset);
-
-            curOffset = this.reader.getCurrentOffset();
         }
 
         try {

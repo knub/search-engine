@@ -7,6 +7,7 @@ import gnu.trove.procedure.TIntObjectProcedure;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 public class IndexSearcher
 {
@@ -51,7 +52,11 @@ public class IndexSearcher
     private OccurrenceMap findOccurrenceMapFor(String token)
     {
         // find nearest index offset for this token
-        long baseOffset = seekList.getOffsetFor(token);
+        Map.Entry<String, Long> baseEntry = seekList.floorEntry(token);
+        if (baseEntry == null) {
+            return null;
+        }
+        long baseOffset = baseEntry.getValue().longValue();
 
         // set stream offset to this position
         try {
@@ -72,7 +77,7 @@ public class IndexSearcher
             wordMap = this.indexReader.read();
             foundWord = wordMap.firstEntry().getKey();
             compared = token.compareTo(foundWord);
-        } while (compared < 0);
+        } while (compared > 0);
 
         if (compared == 0) {
             return wordMap.firstEntry().getValue();
