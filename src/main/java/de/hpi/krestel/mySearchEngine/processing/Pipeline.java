@@ -50,7 +50,12 @@ public class Pipeline extends Vector<Processor> {
 	}
 
 	public String processForQuery(String queryToken) {
-		return start(queryToken).get(0).value();
+        List<CoreLabel> labels = start(queryToken);
+        if (labels.size() == 0) {
+            return null;
+        } else {
+            return labels.get(0).value();
+        }
 	}
 
 	public String[] processPhraseForQuery(String queryToken) {

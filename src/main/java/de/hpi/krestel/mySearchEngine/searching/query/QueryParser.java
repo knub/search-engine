@@ -94,7 +94,14 @@ public class QueryParser
 
     private Word createWord(String token)
     {
-        return new Word(pipeline.processForQuery(token));
+        String processedToken = pipeline.processForQuery(token);
+        if (processedToken != null) {
+            return new Word(processedToken);
+        } else {
+            // token was a stopword or something.
+            //TODO: should this realy be done tis way? can't be found anyway, probably. do prefixsearch or something?!
+            return new Word(token);
+        }
     }
 
     private PrefixedWord createPrefixedWord(String token)
