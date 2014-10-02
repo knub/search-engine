@@ -106,6 +106,12 @@ public class QueryParser
 
     private PrefixedWord createPrefixedWord(String token)
     {
-        return new PrefixedWord(token.substring(0, token.length() - 1));
+        // Remove star
+        token = token.substring(0, token.length() - 1);
+
+        // Run it through the pipeline
+        token = pipeline.processForQuery(token);
+
+        return new PrefixedWord(token);
     }
 }
