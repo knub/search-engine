@@ -38,6 +38,6 @@ public class PrefixedWord extends UnaryOperator implements Operator {
     @Override
     public OccurrenceMap evaluate(IndexSearcher searcher)
     {
-        return searcher.searchPrefixed(this.token);
+        return searcher.searchPrefixed(this.prefix);
     }
 }
