@@ -138,11 +138,21 @@ public class IndexSearcher
         return occurrenceMap;
     }
 
-	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi)
-    {
-//		System.out.println(String.format("N: %d, ni: %d, dl: %d, avgdl: %f, fi: %d, qfi: %d", N, ni, dl, avgdl, fi, qfi));
-		double K = k1 * (1 - b + b * ((double) dl) / avgdl);
-		return Math.log((N - ni + 0.5) / (ni + 0.5)) * (k1 + 1) * fi / (K + fi) * (k2 + 1) * qfi / (k2 + qfi);
+	public static double calculateRank(
+            long docCount,
+            long wordDocCount,
+            long docLength,
+            double avgDocLength,
+            long wordFreq,
+            long queryWordFreq
+    ) {
+		double K = k1 * ((1 - b) + (b * (((double) docLength) / avgDocLength)));
+
+        double termConstant = ((k1 + 1) * wordFreq) / (K + wordFreq);
+        double queryConstant = ((k2 + 1) * queryWordFreq) / (k2 + queryWordFreq);
+        double rank = Math.log((docCount - wordDocCount + 0.5) / (wordDocCount + 0.5));
+
+        return rank * termConstant * queryConstant;
 	}
 
 	public void setIndexFilename(String indexFilename)
