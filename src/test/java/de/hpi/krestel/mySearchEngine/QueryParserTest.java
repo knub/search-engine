@@ -89,8 +89,8 @@ public class QueryParserTest extends TestCase {
         assertEquals("08/15", ((Word) op).getWord());
 
         op = queryParser.parse("LINKTO flughafen");
-        assertTrue(op instanceof LinkTo);
-        assertEquals("flughafen", ((LinkTo) op).getPage());
+        assertTrue(op instanceof Word);
+        assertEquals("linkto:flughafen", ((Word) op).getWord());
     }
 
 }

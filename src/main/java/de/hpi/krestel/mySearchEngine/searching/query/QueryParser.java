@@ -100,8 +100,7 @@ public class QueryParser
 
     private void handleLinkToToken(String token)
     {
-        token = pipeline.processForQuery(token);
-        LinkTo op = new LinkTo(token);
+        Word op = new Word("linkto:" + token);
 
         this.stack = op.pushOnto(this.stack);
     }
