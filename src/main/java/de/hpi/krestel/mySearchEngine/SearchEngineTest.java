@@ -26,7 +26,8 @@ public class SearchEngineTest {
             "ICE BUT NOT T",
             "Bierzelt Oktoberfest",
             "Los Angeles sport",
-            "08/15"
+            "08/15",
+            "\"kann abgelehnt werden\""
     };
 
 	// some variables (will be explained when needed, ignore for now!)
