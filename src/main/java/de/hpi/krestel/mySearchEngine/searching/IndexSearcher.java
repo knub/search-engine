@@ -31,7 +31,26 @@ public class IndexSearcher
             // found nothing
             return new OccurrenceMap();
         }
+        return calculateRanks(occurrenceMap, occurrenceInQuery);
+	}
 
+    public OccurrenceMap searchPrefixed(String prefix)
+    {
+        return this.searchPrefixed(prefix, 1);
+    }
+
+    public OccurrenceMap searchPrefixed(String prefix, int occurrenceInQuery)
+    {
+        OccurrenceMap occurrenceMap = findOccurrenceMapForPrefixed(prefix);
+        if (occurrenceMap == null) {
+            // found nothing
+            return new OccurrenceMap();
+        }
+        return calculateRanks(occurrenceMap, occurrenceInQuery);
+    }
+
+    private OccurrenceMap calculateRanks(OccurrenceMap occurrenceMap, int occurrenceInQuery)
+    {
         final long N = this.documents.getCount();
         final long ni = occurrenceMap.size();
         final double avgdl = this.documents.getAverageLength();
@@ -41,22 +60,21 @@ public class IndexSearcher
             public boolean execute(int docId, DocumentEntry docEntry) {
                 long dl = documents.getLength(docId);
                 long fi = docEntry.size();
-//					System.out.println("Doc-ID: " + docId);
                 docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
                 return true;
             }
         });
         return occurrenceMap;
-	}
+    }
 
-    private OccurrenceMap findOccurrenceMapFor(String token)
+    private boolean setInputStreamOffset(String token)
     {
         // find nearest index offset for this token
         Map.Entry<String, Long> baseEntry = seekList.floorEntry(token);
         if (baseEntry == null) {
-            return null;
+            return false;
         }
-        long baseOffset = baseEntry.getValue().longValue();
+        long baseOffset = baseEntry.getValue();
 
         // set stream offset to this position
         try {
@@ -66,6 +84,13 @@ public class IndexSearcher
             System.out.println(e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
+        return true;
+    }
+
+    private OccurrenceMap findOccurrenceMapFor(String token)
+    {
+        if (!setInputStreamOffset(token))
+            return null;
 
         // read WordMaps until either a) the token is found,
         // or b) a word "greater" than the token is returned (--> token is not in the index)
@@ -85,6 +110,32 @@ public class IndexSearcher
             // when the token is not found, return null
             return null;
         }
+    }
+
+    private OccurrenceMap findOccurrenceMapForPrefixed(String prefix)
+    {
+        if (!setInputStreamOffset(prefix))
+            return null;
+
+        // skip WordMaps while they are smaller than the prefix
+        WordMap wordMap;
+        String foundWord;
+        do {
+            // read words from index
+            wordMap = this.indexReader.read();
+            foundWord = wordMap.firstEntry().getKey();
+        } while (prefix.compareTo(foundWord) > 0);
+
+        // read WordMaps until they don't start with the prefix anymore
+        OccurrenceMap occurrenceMap = new OccurrenceMap();
+        while (foundWord.startsWith(prefix)) {
+            occurrenceMap.merge(wordMap.firstEntry().getValue());
+
+            wordMap = this.indexReader.read();
+            foundWord = wordMap.firstEntry().getKey();
+        }
+
+        return occurrenceMap;
     }
 
 	public static double calculateRank(long N, long ni, long dl, double avgdl, long fi, long qfi)
