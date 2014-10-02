@@ -67,10 +67,11 @@ public class RankedWord extends UnaryOperator implements Operator {
 					 * If we want to show the surrounding of the search result, we have to be more
 					 * sophisticated here, since this current implementation only stores the first document entry.
 					 */
-					if (currentDocEntry == null)
-						resultMap.put(docId, docEntry);
-					else
-						currentDocEntry.setRank(currentDocEntry.getRank() + docEntry.getRank());
+					if (currentDocEntry == null) {
+                        resultMap.put(docId, docEntry);
+                    } else {
+                        currentDocEntry.setRank(currentDocEntry.getRank() + docEntry.getRank());
+                    }
 					return true;
 				}
 			});
