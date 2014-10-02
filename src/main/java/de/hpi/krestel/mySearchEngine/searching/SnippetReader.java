@@ -34,57 +34,68 @@ public class SnippetReader {
 		}
 	}
 
-	public String readSnippet(int docId, int inFileOffset, int wordLength)
+    public String readSnippet(int docId, int inFileOffset, int wordLength)
     {
         int surroundingLetters = (maxSnippetLength - wordLength) / 2;
-		try {
-			// one long is 8 bytes, so we have to multiply by 8
-			offsets.seek(docId * 8);
-			long docStartOffset = offsets.readLong();
-			long docEndOffset = offsets.readLong();
+        int beforeReadCount = (surroundingLetters < inFileOffset) ? surroundingLetters : inFileOffset;
+        int afterReadCount = maxSnippetLength - wordLength - beforeReadCount;
 
-			int beforeReadCount = (surroundingLetters < inFileOffset) ? surroundingLetters : inFileOffset;
-			long beforeSeekStart = docStartOffset + inFileOffset - beforeReadCount;
+        String[] textParts = readParts(docId, inFileOffset, wordLength, beforeReadCount, afterReadCount);
+        String beforeText = textParts[0];
+        String middleText = textParts[1];
+        String afterText  = textParts[2];
 
-			texts.seek(beforeSeekStart);
-            String beforeText = readFromTexts(beforeReadCount, true);
-			String middleText = readFromTexts(wordLength, false);
-			String afterText = readFromTexts(maxSnippetLength, true);
+        String snippet = beforeText + startFoundSequence + middleText + endFoundSequence + afterText;
+        snippet = snippet.substring(0, Math.min(maxSnippetLength, snippet.length()));
 
-			String snippet = beforeText + startFoundSequence + middleText + endFoundSequence + afterText;
-			snippet = snippet.substring(0, Math.min(maxSnippetLength, snippet.length()));
+        int firstSpace = -1;
+        int lastSpace = snippet.length();
+        Pattern pattern = Pattern.compile("[\\s  ]");
+        Matcher matcher = pattern.matcher(snippet);
+        while (matcher.find()) {
+            if (firstSpace == -1)
+                firstSpace = matcher.start();
+            lastSpace = matcher.start();
+        }
+        firstSpace = firstSpace > beforeText.length() ?  0 : firstSpace;
+        snippet = snippet.substring(firstSpace, lastSpace);
+        return snippet
+                .replace("'''", "")
+                .replace("''", "")
+                .replace("======", "")
+                .replace("=====", "")
+                .replace("====", "")
+                .replace("===", "")
+                .replace("==", "")
+                .replace("<u>", "")
+                .replace("</u>", "")
+                .replace("**", "")
+                .replace("[[", "")
+                .replace("]]", "")
+                .replace("{{", "")
+                .replace("}}", "");
+    }
 
-			int firstSpace = -1;
-			int lastSpace = snippet.length();
-			Pattern pattern = Pattern.compile("[\\s  ]");
-			Matcher matcher = pattern.matcher(snippet);
-			while (matcher.find()) {
-				if (firstSpace == -1)
-					firstSpace = matcher.start();
-				lastSpace = matcher.start();
-			}
-			firstSpace = firstSpace > beforeText.length() ?  0 : firstSpace;
-			snippet = snippet.substring(firstSpace, lastSpace);
-			return snippet
-					.replace("'''", "")
-					.replace("''", "")
-					.replace("======", "")
-					.replace("=====", "")
-					.replace("====", "")
-					.replace("===", "")
-					.replace("==", "")
-					.replace("<u>", "")
-					.replace("</u>", "")
-					.replace("**", "")
-					.replace("[[", "")
-					.replace("]]", "")
-					.replace("{{", "")
-					.replace("}}", "");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+    public String[] readParts(int docId, int inFileOffset, int wordLength, int beforeReadCount, int afterReadCount)
+    {
+        String beforeText, middleText, afterText;
+        try {
+            // one long is 8 bytes, so we have to multiply by 8
+            offsets.seek(docId * 8);
+            long docStartOffset = offsets.readLong();
 
-	}
+            long beforeSeekStart = docStartOffset + inFileOffset - beforeReadCount;
+            texts.seek(beforeSeekStart);
+
+            beforeText = readFromTexts(beforeReadCount, true);
+            middleText = readFromTexts(wordLength, false);
+            afterText = readFromTexts(afterReadCount, true);
+        } catch (IOException e) {
+            System.out.println("Cannot read a PlainText file (plain-texts.txt or plain-text-lengths.txt");
+            throw new RuntimeException(e);
+        }
+        return new String[]{beforeText, middleText, afterText};
+    }
 
     private String readFromTexts(int byteCount, boolean trim) throws IOException
     {

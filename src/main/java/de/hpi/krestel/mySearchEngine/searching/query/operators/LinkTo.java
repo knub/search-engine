@@ -29,9 +29,11 @@ public class LinkTo extends UnaryOperator implements Operator
     }
 
     @Override
-    public OccurrenceMap evaluate(IndexSearcher searcher) throws RuntimeException
+    public OccurrenceMap evaluate(IndexSearcher searcher)
     {
-        // TODO: @Corni: do it!
-        return null;
+        // find names of the page
+        OccurrenceMap result =  searcher.search(page);
+
+        return result;
     }
 }
