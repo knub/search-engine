@@ -62,8 +62,9 @@ public class Pipeline extends Vector<Processor> {
 		List<CoreLabel> processedPhrase = start(queryToken);
 		String[] phrase = new String[processedPhrase.size()];
 		int i = 0;
-		for (CoreLabel label : processedPhrase)
-			phrase[i++] = label.value();
+		for (CoreLabel label : processedPhrase) {
+            phrase[i++] = label.value();
+        }
 		return phrase;
 	}
 

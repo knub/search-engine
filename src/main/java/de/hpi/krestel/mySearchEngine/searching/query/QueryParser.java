@@ -93,7 +93,7 @@ public class QueryParser
 
 	private void handlePhraseToken(String phrase)
     {
-        Phrase op = new Phrase(phrase.split(" "));
+        Phrase op = new Phrase(pipeline.processPhraseForQuery(phrase));
 
         this.stack = op.pushOnto(this.stack);
 	}
