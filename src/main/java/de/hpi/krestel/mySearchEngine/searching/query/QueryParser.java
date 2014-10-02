@@ -100,7 +100,7 @@ public class QueryParser
 
     private void handleLinkToToken(String token)
     {
-        Word op = new Word("linkto:" + token);
+        LinkTo op = new LinkTo(token);
 
         this.stack = op.pushOnto(this.stack);
     }

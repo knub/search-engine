@@ -31,9 +31,6 @@ public class LinkTo extends UnaryOperator implements Operator
     @Override
     public OccurrenceMap evaluate(IndexSearcher searcher)
     {
-        // find names of the page
-        OccurrenceMap result =  searcher.search(page);
-
-        return result;
+        return searcher.search("linkto:" + this.page);
     }
 }
