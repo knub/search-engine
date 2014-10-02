@@ -27,7 +27,7 @@ public class SearchEngineTest {
             "Bierzelt Oktoberfest",
             "Los Angeles sport",
             "08/15",
-            "\"kann abgelehnt werden\""
+            "\"öffentlich kritisieren\""
     };
 
 	// some variables (will be explained when needed, ignore for now!)
