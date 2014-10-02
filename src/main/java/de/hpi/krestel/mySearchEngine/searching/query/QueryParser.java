@@ -22,6 +22,7 @@ public class QueryParser
         String[] parts = query.split(" +");
 
         boolean inBut = false;
+        boolean inLinkTo = false;
         boolean inPhrase = false;
         String phrase = "";
 
@@ -48,8 +49,16 @@ public class QueryParser
                         } else {
                             this.handleToken("but");
                         }
+                    } else if (inLinkTo) {
+                        inLinkTo = false;
+
+                        this.handleLinkToToken(token);
+                        continue;
                     } else if (token.equals("but")) {
                         inBut = true;
+                        continue;
+                    } else if (token.equals("linkto")) {
+                        inLinkTo = true;
                         continue;
                     }
                     this.handleToken(token);
@@ -91,6 +100,14 @@ public class QueryParser
 
         this.stack = op.pushOnto(this.stack);
 	}
+
+    private void handleLinkToToken(String token)
+    {
+        token = pipeline.processForQuery(token);
+        LinkTo op = new LinkTo(token);
+
+        this.stack = op.pushOnto(this.stack);
+    }
 
     private Word createWord(String token)
     {

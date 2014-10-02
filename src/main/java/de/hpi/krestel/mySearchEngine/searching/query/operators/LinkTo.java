@@ -15,6 +15,11 @@ public class LinkTo extends UnaryOperator implements Operator
         this.page = page;
     }
 
+    public String getPage()
+    {
+        return this.page;
+    }
+
     @Override
     public Operator pushOnto(Operator operator) throws QueryException
     {
