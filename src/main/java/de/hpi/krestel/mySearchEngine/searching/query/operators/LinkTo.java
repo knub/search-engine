@@ -8,6 +8,13 @@ import de.hpi.krestel.mySearchEngine.searching.query.UnaryOperator;
 
 public class LinkTo extends UnaryOperator implements Operator
 {
+    private String page;
+
+    public LinkTo(String page)
+    {
+        this.page = page;
+    }
+
     @Override
     public Operator pushOnto(Operator operator) throws QueryException
     {
