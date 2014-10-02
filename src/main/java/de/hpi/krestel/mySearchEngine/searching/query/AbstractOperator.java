@@ -1,6 +1,9 @@
 package de.hpi.krestel.mySearchEngine.searching.query;
 
+import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
+import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
+import gnu.trove.procedure.TIntObjectProcedure;
 
 abstract public class AbstractOperator implements Operator
 {
@@ -56,5 +59,25 @@ abstract public class AbstractOperator implements Operator
                 "Cannot push linkto operator on %s.",
                 this
         ));
+    }
+
+    protected void mergeWithRanks(final OccurrenceMap onto, OccurrenceMap from)
+    {
+        from.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
+            @Override
+            public boolean execute(int docId, DocumentEntry docEntry) {
+                DocumentEntry currentDocEntry = onto.get(docId);
+					/*
+					 * If we want to show the surrounding of the search result, we have to be more
+					 * sophisticated here, since this current implementation only stores the first document entry.
+					 */
+                if (currentDocEntry == null) {
+                    onto.put(docId, docEntry);
+                } else {
+                    currentDocEntry.setRank(currentDocEntry.getRank() + docEntry.getRank());
+                }
+                return true;
+            }
+        });
     }
 }

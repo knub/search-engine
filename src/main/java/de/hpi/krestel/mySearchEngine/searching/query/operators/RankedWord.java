@@ -59,22 +59,7 @@ public class RankedWord extends UnaryOperator implements Operator {
 		final OccurrenceMap resultMap = new OccurrenceMap();
 		for (Map.Entry<String, Integer> entry : this.words.entrySet()) {
 			OccurrenceMap newMap = searcher.search(entry.getKey(), entry.getValue());
-			newMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
-				@Override
-				public boolean execute(int docId, DocumentEntry docEntry) {
-					DocumentEntry currentDocEntry = resultMap.get(docId);
-					/*
-					 * If we want to show the surrounding of the search result, we have to be more
-					 * sophisticated here, since this current implementation only stores the first document entry.
-					 */
-					if (currentDocEntry == null) {
-                        resultMap.put(docId, docEntry);
-                    } else {
-                        currentDocEntry.setRank(currentDocEntry.getRank() + docEntry.getRank());
-                    }
-					return true;
-				}
-			});
+            this.mergeWithRanks(resultMap, newMap);
 		}
 		return resultMap;
 	}

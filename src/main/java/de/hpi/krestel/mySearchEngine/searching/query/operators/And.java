@@ -16,7 +16,7 @@ public class And extends BinaryOperator implements Operator
     @Override
     public OccurrenceMap evaluate(IndexSearcher searcher) {
         OccurrenceMap result = this.left.evaluate(searcher);
-        result.retain(this.right.evaluate(searcher));
+        this.mergeWithRanks(result, this.right.evaluate(searcher));
 
         return result;
     }
