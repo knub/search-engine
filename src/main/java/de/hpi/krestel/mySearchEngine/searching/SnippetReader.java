@@ -34,45 +34,22 @@ public class SnippetReader {
 		}
 	}
 
-	public String readSnippet(int docId, int inFileOffset, int length) {
+	public String readSnippet(int docId, int inFileOffset, int wordLength)
+    {
+        int surroundingLetters = (maxSnippetLength - wordLength) / 2;
 		try {
 			// one long is 8 bytes, so we have to multiply by 8
 			offsets.seek(docId * 8);
-			long offset = offsets.readLong();
+			long docStartOffset = offsets.readLong();
+			long docEndOffset = offsets.readLong();
 
+			int beforeReadCount = (surroundingLetters < inFileOffset) ? surroundingLetters : inFileOffset;
+			long beforeSeekStart = docStartOffset + inFileOffset - beforeReadCount;
 
-			long beforeSeekStart = offset + inFileOffset - maxSnippetLength / 2;
-			int beforeReadCount = maxSnippetLength / 2;
-			if (beforeSeekStart < 0) {
-				beforeReadCount += beforeSeekStart;
-				beforeSeekStart = 0;
-			}
 			texts.seek(beforeSeekStart);
-			byte[] beforeBytes = new byte[beforeReadCount];
-			texts.read(beforeBytes);
-			String beforeText = new String(beforeBytes).replace("\n", "");
-			int nullByteIndex = beforeText.indexOf("\0");
-			if (nullByteIndex != -1) {
-				beforeText = beforeText.substring(nullByteIndex + 1);
-			}
-			int startHit = beforeText.length();
-
-
-			long middleSeekStart = offset + inFileOffset;
-			texts.seek(middleSeekStart);
-			byte[] middleBytes = new byte[length];
-			texts.read(middleBytes);
-			String middleText = new String(middleBytes);
-
-			long afterSeekStart = offset + inFileOffset + length;
-			texts.seek(afterSeekStart);
-			byte[] afterBytes = new byte[maxSnippetLength];
-			texts.read(afterBytes);
-			String afterText = new String(afterBytes).replace("\n", "");
-			nullByteIndex = afterText.indexOf("\0");
-			if (nullByteIndex != -1) {
-				afterText = afterText.substring(0, nullByteIndex);
-			}
+            String beforeText = readFromTexts(beforeReadCount, true);
+			String middleText = readFromTexts(wordLength, false);
+			String afterText = readFromTexts(maxSnippetLength, true);
 
 			String snippet = beforeText + startFoundSequence + middleText + endFoundSequence + afterText;
 			snippet = snippet.substring(0, Math.min(maxSnippetLength, snippet.length()));
@@ -86,7 +63,7 @@ public class SnippetReader {
 					firstSpace = matcher.start();
 				lastSpace = matcher.start();
 			}
-			firstSpace = firstSpace > startHit ?  0 : firstSpace;
+			firstSpace = firstSpace > beforeText.length() ?  0 : firstSpace;
 			snippet = snippet.substring(firstSpace, lastSpace);
 			return snippet
 					.replace("'''", "")
@@ -109,6 +86,20 @@ public class SnippetReader {
 
 	}
 
+    private String readFromTexts(int byteCount, boolean trim) throws IOException
+    {
+        byte[] beforeBytes = new byte[byteCount];
+        texts.read(beforeBytes);
+        String text = new String(beforeBytes).replace("\n", "");
+        if (trim) {
+            int nullByteIndex = text.indexOf("\0");
+            if (nullByteIndex != -1) {
+                text = text.substring(nullByteIndex + 1);
+            }
+        }
+        return text;
+    }
+
 	/*
 	 * Getters and Setters
 	 */
@@ -119,7 +110,6 @@ public class SnippetReader {
 	public String getEndFoundSequence() {
 		return endFoundSequence;
 	}
-
 
 	public void setEndFoundSequence(String endFoundSequence) {
 		this.endFoundSequence = endFoundSequence;
