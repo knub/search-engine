@@ -40,10 +40,10 @@ public class SearchEngineLynette extends SearchEngine {
     private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream-first-five.xml";
 //    private final String WIKI_FILE = "data/dewiki-20140216-pages-articles-multistream.xml";
 
-    //	String setPlainText = "\033[0;0m";
-//	String setBoldText = "\033[0;1m";
-	String setPlainText = "";
-	String setBoldText = "";
+    String setPlainText = "\033[0;0m";
+	String setBoldText = "\033[0;1m";
+	//String setPlainText = "";
+	//String setBoldText = "";
 
 	public SearchEngineLynette()
     {
@@ -129,8 +129,8 @@ public class SearchEngineLynette extends SearchEngine {
             resultsStrings.add(title);
 
             // Display snippets for our results
-            System.out.println(setBoldText + "    Document: " + title + ", Rank: " + docEntry.getRank() + setPlainText);
-            System.out.println("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
+            System.out.println("\t" + setBoldText + title + setPlainText + " (" + docEntry.getRank() + ")");
+            System.out.println("\t\t" + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
         }
 
         return resultsStrings;
