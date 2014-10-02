@@ -21,7 +21,7 @@ public class SearchEngineTest {
             "Toskana AND Wein",
             "sülz* AND staatlich",
             "öffentlicher nahverkehr stadtpiraten",
-            "schnitzel AND kaffe BUT NOT schwein",
+            "schnitzel AND kaffe BUT NOT schwein*",
             "Dr. No",
             "ICE BUT NOT T",
             "Bierzelt Oktoberfest",
