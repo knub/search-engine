@@ -61,13 +61,13 @@ public abstract class SearchEngine {
 		ArrayList<String> goldRanking = getGoldRanking(query);
 		Double ndcg = computeNdcg(goldRanking, ranking, topK);
 		String output = "\nQuery: " +query +"\t Query Time: " +time +"ms\nRanking: ";
-		System.out.println("query: " +query);
+		//System.out.println("query: " +query);
 		if(ranking!=null){
 			Iterator<String> iter = ranking.iterator();
 			while(iter.hasNext()){
 				String item = iter.next();
 				output += item +"\n";
-						System.out.println(item);
+				//		System.out.println(item);
 			}
 		}
 		output += "\nnDCG@" +topK +": " +ndcg;

@@ -86,39 +86,55 @@ public class SearchEngineLynette extends SearchEngine {
 	@Override
 	ArrayList<String> search(String query, int topK, int prf)
     {
+        ArrayList<String> resultList;
+
+        this.displayQuery(query);
+
         try
         {
             Operator op = queryParser.parse(query);
 
             ResultList results = op.evaluate(searcher) // Execute the search
                     .toResultSet()      // Convert to result set
-                    .subList(0, prf);   // Use only the first
+                    .subList(0, topK);  // Use only the first
+
+            resultList = this.displayResults(results);
 
 //		PseudoRelevanceSearcher prs = new PseudoRelevanceSearcher(results, 300, directory);
 //		op = prs.buildNewSearchOperator();
 //		results = op.evaluate(searcher).toResultSet().subList(0, topK);
-
-            // Add titles to result list
-            ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
-            for (Pair<Integer, DocumentEntry> result : results) {
-                int docId = result.getValue0();
-                resultsStrings.add(documents.getTitle(docId));
-            }
-
-            // Generate snippets for our results
-            SnippetReader snippetReader = new SnippetReader(directory);
-            for (Pair<Integer, DocumentEntry> result : results) {
-                int docId = result.getValue0();
-                DocumentEntry docEntry = result.getValue1();
-                resultsStrings.add(setBoldText + "    Document: " + documents.getTitle(docId) + ", Rank: " + docEntry.getRank() + setPlainText);
-                resultsStrings.add("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
-            }
-
-            return resultsStrings;
         } catch (QueryException e) {
-            return new ArrayList<String>();
+            resultList = new ArrayList<String>();
         }
+
+        return resultList;
 	}
+
+    void displayQuery(String query)
+    {
+        System.out.println("query: " + query);
+    }
+
+    ArrayList<String> displayResults(ResultList results)
+    {
+        // Add titles to result list
+        ArrayList<String> resultsStrings = new ArrayList<String>(results.size());
+        SnippetReader snippetReader = new SnippetReader(directory);
+
+        for (Pair<Integer, DocumentEntry> result : results) {
+            int docId = result.getValue0();
+            DocumentEntry docEntry = result.getValue1();
+
+            String title = this.documents.getTitle(docId);
+            resultsStrings.add(title);
+
+            // Display snippets for our results
+            System.out.println(setBoldText + "    Document: " + title + ", Rank: " + docEntry.getRank() + setPlainText);
+            System.out.println("    " + snippetReader.readSnippet(docId, docEntry.offsets.get(0), docEntry.lengths.get(0)));
+        }
+
+        return resultsStrings;
+    }
 
 	@Override
 	Double computeNdcg(ArrayList<String> goldRanking, ArrayList<String> ranking, int ndcgAt) {
