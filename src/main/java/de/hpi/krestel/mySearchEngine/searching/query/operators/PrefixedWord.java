@@ -6,10 +6,16 @@ import de.hpi.krestel.mySearchEngine.searching.query.*;
 
 public class PrefixedWord extends UnaryOperator implements Operator {
 
-    private String word;
+    private String prefix;
 
-    public PrefixedWord(String token) {
-        this.word = token;
+    public PrefixedWord(String token)
+    {
+        this.prefix = token;
+    }
+
+    public String getPrefix()
+    {
+        return this.prefix;
     }
 
     @Override
@@ -30,7 +36,8 @@ public class PrefixedWord extends UnaryOperator implements Operator {
     }
 
     @Override
-    public OccurrenceMap evaluate(IndexSearcher searcher) {
-        return searcher.searchPrefixed(word);
+    public OccurrenceMap evaluate(IndexSearcher searcher)
+    {
+        return searcher.searchPrefixed(this.token);
     }
 }

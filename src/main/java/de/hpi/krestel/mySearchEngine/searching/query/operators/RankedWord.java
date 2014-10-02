@@ -8,25 +8,35 @@ import de.hpi.krestel.mySearchEngine.searching.query.QueryException;
 import de.hpi.krestel.mySearchEngine.searching.query.UnaryOperator;
 import gnu.trove.procedure.TIntObjectProcedure;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RankedWord extends UnaryOperator implements Operator {
 
-	List<Word> words = new ArrayList<Word>();
+    Map<String, Integer> words = new HashMap<String, Integer>();
 
 	public RankedWord() {}
 
-	public RankedWord(Word word1, Word word2) {
+	public RankedWord(Word word1, Word word2)
+    {
 		add(word1);
 		add(word2);
 	}
 
-	public void add(Word word) {
-		this.words.add(word);
+	public void add(Word word)
+    {
+        Integer count = this.words.get(word.getWord());
+        if (count == null) {
+            this.words.put(word.getWord(), 1);
+        } else {
+            this.words.put(word.getWord(), count + 1);
+        }
 	}
+
+    public String[] getWords()
+    {
+        return this.words.keySet().toArray(new String[this.words.size()]);
+    }
 
     @Override
     public Operator pushOnto(Operator operator) throws QueryException
@@ -44,18 +54,10 @@ public class RankedWord extends UnaryOperator implements Operator {
     }
 
     @Override
-	public OccurrenceMap evaluate(IndexSearcher searcher) {
-		Map<String, Integer> queryWords = new HashMap<String, Integer>();
-		for (Word word : words) {
-			Integer count = queryWords.get(word.getWord());
-			if (count == null)
-				queryWords.put(word.getWord(), 1);
-			else
-				queryWords.put(word.getWord(), count + 1);
-		}
-
+	public OccurrenceMap evaluate(IndexSearcher searcher)
+    {
 		final OccurrenceMap resultMap = new OccurrenceMap();
-		for (Map.Entry<String, Integer> entry : queryWords.entrySet()) {
+		for (Map.Entry<String, Integer> entry : this.words.entrySet()) {
 			OccurrenceMap newMap = searcher.search(entry.getKey(), entry.getValue());
 			newMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
 				@Override

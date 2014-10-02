@@ -16,6 +16,16 @@ public class Phrase extends UnaryOperator implements Operator {
         this.phrase = tokens;
     }
 
+    public String getPhrase()
+    {
+        String result = "";
+        for (String part: this.phrase) {
+            result += " " + part;
+        }
+
+        return result.trim();
+    }
+
     @Override
     public Operator pushOnto(Operator operator) throws QueryException
     {
