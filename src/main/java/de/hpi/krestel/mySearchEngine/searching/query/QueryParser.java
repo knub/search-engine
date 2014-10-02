@@ -3,6 +3,8 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
+import java.util.Arrays;
+
 public class QueryParser
 {
 	private Pipeline pipeline;
@@ -19,9 +21,18 @@ public class QueryParser
         String[] parts = query.split(" +");
 
         boolean inBut = false;
-        boolean inLinkTo = false;
         boolean inPhrase = false;
         String phrase = "";
+
+        if (parts[0].toLowerCase().equals("linkto")) {
+            String[] linkParts = Arrays.copyOfRange(parts, 1, parts.length);
+            String linkText = "";
+            for (String word : linkParts) {
+                linkText += " " + word.toLowerCase();
+            }
+            this.handleLinkToToken(linkText.trim());
+            return this.stack;
+        }
 
         for (String token: parts) {
             token = token.trim().toLowerCase();
@@ -46,16 +57,8 @@ public class QueryParser
                         } else {
                             this.handleToken("but");
                         }
-                    } else if (inLinkTo) {
-                        inLinkTo = false;
-
-                        this.handleLinkToToken(token);
-                        continue;
                     } else if (token.equals("but")) {
                         inBut = true;
-                        continue;
-                    } else if (token.equals("linkto")) {
-                        inLinkTo = true;
                         continue;
                     }
                     this.handleToken(token);
