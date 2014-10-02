@@ -51,16 +51,23 @@ public class IndexSearcher
 
     private OccurrenceMap calculateRanks(OccurrenceMap occurrenceMap, int occurrenceInQuery)
     {
-        final long N = this.documents.getCount();
-        final long ni = occurrenceMap.size();
-        final double avgdl = this.documents.getAverageLength();
-        final long qfi = occurrenceInQuery;
+        final long docCount = this.documents.getCount();
+        final long wordDocCount = occurrenceMap.size();
+        final double avgDocLength = this.documents.getAverageLength();
+        final long queryWordCount = occurrenceInQuery;
         occurrenceMap.forEachEntry(new TIntObjectProcedure<DocumentEntry>() {
             @Override
             public boolean execute(int docId, DocumentEntry docEntry) {
-                long dl = documents.getLength(docId);
-                long fi = docEntry.size();
-                docEntry.setRank(calculateRank(N, ni, dl, avgdl, fi, qfi));
+                long docLength = documents.getLength(docId);
+                long documentWordCount = docEntry.size();
+                docEntry.setRank(calculateRank(
+                        docCount,
+                        wordDocCount,
+                        docLength,
+                        avgDocLength,
+                        documentWordCount,
+                        queryWordCount
+                ));
                 return true;
             }
         });
@@ -143,13 +150,13 @@ public class IndexSearcher
             long wordDocCount,
             long docLength,
             double avgDocLength,
-            long wordFreq,
-            long queryWordFreq
+            long documentWordCount,
+            long queryWordCount
     ) {
 		double K = k1 * ((1 - b) + (b * (((double) docLength) / avgDocLength)));
 
-        double termConstant = ((k1 + 1) * wordFreq) / (K + wordFreq);
-        double queryConstant = ((k2 + 1) * queryWordFreq) / (k2 + queryWordFreq);
+        double termConstant = ((k1 + 1) * documentWordCount) / (K + documentWordCount);
+        double queryConstant = ((k2 + 1) * queryWordCount) / (k2 + queryWordCount);
         double rank = Math.log((docCount - wordDocCount + 0.5) / (wordDocCount + 0.5));
 
         return rank * termConstant * queryConstant;
