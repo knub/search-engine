@@ -117,14 +117,15 @@ public class Indexer implements DocumentReaderListener
 //		this.announce("Title: " + title + ", Document-ID: " + documentId);
         // Index the tests
         this.indexText(labels);
-        // two infos about the document
-        documents.add(title, labels.size());
-        this.documentId += 1;
 
         // Parse the links, too
         if (this.createLinkConnections) {
             this.parseLinks(text, title);
         }
+
+        // two infos about the document
+        documents.add(title, labels.size());
+        this.documentId += 1;
 
         this.watchMemory();
     }
