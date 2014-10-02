@@ -3,9 +3,6 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 import de.hpi.krestel.mySearchEngine.processing.Pipeline;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
-import java.io.*;
-import java.util.ArrayList;
-
 public class QueryParser
 {
 	private Pipeline pipeline;
