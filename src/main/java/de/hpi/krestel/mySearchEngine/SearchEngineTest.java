@@ -27,7 +27,8 @@ public class SearchEngineTest {
             "Bierzelt Oktoberfest",
             "Los Angeles sport",
             "08/15",
-            "\"öffentlich kritisieren\""
+            "\"öffentlich kritisieren\"",
+            "LINKTO Seltenerdmetalle"
     };
 
 	// some variables (will be explained when needed, ignore for now!)
