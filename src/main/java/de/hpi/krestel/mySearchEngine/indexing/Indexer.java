@@ -161,9 +161,8 @@ public class Indexer implements DocumentReaderListener
             String s = matcher.group(1);
             String anchorText = "";
             String destination = "";
-            if (s.contains("|")) {
+            if (s.contains("\\|")) {
                 String[] splits = s.split("\\|");
-                destination = splits[0];
                 try {
                     anchorText = splits[1];
                 } catch (Exception e) {
@@ -171,17 +170,9 @@ public class Indexer implements DocumentReaderListener
                     anchorText = splits[0];
                 }
             } else {
-                destination = s;
                 anchorText = s;
             }
-            StringBuilder sb = links.get(destination);
-            String newLink = "\0" + title + "\0" + anchorText;
-            if (sb == null) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(newLink);
-                links.put(destination, builder);
-            } else
-                sb.append(newLink);
+
         }
     }
 
@@ -249,6 +240,8 @@ public class Indexer implements DocumentReaderListener
             documentEntry.lengths.add(label.endPosition() - label.beginPosition());
         }
 	}
+
+    private OccurrenceMap addToPartIndex(String )
 
     /**
      * Write the current part index.

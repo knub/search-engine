@@ -72,7 +72,7 @@ public class SearchEngineLynette extends SearchEngine {
 
                 searcher.setDocuments(documents);
                 searcher.setSeekList(seekList);
-				searcher.setIndexFilename(directory + "/final_index0001");
+				searcher.setIndexFilename(directory, "/final_index0001");
 
                 return true;
 			}

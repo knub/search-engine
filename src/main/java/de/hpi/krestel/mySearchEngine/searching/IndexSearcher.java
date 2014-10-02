@@ -15,6 +15,7 @@ public class IndexSearcher
     private Documents documents;
     private IndexReader indexReader;
 	private RandomAccessInputStream randomAccessInputStream;
+    private String directory;
 	private static final double k1 = 1.6;
 	private static final double k2 = 100;
 	private static final double b  = 0.85;
@@ -163,10 +164,11 @@ public class IndexSearcher
         return rank * termConstant * queryConstant;
 	}
 
-	public void setIndexFilename(String indexFilename)
+	public void setIndexFilename(String directory, String indexFilename)
     {
+        setDirectory(directory);
 		try {
-			this.randomAccessInputStream = new RandomAccessInputStream(indexFilename);
+			this.randomAccessInputStream = new RandomAccessInputStream(directory + indexFilename);
 		} catch (FileNotFoundException e) {
 			System.out.println("The index file does not exist. Hmpf:");
 			System.out.println(e.getLocalizedMessage());
@@ -175,7 +177,15 @@ public class IndexSearcher
 		indexReader = new IndexReader(this.randomAccessInputStream);
 	}
 
-	public void setSeekList(SeekList seekList)
+    public String getDirectory() {
+        return directory;
+    }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    public void setSeekList(SeekList seekList)
     {
 		this.seekList = seekList;
 	}

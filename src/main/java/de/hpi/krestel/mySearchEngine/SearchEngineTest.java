@@ -17,6 +17,10 @@ public class SearchEngineTest {
 //	static String[] queries = {"deutsch"};
 //	static String[] queries = {"regisseur"};
     static String[] queries = {
+            "LINKTO Seltenerdmetalle",
+            "LINKTO USA",
+            "LINKTO Republik",
+            "LINKTO Produzent",
             "ein trauriges Arschloch",
             "Toskana AND Wein",
             "sülz* AND staatlich",
