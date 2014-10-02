@@ -2,7 +2,6 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 
 import de.hpi.krestel.mySearchEngine.domain.DocumentEntry;
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
-import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
 import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 import gnu.trove.procedure.TIntObjectProcedure;
 
@@ -80,12 +79,5 @@ abstract public class AbstractOperator implements Operator
                 return true;
             }
         });
-    }
-
-    protected OpExecutor runInThread(Operator op, IndexSearcher searcher)
-    {
-        OpExecutor exec = new OpExecutor(op, searcher);
-        exec.start();
-        return exec;
     }
 }
