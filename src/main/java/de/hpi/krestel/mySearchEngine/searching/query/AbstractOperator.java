@@ -1,9 +1,6 @@
 package de.hpi.krestel.mySearchEngine.searching.query;
 
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Phrase;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.PrefixedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.RankedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Word;
+import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
 abstract public class AbstractOperator implements Operator
 {
@@ -48,6 +45,15 @@ abstract public class AbstractOperator implements Operator
     {
         throw new QueryException(String.format(
                 "Cannot push phrase operator on %s.",
+                this
+        ));
+    }
+
+    @Override
+    public Operator pushLinkTo(LinkTo operator)
+    {
+        throw new QueryException(String.format(
+                "Cannot push linkto operator on %s.",
                 this
         ));
     }

@@ -2,10 +2,7 @@ package de.hpi.krestel.mySearchEngine.searching.query;
 
 import de.hpi.krestel.mySearchEngine.domain.OccurrenceMap;
 import de.hpi.krestel.mySearchEngine.searching.IndexSearcher;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Phrase;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.PrefixedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.RankedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Word;
+import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
 public interface Operator {
 
@@ -20,6 +17,8 @@ public interface Operator {
     public Operator pushPrefixedWord(PrefixedWord operator);
 
     public Operator pushPhrase(Phrase operator);
+
+    public Operator pushLinkTo(LinkTo operator);
 
     public OccurrenceMap evaluate(IndexSearcher searcher) throws RuntimeException;
 

@@ -1,9 +1,6 @@
 package de.hpi.krestel.mySearchEngine.searching.query;
 
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Phrase;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.PrefixedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.RankedWord;
-import de.hpi.krestel.mySearchEngine.searching.query.operators.Word;
+import de.hpi.krestel.mySearchEngine.searching.query.operators.*;
 
 abstract public class BinaryOperator extends AbstractOperator implements Operator
 {
@@ -76,6 +73,12 @@ abstract public class BinaryOperator extends AbstractOperator implements Operato
 
     @Override
     public Operator pushPhrase(Phrase operator)
+    {
+        return this.pushOperator(operator);
+    }
+
+    @Override
+    public Operator pushLinkTo(LinkTo operator)
     {
         return this.pushOperator(operator);
     }
