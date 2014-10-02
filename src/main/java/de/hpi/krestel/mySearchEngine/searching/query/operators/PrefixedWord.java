@@ -27,15 +27,6 @@ public class PrefixedWord extends UnaryOperator implements Operator {
     }
 
     @Override
-    public Operator pushWord(Word operator)
-    {
-        And and = new And();
-        and.setLeft(this);
-        and.setRight(operator);
-        return and;
-    }
-
-    @Override
     public OccurrenceMap evaluate(IndexSearcher searcher)
     {
         return searcher.searchPrefixed(this.prefix);
