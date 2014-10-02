@@ -17,7 +17,7 @@ public class IndexSearcher
 	private RandomAccessInputStream randomAccessInputStream;
 	private static final double k1 = 1.6;
 	private static final double k2 = 100;
-	private static final double b  = 0.75;
+	private static final double b  = 0.85;
 
 	public OccurrenceMap search(String token)
     {
