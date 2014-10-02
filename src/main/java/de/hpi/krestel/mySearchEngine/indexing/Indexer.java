@@ -25,10 +25,9 @@ public class Indexer implements DocumentReaderListener
     private Documents documents;
 	long startTime;
 
-	boolean createLinkConnections = false;
+	boolean createLinkConnections = true;
 
     private DocumentReaderInterface reader;
-    private Map<String, StringBuilder> links = new HashMap<String, StringBuilder>();
 
     public Indexer(String directory, DocumentReaderInterface reader)
     {
@@ -84,14 +83,6 @@ public class Indexer implements DocumentReaderListener
         this.documents = null;
         this.collectGarbage();
 
-        // Write out link list
-        if (createLinkConnections) {
-            this.announce("Writing LinkList... ");
-            this.writeLinkList();
-            this.links = null;
-            this.announce("Done.");
-        }
-
         // Merge the partial indices and list of links
         this.triggerMergingProcess();
     }
@@ -112,21 +103,6 @@ public class Indexer implements DocumentReaderListener
     }
 
     /**
-     * Write the list of links to a file.
-     */
-	private void writeLinkList()
-    {
-		try {
-			PrintWriter printWriter = new PrintWriter(directory + "/links");
-			for (Map.Entry<String, StringBuilder> key : links.entrySet())
-				printWriter.println(key.getKey() + "\t" + key.getValue().toString());
-			printWriter.close();
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-    /**
      * Handle a parsed wiki document.
      *
      * @param text
@@ -135,11 +111,6 @@ public class Indexer implements DocumentReaderListener
 	@Override
 	public void documentParsed(String text, String title)
     {
-        // Parse the links, too
-		if (this.createLinkConnections) {
-            this.parseLinks(text, title);
-		}
-
         // Tokenize and preprocess the document
 		List<CoreLabel> labels = preprocessingPipeline.start(text);
 
@@ -150,6 +121,11 @@ public class Indexer implements DocumentReaderListener
         documents.add(title, labels.size());
         this.documentId += 1;
 
+        // Parse the links, too
+        if (this.createLinkConnections) {
+            this.parseLinks(text, title);
+        }
+
         this.watchMemory();
     }
 
@@ -159,29 +135,14 @@ public class Indexer implements DocumentReaderListener
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String s = matcher.group(1);
-            String anchorText = "";
             String destination = "";
             if (s.contains("|")) {
                 String[] splits = s.split("\\|");
                 destination = splits[0];
-                try {
-                    anchorText = splits[1];
-                } catch (Exception e) {
-                    this.announce("I'm dumb.");
-                    anchorText = splits[0];
-                }
             } else {
                 destination = s;
-                anchorText = s;
             }
-            StringBuilder sb = links.get(destination);
-            String newLink = "\0" + title + "\0" + anchorText;
-            if (sb == null) {
-                StringBuilder builder = new StringBuilder();
-                builder.append(newLink);
-                links.put(destination, builder);
-            } else
-                sb.append(newLink);
+            addToPartIndex("linkto:" + destination.toLowerCase(), 0, 0, destination.length());
         }
     }
 
@@ -223,32 +184,36 @@ public class Indexer implements DocumentReaderListener
         // Run through the results...
         for (int position = 0; position < labels.size(); position++) {
             CoreLabel label = labels.get(position);
-
-            OccurrenceMap occurrenceMap;
-            DocumentEntry documentEntry;
-
-            // Fetch or create the occurrence map
-            if (this.partIndex.containsKey(label.value())) {
-                occurrenceMap = this.partIndex.get(label.value());
-            } else {
-                occurrenceMap = new OccurrenceMap();
-                this.partIndex.put(label.value(), occurrenceMap);
-            }
-
-            // Fetch or create the document entry
-            if (occurrenceMap.containsKey(this.documentId)) {
-                documentEntry = occurrenceMap.get(this.documentId);
-            } else {
-                documentEntry = new DocumentEntry();
-                occurrenceMap.put(this.documentId, documentEntry);
-            }
-
-            // And finally, store the current position
-            documentEntry.positions.add(position);
-            documentEntry.offsets.add(label.beginPosition());
-            documentEntry.lengths.add(label.endPosition() - label.beginPosition());
+            addToPartIndex(label.value(), position, label.beginPosition(), label.endPosition() - label.beginPosition());
         }
 	}
+
+    private void addToPartIndex(String token, int position, int offset, int length)
+    {
+        OccurrenceMap occurrenceMap;
+        DocumentEntry documentEntry;
+
+        // Fetch or create the occurrence map
+        if (this.partIndex.containsKey(token)) {
+            occurrenceMap = this.partIndex.get(token);
+        } else {
+            occurrenceMap = new OccurrenceMap();
+            this.partIndex.put(token, occurrenceMap);
+        }
+
+        // Fetch or create the document entry
+        if (occurrenceMap.containsKey(this.documentId)) {
+            documentEntry = occurrenceMap.get(this.documentId);
+        } else {
+            documentEntry = new DocumentEntry();
+            occurrenceMap.put(this.documentId, documentEntry);
+        }
+
+        // And finally, store the current position
+        documentEntry.positions.add(position);
+        documentEntry.offsets.add(offset);
+        documentEntry.lengths.add(length);
+    }
 
     /**
      * Write the current part index.
