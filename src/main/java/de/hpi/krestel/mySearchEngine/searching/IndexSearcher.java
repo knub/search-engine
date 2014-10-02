@@ -31,7 +31,8 @@ public class IndexSearcher
             // found nothing
             return new OccurrenceMap();
         }
-        return calculateRanks(occurrenceMap, occurrenceInQuery);
+        this.calculateRanks(occurrenceMap, occurrenceInQuery);
+        return occurrenceMap;
 	}
 
     public OccurrenceMap searchPrefixed(String prefix)
@@ -46,10 +47,11 @@ public class IndexSearcher
             // found nothing
             return new OccurrenceMap();
         }
-        return calculateRanks(occurrenceMap, occurrenceInQuery);
+        this.calculateRanks(occurrenceMap, occurrenceInQuery);
+        return occurrenceMap;
     }
 
-    private OccurrenceMap calculateRanks(OccurrenceMap occurrenceMap, int occurrenceInQuery)
+    private void calculateRanks(OccurrenceMap occurrenceMap, int occurrenceInQuery)
     {
         final long docCount = this.documents.getCount();
         final long wordDocCount = occurrenceMap.size();
@@ -71,7 +73,6 @@ public class IndexSearcher
                 return true;
             }
         });
-        return occurrenceMap;
     }
 
     private boolean setInputStreamOffset(String token)
