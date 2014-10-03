@@ -132,14 +132,19 @@ public class Indexer implements DocumentReaderListener
 
     private void parseLinks(String text, String title)
     {
-        Pattern pattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
+        Pattern pattern = Pattern.compile("\\[\\[(.+?)\\]\\]");
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String s = matcher.group(1);
             String destination = "";
             if (s.contains("|")) {
                 String[] splits = s.split("\\|");
-                destination = splits[0];
+                try {
+                    destination = splits[0];
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    // anyway
+                    continue;
+                }
             } else {
                 destination = s;
             }
