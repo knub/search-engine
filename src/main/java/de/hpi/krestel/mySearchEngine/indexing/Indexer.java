@@ -143,7 +143,9 @@ public class Indexer implements DocumentReaderListener
             } else {
                 destination = s;
             }
-            addToPartIndex("linkto:" + destination.toLowerCase(), 0, 0, destination.length());
+            if (destination.length() != 0) {
+                addToPartIndex("linkto:" + destination.toLowerCase(), 0, 0, destination.length());
+            }
         }
     }
 
